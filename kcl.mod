@@ -1,6 +1,4 @@
 [package]
-name = "crossplane-models"
+name = "models"
 version = "0.0.1"
-
-[dependencies]
-k8s = "1.31.2"
+include = ["io/", "k8s/"]
