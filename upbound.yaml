@@ -12,6 +12,8 @@ spec:
     version: '>=v1'
   - provider: xpkg.upbound.io/upbound/provider-aws-ses
     version: '>=v1'
+  - provider: xpkg.upbound.io/upbound/provider-aws-route53
+    version: '>=v1'
   description: This is where you can describe your project.
   license: Apache-2.0
   maintainer: Upbound User <user@example.com>
