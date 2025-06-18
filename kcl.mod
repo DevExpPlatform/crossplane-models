@@ -1,4 +1,4 @@
 [package]
 name = "models"
-version = "0.0.3"
+version = "0.0.4"
 include = ["io/", "k8s/", "common/"]
