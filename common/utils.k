@@ -1,5 +1,9 @@
 import crypto
 
+# observed composed resources
+ocds = option("params").ocds
+
+er: any = option("params")?.extraResources
 # Generates a Kubernetes-compliant resource name from id and suffix, keeping readability when truncated
 # @param baseId The base identifier
 # @param suffix The suffix to append to the base name
@@ -39,4 +43,18 @@ _metadata = lambda id: str, kind: str, suffix: str -> any {
         }
         name = _generateKubernetesResourceName(id, suffix)
     }
+}
+# Returns the value of a key from the mock or observed composed resource
+# @param mockKey The key to lookup in mock data
+# @param ocdsKey The key to lookup in observed composed resources
+# @param ocdsValue The value key to extract from the provider status
+# @return The value found in either mock or observed resource
+_mockOrObservedComposedResource = lambda mockKey: str, ocdsKey: str, ocdsValue: str -> any {
+    _value = ""
+    if er?.mock:
+        _value = er.mock[0].Resource.data[mockKey]
+    elif ocds?[ocdsKey]?.Resource?.status?.atProvider?[ocdsValue]:
+        _value = ocds[ocdsKey].Resource.status.atProvider[ocdsValue]
+
+    _value
 }
