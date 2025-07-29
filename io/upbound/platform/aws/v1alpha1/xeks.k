@@ -187,7 +187,7 @@ schema AwsPlatformUpboundIoV1alpha1XEKSSpecParameters:
         Crossplane ProviderConfig to use for provisioning this resources
     region : str, default is Undefined, required
         Region is the region you'd like your resource to be created in.
-    version : str, default is "1.31", optional
+    version : str, default is "1.32", optional
         Kubernetes version
     """
 
@@ -206,7 +206,7 @@ schema AwsPlatformUpboundIoV1alpha1XEKSSpecParameters:
 
     region: str
 
-    version?: "1.31" | "1.30" | "1.29" | "1.28" | "1.27" | "1.26" | "1.25" = "1.31"
+    version?: "1.33" | "1.32" | "1.31" = "1.32"
 
 
 schema AwsPlatformUpboundIoV1alpha1XEKSSpecParametersAccessConfig:

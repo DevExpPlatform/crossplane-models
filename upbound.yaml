@@ -33,7 +33,7 @@ spec:
     - provider: xpkg.upbound.io/upbound/provider-aws-cloudwatchevents
       version: ">=v1"
     - configuration: xpkg.upbound.io/upbound/configuration-aws-eks-pod-identity
-      version: v0.7.0
+      version: v0.8.1
   description: Proprietary Crossplane models and utilities for Engineering Ingegneria Informatica S.p.A. infrastructure management.
   license: Proprietary
   maintainer: Engineering Ingegneria Informatica S.p.A. <devops@eng.it>
