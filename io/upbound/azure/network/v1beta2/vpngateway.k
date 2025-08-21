@@ -66,8 +66,6 @@ schema NetworkAzureUpboundIoV1beta2VPNGatewaySpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : NetworkAzureUpboundIoV1beta2VPNGatewaySpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : NetworkAzureUpboundIoV1beta2VPNGatewaySpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : NetworkAzureUpboundIoV1beta2VPNGatewaySpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -82,8 +80,6 @@ schema NetworkAzureUpboundIoV1beta2VPNGatewaySpec:
     managementPolicies?: [str] = ["*"]
 
     providerConfigRef?: NetworkAzureUpboundIoV1beta2VPNGatewaySpecProviderConfigRef
-
-    publishConnectionDetailsTo?: NetworkAzureUpboundIoV1beta2VPNGatewaySpecPublishConnectionDetailsTo
 
     writeConnectionSecretToRef?: NetworkAzureUpboundIoV1beta2VPNGatewaySpecWriteConnectionSecretToRef
 
@@ -107,7 +103,7 @@ schema NetworkAzureUpboundIoV1beta2VPNGatewaySpecForProvider:
     resourceGroupNameSelector : NetworkAzureUpboundIoV1beta2VPNGatewaySpecForProviderResourceGroupNameSelector, default is Undefined, optional
         resource group name selector
     routingPreference : str, default is Undefined, optional
-        Azure routing preference lets you to choose how your traffic routes between Azure and the internet. You can choose to route traffic either via the Microsoft network (default value, Microsoft Network), or via the ISP network (public internet, set to Internet). More context of the configuration can be found in the Microsoft Docs to create a VPN Gateway. Changing this forces a new resource to be created.
+        Azure routing preference lets you to choose how your traffic routes between Azure and the internet. You can choose to route traffic either via the Microsoft network (default value, Microsoft Network), or via the ISP network (public internet, set to Internet). More context of the configuration can be found in the Microsoft Docs to create a VPN Gateway. Defaults to Microsoft Network. Changing this forces a new resource to be created.
     scaleUnit : float, default is Undefined, optional
         The Scale Unit for this VPN Gateway. Defaults to 1.
     tags : {str:str}, default is Undefined, optional
@@ -400,7 +396,7 @@ schema NetworkAzureUpboundIoV1beta2VPNGatewaySpecInitProvider:
     location : str, default is Undefined, optional
         The Azure location where this VPN Gateway should be created. Changing this forces a new resource to be created.
     routingPreference : str, default is Undefined, optional
-        Azure routing preference lets you to choose how your traffic routes between Azure and the internet. You can choose to route traffic either via the Microsoft network (default value, Microsoft Network), or via the ISP network (public internet, set to Internet). More context of the configuration can be found in the Microsoft Docs to create a VPN Gateway. Changing this forces a new resource to be created.
+        Azure routing preference lets you to choose how your traffic routes between Azure and the internet. You can choose to route traffic either via the Microsoft network (default value, Microsoft Network), or via the ISP network (public internet, set to Internet). More context of the configuration can be found in the Microsoft Docs to create a VPN Gateway. Defaults to Microsoft Network. Changing this forces a new resource to be created.
     scaleUnit : float, default is Undefined, optional
         The Scale Unit for this VPN Gateway. Defaults to 1.
     tags : {str:str}, default is Undefined, optional
@@ -620,112 +616,12 @@ schema NetworkAzureUpboundIoV1beta2VPNGatewaySpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
-schema NetworkAzureUpboundIoV1beta2VPNGatewaySpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : NetworkAzureUpboundIoV1beta2VPNGatewaySpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : NetworkAzureUpboundIoV1beta2VPNGatewaySpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: NetworkAzureUpboundIoV1beta2VPNGatewaySpecPublishConnectionDetailsToConfigRef
-
-    metadata?: NetworkAzureUpboundIoV1beta2VPNGatewaySpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema NetworkAzureUpboundIoV1beta2VPNGatewaySpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : NetworkAzureUpboundIoV1beta2VPNGatewaySpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: NetworkAzureUpboundIoV1beta2VPNGatewaySpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema NetworkAzureUpboundIoV1beta2VPNGatewaySpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema NetworkAzureUpboundIoV1beta2VPNGatewaySpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema NetworkAzureUpboundIoV1beta2VPNGatewaySpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------
@@ -777,12 +673,14 @@ schema NetworkAzureUpboundIoV1beta2VPNGatewayStatusAtProvider:
         bgp settings
     id : str, default is Undefined, optional
         The ID of the VPN Gateway.
+    ipConfiguration : [NetworkAzureUpboundIoV1beta2VPNGatewayStatusAtProviderIPConfigurationItems0], default is Undefined, optional
+        An ip_configuration block as defined below.
     location : str, default is Undefined, optional
         The Azure location where this VPN Gateway should be created. Changing this forces a new resource to be created.
     resourceGroupName : str, default is Undefined, optional
         The Name of the Resource Group in which this VPN Gateway should be created. Changing this forces a new resource to be created.
     routingPreference : str, default is Undefined, optional
-        Azure routing preference lets you to choose how your traffic routes between Azure and the internet. You can choose to route traffic either via the Microsoft network (default value, Microsoft Network), or via the ISP network (public internet, set to Internet). More context of the configuration can be found in the Microsoft Docs to create a VPN Gateway. Changing this forces a new resource to be created.
+        Azure routing preference lets you to choose how your traffic routes between Azure and the internet. You can choose to route traffic either via the Microsoft network (default value, Microsoft Network), or via the ISP network (public internet, set to Internet). More context of the configuration can be found in the Microsoft Docs to create a VPN Gateway. Defaults to Microsoft Network. Changing this forces a new resource to be created.
     scaleUnit : float, default is Undefined, optional
         The Scale Unit for this VPN Gateway. Defaults to 1.
     tags : {str:str}, default is Undefined, optional
@@ -797,6 +695,8 @@ schema NetworkAzureUpboundIoV1beta2VPNGatewayStatusAtProvider:
     bgpSettings?: NetworkAzureUpboundIoV1beta2VPNGatewayStatusAtProviderBgpSettings
 
     id?: str
+
+    ipConfiguration?: [NetworkAzureUpboundIoV1beta2VPNGatewayStatusAtProviderIPConfigurationItems0]
 
     location?: str
 
@@ -891,6 +791,28 @@ schema NetworkAzureUpboundIoV1beta2VPNGatewayStatusAtProviderBgpSettingsInstance
     ipConfigurationId?: str
 
     tunnelIps?: [str]
+
+
+schema NetworkAzureUpboundIoV1beta2VPNGatewayStatusAtProviderIPConfigurationItems0:
+    r"""
+    network azure upbound io v1beta2 v p n gateway status at provider IP configuration items0
+
+    Attributes
+    ----------
+    id : str, default is Undefined, optional
+        The identifier of the IP configuration for the VPN Gateway.
+    privateIpAddress : str, default is Undefined, optional
+        The private IP address of this IP configuration.
+    publicIpAddress : str, default is Undefined, optional
+        The public IP address of this IP configuration.
+    """
+
+
+    id?: str
+
+    privateIpAddress?: str
+
+    publicIpAddress?: str
 
 
 schema NetworkAzureUpboundIoV1beta2VPNGatewayStatusConditionsItems0:

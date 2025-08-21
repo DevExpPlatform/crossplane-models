@@ -66,8 +66,6 @@ schema AzureUpboundIoV1beta1SubscriptionSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : AzureUpboundIoV1beta1SubscriptionSpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : AzureUpboundIoV1beta1SubscriptionSpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : AzureUpboundIoV1beta1SubscriptionSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -82,8 +80,6 @@ schema AzureUpboundIoV1beta1SubscriptionSpec:
     managementPolicies?: [str] = ["*"]
 
     providerConfigRef?: AzureUpboundIoV1beta1SubscriptionSpecProviderConfigRef
-
-    publishConnectionDetailsTo?: AzureUpboundIoV1beta1SubscriptionSpecPublishConnectionDetailsTo
 
     writeConnectionSecretToRef?: AzureUpboundIoV1beta1SubscriptionSpecWriteConnectionSecretToRef
 
@@ -207,112 +203,12 @@ schema AzureUpboundIoV1beta1SubscriptionSpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
-schema AzureUpboundIoV1beta1SubscriptionSpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : AzureUpboundIoV1beta1SubscriptionSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : AzureUpboundIoV1beta1SubscriptionSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: AzureUpboundIoV1beta1SubscriptionSpecPublishConnectionDetailsToConfigRef
-
-    metadata?: AzureUpboundIoV1beta1SubscriptionSpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema AzureUpboundIoV1beta1SubscriptionSpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : AzureUpboundIoV1beta1SubscriptionSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: AzureUpboundIoV1beta1SubscriptionSpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema AzureUpboundIoV1beta1SubscriptionSpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema AzureUpboundIoV1beta1SubscriptionSpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema AzureUpboundIoV1beta1SubscriptionSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------

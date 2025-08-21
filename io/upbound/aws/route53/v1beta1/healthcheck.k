@@ -66,8 +66,6 @@ schema Route53AwsUpboundIoV1beta1HealthCheckSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : Route53AwsUpboundIoV1beta1HealthCheckSpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : Route53AwsUpboundIoV1beta1HealthCheckSpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : Route53AwsUpboundIoV1beta1HealthCheckSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -82,8 +80,6 @@ schema Route53AwsUpboundIoV1beta1HealthCheckSpec:
     managementPolicies?: [str] = ["*"]
 
     providerConfigRef?: Route53AwsUpboundIoV1beta1HealthCheckSpecProviderConfigRef
-
-    publishConnectionDetailsTo?: Route53AwsUpboundIoV1beta1HealthCheckSpecPublishConnectionDetailsTo
 
     writeConnectionSecretToRef?: Route53AwsUpboundIoV1beta1HealthCheckSpecWriteConnectionSecretToRef
 
@@ -109,7 +105,7 @@ schema Route53AwsUpboundIoV1beta1HealthCheckSpecForProvider:
     cloudwatchAlarmNameSelector : Route53AwsUpboundIoV1beta1HealthCheckSpecForProviderCloudwatchAlarmNameSelector, default is Undefined, optional
         cloudwatch alarm name selector
     cloudwatchAlarmRegion : str, default is Undefined, optional
-        The CloudWatchRegion that the CloudWatch alarm was created in.
+        The region that the CloudWatch alarm was created in.
     disabled : bool, default is Undefined, optional
         A boolean value that stops Route 53 from performing health checks. When set to true, Route 53 will do the following depending on the type of health check:
     enableSni : bool, default is Undefined, optional
@@ -131,8 +127,6 @@ schema Route53AwsUpboundIoV1beta1HealthCheckSpecForProvider:
     referenceName : str, default is Undefined, optional
         This is a reference name used in Caller Reference
         (helpful for identifying single health_check set amongst others)
-    region : str, default is Undefined, required
-        Region is the region you'd like your resource to be created in.
     regions : [str], default is Undefined, optional
         A list of AWS regions that you want Amazon Route 53 health checkers to check the specified endpoint from.
     requestInterval : float, default is Undefined, optional
@@ -145,6 +139,8 @@ schema Route53AwsUpboundIoV1beta1HealthCheckSpecForProvider:
         String searched in the first 5120 bytes of the response body for check to be considered healthy. Only valid with HTTP_STR_MATCH and HTTPS_STR_MATCH.
     tags : {str:str}, default is Undefined, optional
         Key-value map of resource tags.
+    triggers : {str:str}, default is Undefined, optional
+        Map of arbitrary keys and values that, when changed, will trigger an in-place update of the CloudWatch alarm arguments. Use this argument to synchronize the health check when an alarm is changed. See example above.
     $type : str, default is Undefined, optional
         The protocol to use when performing health checks. Valid values are HTTP, HTTPS, HTTP_STR_MATCH, HTTPS_STR_MATCH, TCP, CALCULATED, CLOUDWATCH_METRIC and RECOVERY_CONTROL.
     """
@@ -186,8 +182,6 @@ schema Route53AwsUpboundIoV1beta1HealthCheckSpecForProvider:
 
     referenceName?: str
 
-    region: str
-
     regions?: [str]
 
     requestInterval?: float
@@ -199,6 +193,8 @@ schema Route53AwsUpboundIoV1beta1HealthCheckSpecForProvider:
     searchString?: str
 
     tags?: {str:str}
+
+    triggers?: {str:str}
 
     $type?: str
 
@@ -411,7 +407,7 @@ schema Route53AwsUpboundIoV1beta1HealthCheckSpecInitProvider:
     cloudwatchAlarmNameSelector : Route53AwsUpboundIoV1beta1HealthCheckSpecInitProviderCloudwatchAlarmNameSelector, default is Undefined, optional
         cloudwatch alarm name selector
     cloudwatchAlarmRegion : str, default is Undefined, optional
-        The CloudWatchRegion that the CloudWatch alarm was created in.
+        The region that the CloudWatch alarm was created in.
     disabled : bool, default is Undefined, optional
         A boolean value that stops Route 53 from performing health checks. When set to true, Route 53 will do the following depending on the type of health check:
     enableSni : bool, default is Undefined, optional
@@ -445,6 +441,8 @@ schema Route53AwsUpboundIoV1beta1HealthCheckSpecInitProvider:
         String searched in the first 5120 bytes of the response body for check to be considered healthy. Only valid with HTTP_STR_MATCH and HTTPS_STR_MATCH.
     tags : {str:str}, default is Undefined, optional
         Key-value map of resource tags.
+    triggers : {str:str}, default is Undefined, optional
+        Map of arbitrary keys and values that, when changed, will trigger an in-place update of the CloudWatch alarm arguments. Use this argument to synchronize the health check when an alarm is changed. See example above.
     $type : str, default is Undefined, optional
         The protocol to use when performing health checks. Valid values are HTTP, HTTPS, HTTP_STR_MATCH, HTTPS_STR_MATCH, TCP, CALCULATED, CLOUDWATCH_METRIC and RECOVERY_CONTROL.
     """
@@ -497,6 +495,8 @@ schema Route53AwsUpboundIoV1beta1HealthCheckSpecInitProvider:
     searchString?: str
 
     tags?: {str:str}
+
+    triggers?: {str:str}
 
     $type?: str
 
@@ -723,112 +723,12 @@ schema Route53AwsUpboundIoV1beta1HealthCheckSpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
-schema Route53AwsUpboundIoV1beta1HealthCheckSpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : Route53AwsUpboundIoV1beta1HealthCheckSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : Route53AwsUpboundIoV1beta1HealthCheckSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: Route53AwsUpboundIoV1beta1HealthCheckSpecPublishConnectionDetailsToConfigRef
-
-    metadata?: Route53AwsUpboundIoV1beta1HealthCheckSpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema Route53AwsUpboundIoV1beta1HealthCheckSpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : Route53AwsUpboundIoV1beta1HealthCheckSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: Route53AwsUpboundIoV1beta1HealthCheckSpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema Route53AwsUpboundIoV1beta1HealthCheckSpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema Route53AwsUpboundIoV1beta1HealthCheckSpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema Route53AwsUpboundIoV1beta1HealthCheckSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------
@@ -883,7 +783,7 @@ schema Route53AwsUpboundIoV1beta1HealthCheckStatusAtProvider:
     cloudwatchAlarmName : str, default is Undefined, optional
         The name of the CloudWatch alarm.
     cloudwatchAlarmRegion : str, default is Undefined, optional
-        The CloudWatchRegion that the CloudWatch alarm was created in.
+        The region that the CloudWatch alarm was created in.
     disabled : bool, default is Undefined, optional
         A boolean value that stops Route 53 from performing health checks. When set to true, Route 53 will do the following depending on the type of health check:
     enableSni : bool, default is Undefined, optional
@@ -921,6 +821,8 @@ schema Route53AwsUpboundIoV1beta1HealthCheckStatusAtProvider:
         Key-value map of resource tags.
     tagsAll : {str:str}, default is Undefined, optional
         A map of tags assigned to the resource, including those inherited from the provider default_tags configuration block.
+    triggers : {str:str}, default is Undefined, optional
+        Map of arbitrary keys and values that, when changed, will trigger an in-place update of the CloudWatch alarm arguments. Use this argument to synchronize the health check when an alarm is changed. See example above.
     $type : str, default is Undefined, optional
         The protocol to use when performing health checks. Valid values are HTTP, HTTPS, HTTP_STR_MATCH, HTTPS_STR_MATCH, TCP, CALCULATED, CLOUDWATCH_METRIC and RECOVERY_CONTROL.
     """
@@ -971,6 +873,8 @@ schema Route53AwsUpboundIoV1beta1HealthCheckStatusAtProvider:
     tags?: {str:str}
 
     tagsAll?: {str:str}
+
+    triggers?: {str:str}
 
     $type?: str
 

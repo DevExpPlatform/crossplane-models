@@ -66,8 +66,6 @@ schema NetworkAzureUpboundIoV1beta1VirtualHubSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : NetworkAzureUpboundIoV1beta1VirtualHubSpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : NetworkAzureUpboundIoV1beta1VirtualHubSpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : NetworkAzureUpboundIoV1beta1VirtualHubSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -82,8 +80,6 @@ schema NetworkAzureUpboundIoV1beta1VirtualHubSpec:
     managementPolicies?: [str] = ["*"]
 
     providerConfigRef?: NetworkAzureUpboundIoV1beta1VirtualHubSpecProviderConfigRef
-
-    publishConnectionDetailsTo?: NetworkAzureUpboundIoV1beta1VirtualHubSpecPublishConnectionDetailsTo
 
     writeConnectionSecretToRef?: NetworkAzureUpboundIoV1beta1VirtualHubSpecWriteConnectionSecretToRef
 
@@ -113,7 +109,7 @@ schema NetworkAzureUpboundIoV1beta1VirtualHubSpecForProvider:
     tags : {str:str}, default is Undefined, optional
         A mapping of tags to assign to the Virtual Hub.
     virtualRouterAutoScaleMinCapacity : float, default is Undefined, optional
-        Minimum instance capacity for the scaling configuration of the Virtual Hub Router.
+        Minimum instance capacity for the scaling configuration of the Virtual Hub Router. Defaults to 2.
     virtualWanId : str, default is Undefined, optional
         The ID of a Virtual WAN within which the Virtual Hub should be created. Changing this forces a new resource to be created.
     virtualWanIdRef : NetworkAzureUpboundIoV1beta1VirtualHubSpecForProviderVirtualWanIDRef, default is Undefined, optional
@@ -374,7 +370,7 @@ schema NetworkAzureUpboundIoV1beta1VirtualHubSpecInitProvider:
     tags : {str:str}, default is Undefined, optional
         A mapping of tags to assign to the Virtual Hub.
     virtualRouterAutoScaleMinCapacity : float, default is Undefined, optional
-        Minimum instance capacity for the scaling configuration of the Virtual Hub Router.
+        Minimum instance capacity for the scaling configuration of the Virtual Hub Router. Defaults to 2.
     virtualWanId : str, default is Undefined, optional
         The ID of a Virtual WAN within which the Virtual Hub should be created. Changing this forces a new resource to be created.
     virtualWanIdRef : NetworkAzureUpboundIoV1beta1VirtualHubSpecInitProviderVirtualWanIDRef, default is Undefined, optional
@@ -556,112 +552,12 @@ schema NetworkAzureUpboundIoV1beta1VirtualHubSpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
-schema NetworkAzureUpboundIoV1beta1VirtualHubSpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : NetworkAzureUpboundIoV1beta1VirtualHubSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : NetworkAzureUpboundIoV1beta1VirtualHubSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: NetworkAzureUpboundIoV1beta1VirtualHubSpecPublishConnectionDetailsToConfigRef
-
-    metadata?: NetworkAzureUpboundIoV1beta1VirtualHubSpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema NetworkAzureUpboundIoV1beta1VirtualHubSpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : NetworkAzureUpboundIoV1beta1VirtualHubSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: NetworkAzureUpboundIoV1beta1VirtualHubSpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema NetworkAzureUpboundIoV1beta1VirtualHubSpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema NetworkAzureUpboundIoV1beta1VirtualHubSpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema NetworkAzureUpboundIoV1beta1VirtualHubSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------
@@ -728,7 +624,7 @@ schema NetworkAzureUpboundIoV1beta1VirtualHubStatusAtProvider:
     virtualRouterAsn : float, default is Undefined, optional
         The Autonomous System Number of the Virtual Hub BGP router.
     virtualRouterAutoScaleMinCapacity : float, default is Undefined, optional
-        Minimum instance capacity for the scaling configuration of the Virtual Hub Router.
+        Minimum instance capacity for the scaling configuration of the Virtual Hub Router. Defaults to 2.
     virtualRouterIps : [str], default is Undefined, optional
         The IP addresses of the Virtual Hub BGP router.
     virtualWanId : str, default is Undefined, optional

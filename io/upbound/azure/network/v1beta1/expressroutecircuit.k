@@ -66,8 +66,6 @@ schema NetworkAzureUpboundIoV1beta1ExpressRouteCircuitSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : NetworkAzureUpboundIoV1beta1ExpressRouteCircuitSpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : NetworkAzureUpboundIoV1beta1ExpressRouteCircuitSpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : NetworkAzureUpboundIoV1beta1ExpressRouteCircuitSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -82,8 +80,6 @@ schema NetworkAzureUpboundIoV1beta1ExpressRouteCircuitSpec:
     managementPolicies?: [str] = ["*"]
 
     providerConfigRef?: NetworkAzureUpboundIoV1beta1ExpressRouteCircuitSpecProviderConfigRef
-
-    publishConnectionDetailsTo?: NetworkAzureUpboundIoV1beta1ExpressRouteCircuitSpecPublishConnectionDetailsTo
 
     writeConnectionSecretToRef?: NetworkAzureUpboundIoV1beta1ExpressRouteCircuitSpecWriteConnectionSecretToRef
 
@@ -108,6 +104,8 @@ schema NetworkAzureUpboundIoV1beta1ExpressRouteCircuitSpecForProvider:
         Specifies the supported Azure location where the resource exists. Changing this forces a new resource to be created.
     peeringLocation : str, default is Undefined, optional
         The name of the peering location and not the Azure resource location. Changing this forces a new resource to be created.
+    rateLimitingEnabled : bool, default is Undefined, optional
+        Enable rate limiting for the circuit. Only works with ExpressRoute Ports. Defaults to false.
     resourceGroupName : str, default is Undefined, optional
         The name of the resource group in which to create the ExpressRoute circuit. Changing this forces a new resource to be created.
     resourceGroupNameRef : NetworkAzureUpboundIoV1beta1ExpressRouteCircuitSpecForProviderResourceGroupNameRef, default is Undefined, optional
@@ -136,6 +134,8 @@ schema NetworkAzureUpboundIoV1beta1ExpressRouteCircuitSpecForProvider:
     location?: str
 
     peeringLocation?: str
+
+    rateLimitingEnabled?: bool
 
     resourceGroupName?: str
 
@@ -296,6 +296,8 @@ schema NetworkAzureUpboundIoV1beta1ExpressRouteCircuitSpecInitProvider:
     ----------
     allowClassicOperations : bool, default is Undefined, optional
         Allow the circuit to interact with classic (RDFE) resources. Defaults to false.
+    authorizationKeySecretRef : NetworkAzureUpboundIoV1beta1ExpressRouteCircuitSpecInitProviderAuthorizationKeySecretRef, default is Undefined, optional
+        authorization key secret ref
     bandwidthInGbps : float, default is Undefined, optional
         The bandwidth in Gbps of the circuit being created on the Express Route Port.
     bandwidthInMbps : float, default is Undefined, optional
@@ -306,6 +308,8 @@ schema NetworkAzureUpboundIoV1beta1ExpressRouteCircuitSpecInitProvider:
         Specifies the supported Azure location where the resource exists. Changing this forces a new resource to be created.
     peeringLocation : str, default is Undefined, optional
         The name of the peering location and not the Azure resource location. Changing this forces a new resource to be created.
+    rateLimitingEnabled : bool, default is Undefined, optional
+        Enable rate limiting for the circuit. Only works with ExpressRoute Ports. Defaults to false.
     serviceProviderName : str, default is Undefined, optional
         The name of the ExpressRoute Service Provider. Changing this forces a new resource to be created.
     sku : [NetworkAzureUpboundIoV1beta1ExpressRouteCircuitSpecInitProviderSkuItems0], default is Undefined, optional
@@ -317,6 +321,8 @@ schema NetworkAzureUpboundIoV1beta1ExpressRouteCircuitSpecInitProvider:
 
     allowClassicOperations?: bool
 
+    authorizationKeySecretRef?: NetworkAzureUpboundIoV1beta1ExpressRouteCircuitSpecInitProviderAuthorizationKeySecretRef
+
     bandwidthInGbps?: float
 
     bandwidthInMbps?: float
@@ -327,11 +333,35 @@ schema NetworkAzureUpboundIoV1beta1ExpressRouteCircuitSpecInitProvider:
 
     peeringLocation?: str
 
+    rateLimitingEnabled?: bool
+
     serviceProviderName?: str
 
     sku?: [NetworkAzureUpboundIoV1beta1ExpressRouteCircuitSpecInitProviderSkuItems0]
 
     tags?: {str:str}
+
+
+schema NetworkAzureUpboundIoV1beta1ExpressRouteCircuitSpecInitProviderAuthorizationKeySecretRef:
+    r"""
+    The authorization key. This can be used to set up an ExpressRoute Circuit with an ExpressRoute Port from another subscription.
+
+    Attributes
+    ----------
+    key : str, default is Undefined, required
+        The key to select.
+    name : str, default is Undefined, required
+        Name of the secret.
+    namespace : str, default is Undefined, required
+        Namespace of the secret.
+    """
+
+
+    key: str
+
+    name: str
+
+    namespace: str
 
 
 schema NetworkAzureUpboundIoV1beta1ExpressRouteCircuitSpecInitProviderSkuItems0:
@@ -396,112 +426,12 @@ schema NetworkAzureUpboundIoV1beta1ExpressRouteCircuitSpecProviderConfigRefPolic
     resolve?: "Always" | "IfNotPresent"
 
 
-schema NetworkAzureUpboundIoV1beta1ExpressRouteCircuitSpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : NetworkAzureUpboundIoV1beta1ExpressRouteCircuitSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : NetworkAzureUpboundIoV1beta1ExpressRouteCircuitSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: NetworkAzureUpboundIoV1beta1ExpressRouteCircuitSpecPublishConnectionDetailsToConfigRef
-
-    metadata?: NetworkAzureUpboundIoV1beta1ExpressRouteCircuitSpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema NetworkAzureUpboundIoV1beta1ExpressRouteCircuitSpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : NetworkAzureUpboundIoV1beta1ExpressRouteCircuitSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: NetworkAzureUpboundIoV1beta1ExpressRouteCircuitSpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema NetworkAzureUpboundIoV1beta1ExpressRouteCircuitSpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema NetworkAzureUpboundIoV1beta1ExpressRouteCircuitSpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema NetworkAzureUpboundIoV1beta1ExpressRouteCircuitSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------
@@ -561,6 +491,8 @@ schema NetworkAzureUpboundIoV1beta1ExpressRouteCircuitStatusAtProvider:
         Specifies the supported Azure location where the resource exists. Changing this forces a new resource to be created.
     peeringLocation : str, default is Undefined, optional
         The name of the peering location and not the Azure resource location. Changing this forces a new resource to be created.
+    rateLimitingEnabled : bool, default is Undefined, optional
+        Enable rate limiting for the circuit. Only works with ExpressRoute Ports. Defaults to false.
     resourceGroupName : str, default is Undefined, optional
         The name of the resource group in which to create the ExpressRoute circuit. Changing this forces a new resource to be created.
     serviceProviderName : str, default is Undefined, optional
@@ -587,6 +519,8 @@ schema NetworkAzureUpboundIoV1beta1ExpressRouteCircuitStatusAtProvider:
     location?: str
 
     peeringLocation?: str
+
+    rateLimitingEnabled?: bool
 
     resourceGroupName?: str
 

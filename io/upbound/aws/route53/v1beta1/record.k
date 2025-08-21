@@ -66,8 +66,6 @@ schema Route53AwsUpboundIoV1beta1RecordSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : Route53AwsUpboundIoV1beta1RecordSpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : Route53AwsUpboundIoV1beta1RecordSpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : Route53AwsUpboundIoV1beta1RecordSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -82,8 +80,6 @@ schema Route53AwsUpboundIoV1beta1RecordSpec:
     managementPolicies?: [str] = ["*"]
 
     providerConfigRef?: Route53AwsUpboundIoV1beta1RecordSpecProviderConfigRef
-
-    publishConnectionDetailsTo?: Route53AwsUpboundIoV1beta1RecordSpecPublishConnectionDetailsTo
 
     writeConnectionSecretToRef?: Route53AwsUpboundIoV1beta1RecordSpecWriteConnectionSecretToRef
 
@@ -125,15 +121,12 @@ schema Route53AwsUpboundIoV1beta1RecordSpecForProvider:
         References to EIP in ec2 to populate records.
     recordsSelector : Route53AwsUpboundIoV1beta1RecordSpecForProviderRecordsSelector, default is Undefined, optional
         records selector
-    region : str, default is Undefined, required
-        An AWS region from which to measure latency. See http://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-policy.html#routing-policy-latency
-        Region is the region you'd like your resource to be created in.
     setIdentifier : str, default is Undefined, optional
         Unique identifier to differentiate records with routing policies from one another. Required if using cidr_routing_policy, failover_routing_policy, geolocation_routing_policy,geoproximity_routing_policy, latency_routing_policy, multivalue_answer_routing_policy, or weighted_routing_policy.
     ttl : float, default is Undefined, optional
         The TTL of the record.
     $type : str, default is Undefined, optional
-        The record type. Valid values are A, AAAA, CAA, CNAME, DS, MX, NAPTR, NS, PTR, SOA, SPF, SRV and TXT.
+        The record type. Valid values are A, AAAA, CAA, CNAME, DS, HTTPS, MX, NAPTR, NS, PTR, SOA, SPF, SRV, SSHFP, SVCB, TLSA, and TXT.
     weightedRoutingPolicy : [Route53AwsUpboundIoV1beta1RecordSpecForProviderWeightedRoutingPolicyItems0], default is Undefined, optional
         A block indicating a weighted routing policy. Conflicts with any other routing policy. Documented below.
     zoneId : str, default is Undefined, optional
@@ -174,8 +167,6 @@ schema Route53AwsUpboundIoV1beta1RecordSpecForProvider:
     recordsRefs?: [Route53AwsUpboundIoV1beta1RecordSpecForProviderRecordsRefsItems0]
 
     recordsSelector?: Route53AwsUpboundIoV1beta1RecordSpecForProviderRecordsSelector
-
-    region: str
 
     setIdentifier?: str
 
@@ -239,7 +230,7 @@ schema Route53AwsUpboundIoV1beta1RecordSpecForProviderFailoverRoutingPolicyItems
     Attributes
     ----------
     $type : str, default is Undefined, optional
-        The record type. Valid values are A, AAAA, CAA, CNAME, DS, MX, NAPTR, NS, PTR, SOA, SPF, SRV and TXT.
+        The record type. Valid values are A, AAAA, CAA, CNAME, DS, HTTPS, MX, NAPTR, NS, PTR, SOA, SPF, SRV, SSHFP, SVCB, TLSA, and TXT.
     """
 
 
@@ -658,7 +649,7 @@ schema Route53AwsUpboundIoV1beta1RecordSpecInitProvider:
     ttl : float, default is Undefined, optional
         The TTL of the record.
     $type : str, default is Undefined, optional
-        The record type. Valid values are A, AAAA, CAA, CNAME, DS, MX, NAPTR, NS, PTR, SOA, SPF, SRV and TXT.
+        The record type. Valid values are A, AAAA, CAA, CNAME, DS, HTTPS, MX, NAPTR, NS, PTR, SOA, SPF, SRV, SSHFP, SVCB, TLSA, and TXT.
     weightedRoutingPolicy : [Route53AwsUpboundIoV1beta1RecordSpecInitProviderWeightedRoutingPolicyItems0], default is Undefined, optional
         A block indicating a weighted routing policy. Conflicts with any other routing policy. Documented below.
     zoneId : str, default is Undefined, optional
@@ -762,7 +753,7 @@ schema Route53AwsUpboundIoV1beta1RecordSpecInitProviderFailoverRoutingPolicyItem
     Attributes
     ----------
     $type : str, default is Undefined, optional
-        The record type. Valid values are A, AAAA, CAA, CNAME, DS, MX, NAPTR, NS, PTR, SOA, SPF, SRV and TXT.
+        The record type. Valid values are A, AAAA, CAA, CNAME, DS, HTTPS, MX, NAPTR, NS, PTR, SOA, SPF, SRV, SSHFP, SVCB, TLSA, and TXT.
     """
 
 
@@ -1160,112 +1151,12 @@ schema Route53AwsUpboundIoV1beta1RecordSpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
-schema Route53AwsUpboundIoV1beta1RecordSpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : Route53AwsUpboundIoV1beta1RecordSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : Route53AwsUpboundIoV1beta1RecordSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: Route53AwsUpboundIoV1beta1RecordSpecPublishConnectionDetailsToConfigRef
-
-    metadata?: Route53AwsUpboundIoV1beta1RecordSpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema Route53AwsUpboundIoV1beta1RecordSpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : Route53AwsUpboundIoV1beta1RecordSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: Route53AwsUpboundIoV1beta1RecordSpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema Route53AwsUpboundIoV1beta1RecordSpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema Route53AwsUpboundIoV1beta1RecordSpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema Route53AwsUpboundIoV1beta1RecordSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------
@@ -1343,7 +1234,7 @@ schema Route53AwsUpboundIoV1beta1RecordStatusAtProvider:
     ttl : float, default is Undefined, optional
         The TTL of the record.
     $type : str, default is Undefined, optional
-        The record type. Valid values are A, AAAA, CAA, CNAME, DS, MX, NAPTR, NS, PTR, SOA, SPF, SRV and TXT.
+        The record type. Valid values are A, AAAA, CAA, CNAME, DS, HTTPS, MX, NAPTR, NS, PTR, SOA, SPF, SRV, SSHFP, SVCB, TLSA, and TXT.
     weightedRoutingPolicy : [Route53AwsUpboundIoV1beta1RecordStatusAtProviderWeightedRoutingPolicyItems0], default is Undefined, optional
         A block indicating a weighted routing policy. Conflicts with any other routing policy. Documented below.
     zoneId : str, default is Undefined, optional
@@ -1435,7 +1326,7 @@ schema Route53AwsUpboundIoV1beta1RecordStatusAtProviderFailoverRoutingPolicyItem
     Attributes
     ----------
     $type : str, default is Undefined, optional
-        The record type. Valid values are A, AAAA, CAA, CNAME, DS, MX, NAPTR, NS, PTR, SOA, SPF, SRV and TXT.
+        The record type. Valid values are A, AAAA, CAA, CNAME, DS, HTTPS, MX, NAPTR, NS, PTR, SOA, SPF, SRV, SSHFP, SVCB, TLSA, and TXT.
     """
 
 

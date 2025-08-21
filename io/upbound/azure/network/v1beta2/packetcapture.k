@@ -7,7 +7,7 @@ import k8s.apimachinery.pkg.apis.meta.v1
 
 schema PacketCapture:
     r"""
-    PacketCapture is the Schema for the PacketCaptures API. Configures Packet Capturing against a Virtual Machine using a Network Watcher.
+    PacketCapture is the Schema for the PacketCaptures API. <no value>
 
     Attributes
     ----------
@@ -66,8 +66,6 @@ schema NetworkAzureUpboundIoV1beta2PacketCaptureSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : NetworkAzureUpboundIoV1beta2PacketCaptureSpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : NetworkAzureUpboundIoV1beta2PacketCaptureSpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : NetworkAzureUpboundIoV1beta2PacketCaptureSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -83,8 +81,6 @@ schema NetworkAzureUpboundIoV1beta2PacketCaptureSpec:
 
     providerConfigRef?: NetworkAzureUpboundIoV1beta2PacketCaptureSpecProviderConfigRef
 
-    publishConnectionDetailsTo?: NetworkAzureUpboundIoV1beta2PacketCaptureSpecPublishConnectionDetailsTo
-
     writeConnectionSecretToRef?: NetworkAzureUpboundIoV1beta2PacketCaptureSpecWriteConnectionSecretToRef
 
 
@@ -95,21 +91,21 @@ schema NetworkAzureUpboundIoV1beta2PacketCaptureSpecForProvider:
     Attributes
     ----------
     $filter : [NetworkAzureUpboundIoV1beta2PacketCaptureSpecForProviderFilterItems0], default is Undefined, optional
-        One or more filter blocks as defined below. Changing this forces a new resource to be created.
+        filter
     maximumBytesPerPacket : float, default is Undefined, optional
-        The number of bytes captured per packet. The remaining bytes are truncated. Defaults to 0 (Entire Packet Captured). Changing this forces a new resource to be created.
+        maximum bytes per packet
     maximumBytesPerSession : float, default is Undefined, optional
-        Maximum size of the capture in Bytes. Defaults to 1073741824 (1GB). Changing this forces a new resource to be created.
+        maximum bytes per session
     maximumCaptureDuration : float, default is Undefined, optional
-        The maximum duration of the capture session in seconds. Defaults to 18000 (5 hours). Changing this forces a new resource to be created.
+        maximum capture duration
     networkWatcherName : str, default is Undefined, optional
-        The name of the Network Watcher. Changing this forces a new resource to be created.
+        network watcher name
     networkWatcherNameRef : NetworkAzureUpboundIoV1beta2PacketCaptureSpecForProviderNetworkWatcherNameRef, default is Undefined, optional
         network watcher name ref
     networkWatcherNameSelector : NetworkAzureUpboundIoV1beta2PacketCaptureSpecForProviderNetworkWatcherNameSelector, default is Undefined, optional
         network watcher name selector
     resourceGroupName : str, default is Undefined, optional
-        The name of the resource group in which the Network Watcher exists. Changing this forces a new resource to be created.
+        resource group name
     resourceGroupNameRef : NetworkAzureUpboundIoV1beta2PacketCaptureSpecForProviderResourceGroupNameRef, default is Undefined, optional
         resource group name ref
     resourceGroupNameSelector : NetworkAzureUpboundIoV1beta2PacketCaptureSpecForProviderResourceGroupNameSelector, default is Undefined, optional
@@ -117,7 +113,7 @@ schema NetworkAzureUpboundIoV1beta2PacketCaptureSpecForProvider:
     storageLocation : NetworkAzureUpboundIoV1beta2PacketCaptureSpecForProviderStorageLocation, default is Undefined, optional
         storage location
     targetResourceId : str, default is Undefined, optional
-        The ID of the Resource to capture packets from. Changing this forces a new resource to be created.
+        target resource Id
     """
 
 
@@ -153,15 +149,15 @@ schema NetworkAzureUpboundIoV1beta2PacketCaptureSpecForProviderFilterItems0:
     Attributes
     ----------
     localIpAddress : str, default is Undefined, optional
-        The local IP Address to be filtered on. Notation: "127.0.0.1" for single address entry. "127.0.0.1-127.0.0.255" for range. "127.0.0.1;127.0.0.5" for multiple entries. Multiple ranges not currently supported. Mixing ranges with multiple entries not currently supported. Changing this forces a new resource to be created.
+        local Ip address
     localPort : str, default is Undefined, optional
-        The local port to be filtered on. Notation: "80" for single port entry."80-85" for range. "80;443;" for multiple entries. Multiple ranges not currently supported. Mixing ranges with multiple entries not currently supported. Changing this forces a new resource to be created.
+        local port
     $protocol : str, default is Undefined, optional
-        The Protocol to be filtered on. Possible values include Any, TCP and UDP. Changing this forces a new resource to be created.
+        protocol
     remoteIpAddress : str, default is Undefined, optional
-        The remote IP Address to be filtered on. Notation: "127.0.0.1" for single address entry. "127.0.0.1-127.0.0.255" for range. "127.0.0.1;127.0.0.5;" for multiple entries. Multiple ranges not currently supported. Mixing ranges with multiple entries not currently supported.. Changing this forces a new resource to be created.
+        remote Ip address
     remotePort : str, default is Undefined, optional
-        The remote port to be filtered on. Notation: "80" for single port entry."80-85" for range. "80;443;" for multiple entries. Multiple ranges not currently supported. Mixing ranges with multiple entries not currently supported. Changing this forces a new resource to be created.
+        remote port
     """
 
 
@@ -356,14 +352,14 @@ schema NetworkAzureUpboundIoV1beta2PacketCaptureSpecForProviderResourceGroupName
 
 schema NetworkAzureUpboundIoV1beta2PacketCaptureSpecForProviderStorageLocation:
     r"""
-    A storage_location block as defined below. Changing this forces a new resource to be created.
+    network azure upbound io v1beta2 packet capture spec for provider storage location
 
     Attributes
     ----------
     filePath : str, default is Undefined, optional
-        A valid local path on the targeting VM. Must include the name of the capture file (*.cap). For Linux virtual machine it must start with /var/captures.
+        file path
     storageAccountId : str, default is Undefined, optional
-        The ID of the storage account to save the packet capture session
+        storage account Id
     storageAccountIdRef : NetworkAzureUpboundIoV1beta2PacketCaptureSpecForProviderStorageLocationStorageAccountIDRef, default is Undefined, optional
         storage account Id ref
     storageAccountIdSelector : NetworkAzureUpboundIoV1beta2PacketCaptureSpecForProviderStorageLocationStorageAccountIDSelector, default is Undefined, optional
@@ -485,17 +481,17 @@ schema NetworkAzureUpboundIoV1beta2PacketCaptureSpecInitProvider:
     Attributes
     ----------
     $filter : [NetworkAzureUpboundIoV1beta2PacketCaptureSpecInitProviderFilterItems0], default is Undefined, optional
-        One or more filter blocks as defined below. Changing this forces a new resource to be created.
+        filter
     maximumBytesPerPacket : float, default is Undefined, optional
-        The number of bytes captured per packet. The remaining bytes are truncated. Defaults to 0 (Entire Packet Captured). Changing this forces a new resource to be created.
+        maximum bytes per packet
     maximumBytesPerSession : float, default is Undefined, optional
-        Maximum size of the capture in Bytes. Defaults to 1073741824 (1GB). Changing this forces a new resource to be created.
+        maximum bytes per session
     maximumCaptureDuration : float, default is Undefined, optional
-        The maximum duration of the capture session in seconds. Defaults to 18000 (5 hours). Changing this forces a new resource to be created.
+        maximum capture duration
     storageLocation : NetworkAzureUpboundIoV1beta2PacketCaptureSpecInitProviderStorageLocation, default is Undefined, optional
         storage location
     targetResourceId : str, default is Undefined, optional
-        The ID of the Resource to capture packets from. Changing this forces a new resource to be created.
+        target resource Id
     """
 
 
@@ -519,15 +515,15 @@ schema NetworkAzureUpboundIoV1beta2PacketCaptureSpecInitProviderFilterItems0:
     Attributes
     ----------
     localIpAddress : str, default is Undefined, optional
-        The local IP Address to be filtered on. Notation: "127.0.0.1" for single address entry. "127.0.0.1-127.0.0.255" for range. "127.0.0.1;127.0.0.5" for multiple entries. Multiple ranges not currently supported. Mixing ranges with multiple entries not currently supported. Changing this forces a new resource to be created.
+        local Ip address
     localPort : str, default is Undefined, optional
-        The local port to be filtered on. Notation: "80" for single port entry."80-85" for range. "80;443;" for multiple entries. Multiple ranges not currently supported. Mixing ranges with multiple entries not currently supported. Changing this forces a new resource to be created.
+        local port
     $protocol : str, default is Undefined, optional
-        The Protocol to be filtered on. Possible values include Any, TCP and UDP. Changing this forces a new resource to be created.
+        protocol
     remoteIpAddress : str, default is Undefined, optional
-        The remote IP Address to be filtered on. Notation: "127.0.0.1" for single address entry. "127.0.0.1-127.0.0.255" for range. "127.0.0.1;127.0.0.5;" for multiple entries. Multiple ranges not currently supported. Mixing ranges with multiple entries not currently supported.. Changing this forces a new resource to be created.
+        remote Ip address
     remotePort : str, default is Undefined, optional
-        The remote port to be filtered on. Notation: "80" for single port entry."80-85" for range. "80;443;" for multiple entries. Multiple ranges not currently supported. Mixing ranges with multiple entries not currently supported. Changing this forces a new resource to be created.
+        remote port
     """
 
 
@@ -544,14 +540,14 @@ schema NetworkAzureUpboundIoV1beta2PacketCaptureSpecInitProviderFilterItems0:
 
 schema NetworkAzureUpboundIoV1beta2PacketCaptureSpecInitProviderStorageLocation:
     r"""
-    A storage_location block as defined below. Changing this forces a new resource to be created.
+    network azure upbound io v1beta2 packet capture spec init provider storage location
 
     Attributes
     ----------
     filePath : str, default is Undefined, optional
-        A valid local path on the targeting VM. Must include the name of the capture file (*.cap). For Linux virtual machine it must start with /var/captures.
+        file path
     storageAccountId : str, default is Undefined, optional
-        The ID of the storage account to save the packet capture session
+        storage account Id
     storageAccountIdRef : NetworkAzureUpboundIoV1beta2PacketCaptureSpecInitProviderStorageLocationStorageAccountIDRef, default is Undefined, optional
         storage account Id ref
     storageAccountIdSelector : NetworkAzureUpboundIoV1beta2PacketCaptureSpecInitProviderStorageLocationStorageAccountIDSelector, default is Undefined, optional
@@ -701,112 +697,12 @@ schema NetworkAzureUpboundIoV1beta2PacketCaptureSpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
-schema NetworkAzureUpboundIoV1beta2PacketCaptureSpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : NetworkAzureUpboundIoV1beta2PacketCaptureSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : NetworkAzureUpboundIoV1beta2PacketCaptureSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: NetworkAzureUpboundIoV1beta2PacketCaptureSpecPublishConnectionDetailsToConfigRef
-
-    metadata?: NetworkAzureUpboundIoV1beta2PacketCaptureSpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema NetworkAzureUpboundIoV1beta2PacketCaptureSpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : NetworkAzureUpboundIoV1beta2PacketCaptureSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: NetworkAzureUpboundIoV1beta2PacketCaptureSpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema NetworkAzureUpboundIoV1beta2PacketCaptureSpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema NetworkAzureUpboundIoV1beta2PacketCaptureSpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema NetworkAzureUpboundIoV1beta2PacketCaptureSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------
@@ -853,23 +749,23 @@ schema NetworkAzureUpboundIoV1beta2PacketCaptureStatusAtProvider:
     Attributes
     ----------
     $filter : [NetworkAzureUpboundIoV1beta2PacketCaptureStatusAtProviderFilterItems0], default is Undefined, optional
-        One or more filter blocks as defined below. Changing this forces a new resource to be created.
+        filter
     id : str, default is Undefined, optional
-        The Packet Capture ID.
+        id
     maximumBytesPerPacket : float, default is Undefined, optional
-        The number of bytes captured per packet. The remaining bytes are truncated. Defaults to 0 (Entire Packet Captured). Changing this forces a new resource to be created.
+        maximum bytes per packet
     maximumBytesPerSession : float, default is Undefined, optional
-        Maximum size of the capture in Bytes. Defaults to 1073741824 (1GB). Changing this forces a new resource to be created.
+        maximum bytes per session
     maximumCaptureDuration : float, default is Undefined, optional
-        The maximum duration of the capture session in seconds. Defaults to 18000 (5 hours). Changing this forces a new resource to be created.
+        maximum capture duration
     networkWatcherName : str, default is Undefined, optional
-        The name of the Network Watcher. Changing this forces a new resource to be created.
+        network watcher name
     resourceGroupName : str, default is Undefined, optional
-        The name of the resource group in which the Network Watcher exists. Changing this forces a new resource to be created.
+        resource group name
     storageLocation : NetworkAzureUpboundIoV1beta2PacketCaptureStatusAtProviderStorageLocation, default is Undefined, optional
         storage location
     targetResourceId : str, default is Undefined, optional
-        The ID of the Resource to capture packets from. Changing this forces a new resource to be created.
+        target resource Id
     """
 
 
@@ -899,15 +795,15 @@ schema NetworkAzureUpboundIoV1beta2PacketCaptureStatusAtProviderFilterItems0:
     Attributes
     ----------
     localIpAddress : str, default is Undefined, optional
-        The local IP Address to be filtered on. Notation: "127.0.0.1" for single address entry. "127.0.0.1-127.0.0.255" for range. "127.0.0.1;127.0.0.5" for multiple entries. Multiple ranges not currently supported. Mixing ranges with multiple entries not currently supported. Changing this forces a new resource to be created.
+        local Ip address
     localPort : str, default is Undefined, optional
-        The local port to be filtered on. Notation: "80" for single port entry."80-85" for range. "80;443;" for multiple entries. Multiple ranges not currently supported. Mixing ranges with multiple entries not currently supported. Changing this forces a new resource to be created.
+        local port
     $protocol : str, default is Undefined, optional
-        The Protocol to be filtered on. Possible values include Any, TCP and UDP. Changing this forces a new resource to be created.
+        protocol
     remoteIpAddress : str, default is Undefined, optional
-        The remote IP Address to be filtered on. Notation: "127.0.0.1" for single address entry. "127.0.0.1-127.0.0.255" for range. "127.0.0.1;127.0.0.5;" for multiple entries. Multiple ranges not currently supported. Mixing ranges with multiple entries not currently supported.. Changing this forces a new resource to be created.
+        remote Ip address
     remotePort : str, default is Undefined, optional
-        The remote port to be filtered on. Notation: "80" for single port entry."80-85" for range. "80;443;" for multiple entries. Multiple ranges not currently supported. Mixing ranges with multiple entries not currently supported. Changing this forces a new resource to be created.
+        remote port
     """
 
 
@@ -924,16 +820,16 @@ schema NetworkAzureUpboundIoV1beta2PacketCaptureStatusAtProviderFilterItems0:
 
 schema NetworkAzureUpboundIoV1beta2PacketCaptureStatusAtProviderStorageLocation:
     r"""
-    A storage_location block as defined below. Changing this forces a new resource to be created.
+    network azure upbound io v1beta2 packet capture status at provider storage location
 
     Attributes
     ----------
     filePath : str, default is Undefined, optional
-        A valid local path on the targeting VM. Must include the name of the capture file (*.cap). For Linux virtual machine it must start with /var/captures.
+        file path
     storageAccountId : str, default is Undefined, optional
-        The ID of the storage account to save the packet capture session
+        storage account Id
     storagePath : str, default is Undefined, optional
-        The URI of the storage path to save the packet capture.
+        storage path
     """
 
 

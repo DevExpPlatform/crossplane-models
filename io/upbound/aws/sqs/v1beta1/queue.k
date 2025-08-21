@@ -66,8 +66,6 @@ schema SqsAwsUpboundIoV1beta1QueueSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : SqsAwsUpboundIoV1beta1QueueSpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : SqsAwsUpboundIoV1beta1QueueSpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : SqsAwsUpboundIoV1beta1QueueSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -83,8 +81,6 @@ schema SqsAwsUpboundIoV1beta1QueueSpec:
 
     providerConfigRef?: SqsAwsUpboundIoV1beta1QueueSpecProviderConfigRef
 
-    publishConnectionDetailsTo?: SqsAwsUpboundIoV1beta1QueueSpecPublishConnectionDetailsTo
-
     writeConnectionSecretToRef?: SqsAwsUpboundIoV1beta1QueueSpecWriteConnectionSecretToRef
 
 
@@ -95,41 +91,42 @@ schema SqsAwsUpboundIoV1beta1QueueSpecForProvider:
     Attributes
     ----------
     contentBasedDeduplication : bool, default is Undefined, optional
-        Enables content-based deduplication for FIFO queues. For more information, see the related documentation
+        Enables content-based deduplication for FIFO queues. For more information, see the related documentation.
     deduplicationScope : str, default is Undefined, optional
         Specifies whether message deduplication occurs at the message group or queue level. Valid values are messageGroup and queue (default).
     delaySeconds : float, default is Undefined, optional
-        The time in seconds that the delivery of all messages in the queue will be delayed. An integer from 0 to 900 (15 minutes). The default for this attribute is 0 seconds.
+        Time in seconds that the delivery of all messages in the queue will be delayed. An integer from 0 to 900 (15 minutes). The default for this attribute is 0 seconds.
     fifoQueue : bool, default is Undefined, optional
         Boolean designating a FIFO queue. If not set, it defaults to false making it standard.
     fifoThroughputLimit : str, default is Undefined, optional
         Specifies whether the FIFO queue throughput quota applies to the entire queue or per message group. Valid values are perQueue (default) and perMessageGroupId.
     kmsDataKeyReusePeriodSeconds : float, default is Undefined, optional
-        The length of time, in seconds, for which Amazon SQS can reuse a data key to encrypt or decrypt messages before calling AWS KMS again. An integer representing seconds, between 60 seconds (1 minute) and 86,400 seconds (24 hours). The default is 300 (5 minutes).
+        Length of time, in seconds, for which Amazon SQS can reuse a data key to encrypt or decrypt messages before calling AWS KMS again. An integer representing seconds, between 60 seconds (1 minute) and 86,400 seconds (24 hours). The default is 300 (5 minutes).
     kmsMasterKeyId : str, default is Undefined, optional
-        The ID of an AWS-managed customer master key (CMK) for Amazon SQS or a custom CMK. For more information, see Key Terms.
+        ID of an AWS-managed customer master key (CMK) for Amazon SQS or a custom CMK. For more information, see Key Terms.
     maxMessageSize : float, default is Undefined, optional
-        The limit of how many bytes a message can contain before Amazon SQS rejects it. An integer from 1024 bytes (1 KiB) up to 262144 bytes (256 KiB). The default for this attribute is 262144 (256 KiB).
+        Limit of how many bytes a message can contain before Amazon SQS rejects it. An integer from 1024 bytes (1 KiB) up to 262144 bytes (256 KiB). The default for this attribute is 262144 (256 KiB).
     messageRetentionSeconds : float, default is Undefined, optional
-        The number of seconds Amazon SQS retains a message. Integer representing seconds, from 60 (1 minute) to 1209600 (14 days). The default for this attribute is 345600 (4 days).
+        Number of seconds Amazon SQS retains a message. Integer representing seconds, from 60 (1 minute) to 1209600 (14 days). The default for this attribute is 345600 (4 days).
     name : str, default is Undefined, optional
-        The name of the queue. Queue names must be made up of only uppercase and lowercase ASCII letters, numbers, underscores, and hyphens, and must be between 1 and 80 characters long. For a FIFO (first-in-first-out) queue, the name must end with the .fifo suffix. Conflicts with name_prefix
+        Name of the queue. Queue names must be made up of only uppercase and lowercase ASCII letters, numbers, underscores, and hyphens, and must be between 1 and 80 characters long. For a FIFO (first-in-first-out) queue, the name must end with the .fifo suffix. Conflicts with name_prefix.
     policy : str, default is Undefined, optional
-        The JSON policy for the SQS queue.
+        JSON policy for the SQS queue. It is preferred to use the aws_sqs_queue_policy resource instead.
     receiveWaitTimeSeconds : float, default is Undefined, optional
-        The time for which a ReceiveMessage call will wait for a message to arrive (long polling) before returning. An integer from 0 to 20 (seconds). The default for this attribute is 0, meaning that the call will return immediately.
+        Time for which a ReceiveMessage call will wait for a message to arrive (long polling) before returning. An integer from 0 to 20 (seconds). The default for this attribute is 0, meaning that the call will return immediately.
     redriveAllowPolicy : str, default is Undefined, optional
-        The JSON policy to set up the Dead Letter Queue redrive permission, see AWS docs.
+        JSON policy to set up the Dead Letter Queue redrive permission, see AWS docs. It is preferred to use the aws_sqs_queue_redrive_allow_policy resource instead.
     redrivePolicy : str, default is Undefined, optional
-        The JSON policy to set up the Dead Letter Queue, see AWS docs. Note: when specifying maxReceiveCount, you must specify it as an integer (5), and not a string ("5").
+        JSON policy to set up the Dead Letter Queue, see AWS docs. It is preferred to use the aws_sqs_queue_redrive_policy resource instead. Note: when specifying maxReceiveCount, you must specify it as an integer (5), and not a string ("5").
     region : str, default is Undefined, required
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
     sqsManagedSseEnabled : bool, default is Undefined, optional
         Boolean to enable server-side encryption (SSE) of message content with SQS-owned encryption keys. See Encryption at rest.
     tags : {str:str}, default is Undefined, optional
         Key-value map of resource tags.
     visibilityTimeoutSeconds : float, default is Undefined, optional
-        The visibility timeout for the queue. An integer from 0 to 43200 (12 hours). The default for this attribute is 30. For more information about visibility timeout, see AWS docs.
+        Visibility timeout for the queue. An integer from 0 to 43200 (12 hours). The default for this attribute is 30. For more information about visibility timeout, see AWS docs.
     """
 
 
@@ -186,39 +183,39 @@ schema SqsAwsUpboundIoV1beta1QueueSpecInitProvider:
     Attributes
     ----------
     contentBasedDeduplication : bool, default is Undefined, optional
-        Enables content-based deduplication for FIFO queues. For more information, see the related documentation
+        Enables content-based deduplication for FIFO queues. For more information, see the related documentation.
     deduplicationScope : str, default is Undefined, optional
         Specifies whether message deduplication occurs at the message group or queue level. Valid values are messageGroup and queue (default).
     delaySeconds : float, default is Undefined, optional
-        The time in seconds that the delivery of all messages in the queue will be delayed. An integer from 0 to 900 (15 minutes). The default for this attribute is 0 seconds.
+        Time in seconds that the delivery of all messages in the queue will be delayed. An integer from 0 to 900 (15 minutes). The default for this attribute is 0 seconds.
     fifoQueue : bool, default is Undefined, optional
         Boolean designating a FIFO queue. If not set, it defaults to false making it standard.
     fifoThroughputLimit : str, default is Undefined, optional
         Specifies whether the FIFO queue throughput quota applies to the entire queue or per message group. Valid values are perQueue (default) and perMessageGroupId.
     kmsDataKeyReusePeriodSeconds : float, default is Undefined, optional
-        The length of time, in seconds, for which Amazon SQS can reuse a data key to encrypt or decrypt messages before calling AWS KMS again. An integer representing seconds, between 60 seconds (1 minute) and 86,400 seconds (24 hours). The default is 300 (5 minutes).
+        Length of time, in seconds, for which Amazon SQS can reuse a data key to encrypt or decrypt messages before calling AWS KMS again. An integer representing seconds, between 60 seconds (1 minute) and 86,400 seconds (24 hours). The default is 300 (5 minutes).
     kmsMasterKeyId : str, default is Undefined, optional
-        The ID of an AWS-managed customer master key (CMK) for Amazon SQS or a custom CMK. For more information, see Key Terms.
+        ID of an AWS-managed customer master key (CMK) for Amazon SQS or a custom CMK. For more information, see Key Terms.
     maxMessageSize : float, default is Undefined, optional
-        The limit of how many bytes a message can contain before Amazon SQS rejects it. An integer from 1024 bytes (1 KiB) up to 262144 bytes (256 KiB). The default for this attribute is 262144 (256 KiB).
+        Limit of how many bytes a message can contain before Amazon SQS rejects it. An integer from 1024 bytes (1 KiB) up to 262144 bytes (256 KiB). The default for this attribute is 262144 (256 KiB).
     messageRetentionSeconds : float, default is Undefined, optional
-        The number of seconds Amazon SQS retains a message. Integer representing seconds, from 60 (1 minute) to 1209600 (14 days). The default for this attribute is 345600 (4 days).
+        Number of seconds Amazon SQS retains a message. Integer representing seconds, from 60 (1 minute) to 1209600 (14 days). The default for this attribute is 345600 (4 days).
     name : str, default is Undefined, optional
-        The name of the queue. Queue names must be made up of only uppercase and lowercase ASCII letters, numbers, underscores, and hyphens, and must be between 1 and 80 characters long. For a FIFO (first-in-first-out) queue, the name must end with the .fifo suffix. Conflicts with name_prefix
+        Name of the queue. Queue names must be made up of only uppercase and lowercase ASCII letters, numbers, underscores, and hyphens, and must be between 1 and 80 characters long. For a FIFO (first-in-first-out) queue, the name must end with the .fifo suffix. Conflicts with name_prefix.
     policy : str, default is Undefined, optional
-        The JSON policy for the SQS queue.
+        JSON policy for the SQS queue. It is preferred to use the aws_sqs_queue_policy resource instead.
     receiveWaitTimeSeconds : float, default is Undefined, optional
-        The time for which a ReceiveMessage call will wait for a message to arrive (long polling) before returning. An integer from 0 to 20 (seconds). The default for this attribute is 0, meaning that the call will return immediately.
+        Time for which a ReceiveMessage call will wait for a message to arrive (long polling) before returning. An integer from 0 to 20 (seconds). The default for this attribute is 0, meaning that the call will return immediately.
     redriveAllowPolicy : str, default is Undefined, optional
-        The JSON policy to set up the Dead Letter Queue redrive permission, see AWS docs.
+        JSON policy to set up the Dead Letter Queue redrive permission, see AWS docs. It is preferred to use the aws_sqs_queue_redrive_allow_policy resource instead.
     redrivePolicy : str, default is Undefined, optional
-        The JSON policy to set up the Dead Letter Queue, see AWS docs. Note: when specifying maxReceiveCount, you must specify it as an integer (5), and not a string ("5").
+        JSON policy to set up the Dead Letter Queue, see AWS docs. It is preferred to use the aws_sqs_queue_redrive_policy resource instead. Note: when specifying maxReceiveCount, you must specify it as an integer (5), and not a string ("5").
     sqsManagedSseEnabled : bool, default is Undefined, optional
         Boolean to enable server-side encryption (SSE) of message content with SQS-owned encryption keys. See Encryption at rest.
     tags : {str:str}, default is Undefined, optional
         Key-value map of resource tags.
     visibilityTimeoutSeconds : float, default is Undefined, optional
-        The visibility timeout for the queue. An integer from 0 to 43200 (12 hours). The default for this attribute is 30. For more information about visibility timeout, see AWS docs.
+        Visibility timeout for the queue. An integer from 0 to 43200 (12 hours). The default for this attribute is 30. For more information about visibility timeout, see AWS docs.
     """
 
 
@@ -301,112 +298,12 @@ schema SqsAwsUpboundIoV1beta1QueueSpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
-schema SqsAwsUpboundIoV1beta1QueueSpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : SqsAwsUpboundIoV1beta1QueueSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : SqsAwsUpboundIoV1beta1QueueSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: SqsAwsUpboundIoV1beta1QueueSpecPublishConnectionDetailsToConfigRef
-
-    metadata?: SqsAwsUpboundIoV1beta1QueueSpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema SqsAwsUpboundIoV1beta1QueueSpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : SqsAwsUpboundIoV1beta1QueueSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: SqsAwsUpboundIoV1beta1QueueSpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema SqsAwsUpboundIoV1beta1QueueSpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema SqsAwsUpboundIoV1beta1QueueSpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema SqsAwsUpboundIoV1beta1QueueSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------
@@ -453,47 +350,50 @@ schema SqsAwsUpboundIoV1beta1QueueStatusAtProvider:
     Attributes
     ----------
     arn : str, default is Undefined, optional
-        The ARN of the SQS queue
+        ARN of the SQS queue.
     contentBasedDeduplication : bool, default is Undefined, optional
-        Enables content-based deduplication for FIFO queues. For more information, see the related documentation
+        Enables content-based deduplication for FIFO queues. For more information, see the related documentation.
     deduplicationScope : str, default is Undefined, optional
         Specifies whether message deduplication occurs at the message group or queue level. Valid values are messageGroup and queue (default).
     delaySeconds : float, default is Undefined, optional
-        The time in seconds that the delivery of all messages in the queue will be delayed. An integer from 0 to 900 (15 minutes). The default for this attribute is 0 seconds.
+        Time in seconds that the delivery of all messages in the queue will be delayed. An integer from 0 to 900 (15 minutes). The default for this attribute is 0 seconds.
     fifoQueue : bool, default is Undefined, optional
         Boolean designating a FIFO queue. If not set, it defaults to false making it standard.
     fifoThroughputLimit : str, default is Undefined, optional
         Specifies whether the FIFO queue throughput quota applies to the entire queue or per message group. Valid values are perQueue (default) and perMessageGroupId.
     id : str, default is Undefined, optional
-        The URL for the created Amazon SQS queue.
+        URL for the created Amazon SQS queue.
     kmsDataKeyReusePeriodSeconds : float, default is Undefined, optional
-        The length of time, in seconds, for which Amazon SQS can reuse a data key to encrypt or decrypt messages before calling AWS KMS again. An integer representing seconds, between 60 seconds (1 minute) and 86,400 seconds (24 hours). The default is 300 (5 minutes).
+        Length of time, in seconds, for which Amazon SQS can reuse a data key to encrypt or decrypt messages before calling AWS KMS again. An integer representing seconds, between 60 seconds (1 minute) and 86,400 seconds (24 hours). The default is 300 (5 minutes).
     kmsMasterKeyId : str, default is Undefined, optional
-        The ID of an AWS-managed customer master key (CMK) for Amazon SQS or a custom CMK. For more information, see Key Terms.
+        ID of an AWS-managed customer master key (CMK) for Amazon SQS or a custom CMK. For more information, see Key Terms.
     maxMessageSize : float, default is Undefined, optional
-        The limit of how many bytes a message can contain before Amazon SQS rejects it. An integer from 1024 bytes (1 KiB) up to 262144 bytes (256 KiB). The default for this attribute is 262144 (256 KiB).
+        Limit of how many bytes a message can contain before Amazon SQS rejects it. An integer from 1024 bytes (1 KiB) up to 262144 bytes (256 KiB). The default for this attribute is 262144 (256 KiB).
     messageRetentionSeconds : float, default is Undefined, optional
-        The number of seconds Amazon SQS retains a message. Integer representing seconds, from 60 (1 minute) to 1209600 (14 days). The default for this attribute is 345600 (4 days).
+        Number of seconds Amazon SQS retains a message. Integer representing seconds, from 60 (1 minute) to 1209600 (14 days). The default for this attribute is 345600 (4 days).
     name : str, default is Undefined, optional
-        The name of the queue. Queue names must be made up of only uppercase and lowercase ASCII letters, numbers, underscores, and hyphens, and must be between 1 and 80 characters long. For a FIFO (first-in-first-out) queue, the name must end with the .fifo suffix. Conflicts with name_prefix
+        Name of the queue. Queue names must be made up of only uppercase and lowercase ASCII letters, numbers, underscores, and hyphens, and must be between 1 and 80 characters long. For a FIFO (first-in-first-out) queue, the name must end with the .fifo suffix. Conflicts with name_prefix.
     policy : str, default is Undefined, optional
-        The JSON policy for the SQS queue.
+        JSON policy for the SQS queue. It is preferred to use the aws_sqs_queue_policy resource instead.
     receiveWaitTimeSeconds : float, default is Undefined, optional
-        The time for which a ReceiveMessage call will wait for a message to arrive (long polling) before returning. An integer from 0 to 20 (seconds). The default for this attribute is 0, meaning that the call will return immediately.
+        Time for which a ReceiveMessage call will wait for a message to arrive (long polling) before returning. An integer from 0 to 20 (seconds). The default for this attribute is 0, meaning that the call will return immediately.
     redriveAllowPolicy : str, default is Undefined, optional
-        The JSON policy to set up the Dead Letter Queue redrive permission, see AWS docs.
+        JSON policy to set up the Dead Letter Queue redrive permission, see AWS docs. It is preferred to use the aws_sqs_queue_redrive_allow_policy resource instead.
     redrivePolicy : str, default is Undefined, optional
-        The JSON policy to set up the Dead Letter Queue, see AWS docs. Note: when specifying maxReceiveCount, you must specify it as an integer (5), and not a string ("5").
+        JSON policy to set up the Dead Letter Queue, see AWS docs. It is preferred to use the aws_sqs_queue_redrive_policy resource instead. Note: when specifying maxReceiveCount, you must specify it as an integer (5), and not a string ("5").
+    region : str, default is Undefined, optional
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
+        Region is the region you'd like your resource to be created in.
     sqsManagedSseEnabled : bool, default is Undefined, optional
         Boolean to enable server-side encryption (SSE) of message content with SQS-owned encryption keys. See Encryption at rest.
     tags : {str:str}, default is Undefined, optional
         Key-value map of resource tags.
     tagsAll : {str:str}, default is Undefined, optional
-        A map of tags assigned to the resource, including those inherited from the provider default_tags configuration block.
+        Map of tags assigned to the resource, including those inherited from the provider default_tags configuration block.
     url : str, default is Undefined, optional
         Same as id: The URL for the created Amazon SQS queue.
     visibilityTimeoutSeconds : float, default is Undefined, optional
-        The visibility timeout for the queue. An integer from 0 to 43200 (12 hours). The default for this attribute is 30. For more information about visibility timeout, see AWS docs.
+        Visibility timeout for the queue. An integer from 0 to 43200 (12 hours). The default for this attribute is 30. For more information about visibility timeout, see AWS docs.
     """
 
 
@@ -528,6 +428,8 @@ schema SqsAwsUpboundIoV1beta1QueueStatusAtProvider:
     redriveAllowPolicy?: str
 
     redrivePolicy?: str
+
+    region?: str
 
     sqsManagedSseEnabled?: bool
 

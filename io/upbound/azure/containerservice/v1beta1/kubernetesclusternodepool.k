@@ -66,8 +66,6 @@ schema ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -83,8 +81,6 @@ schema ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpec:
 
     providerConfigRef?: ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecProviderConfigRef
 
-    publishConnectionDetailsTo?: ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecPublishConnectionDetailsTo
-
     writeConnectionSecretToRef?: ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecWriteConnectionSecretToRef
 
 
@@ -94,28 +90,24 @@ schema ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecForProv
 
     Attributes
     ----------
+    autoScalingEnabled : bool, default is Undefined, optional
+        Whether to enable auto-scaler.
     capacityReservationGroupId : str, default is Undefined, optional
         Specifies the ID of the Capacity Reservation Group where this Node Pool should exist. Changing this forces a new resource to be created.
-    customCaTrustEnabled : bool, default is Undefined, optional
-        Specifies whether to trust a Custom CA.
-    enableAutoScaling : bool, default is Undefined, optional
-        Whether to enable auto-scaler.
-    enableHostEncryption : bool, default is Undefined, optional
-        Should the nodes in this Node Pool have host encryption enabled? Changing this forces a new resource to be created.
-    enableNodePublicIp : bool, default is Undefined, optional
-        Should each node have a Public IP Address? Changing this forces a new resource to be created.
     evictionPolicy : str, default is Undefined, optional
         The Eviction Policy which should be used for Virtual Machines within the Virtual Machine Scale Set powering this Node Pool. Possible values are Deallocate and Delete. Changing this forces a new resource to be created.
     fipsEnabled : bool, default is Undefined, optional
-        Should the nodes in this Node Pool have Federal Information Processing Standard enabled? Changing this forces a new resource to be created.
+        Should the nodes in this Node Pool have Federal Information Processing Standard enabled? Changing this property requires specifying temporary_name_for_rotation.
     gpuInstance : str, default is Undefined, optional
         Specifies the GPU MIG instance profile for supported GPU VM SKU. The allowed values are MIG1g, MIG2g, MIG3g, MIG4g and MIG7g. Changing this forces a new resource to be created.
+    hostEncryptionEnabled : bool, default is Undefined, optional
+        Should the nodes in this Node Pool have host encryption enabled? Changing this property requires specifying temporary_name_for_rotation.
     hostGroupId : str, default is Undefined, optional
         The fully qualified resource ID of the Dedicated Host Group to provision virtual machines from. Changing this forces a new resource to be created.
     kubeletConfig : [ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecForProviderKubeletConfigItems0], default is Undefined, optional
-        A kubelet_config block as defined below. Changing this forces a new resource to be created.
+        A kubelet_config block as defined below. Changing this requires specifying temporary_name_for_rotation.
     kubeletDiskType : str, default is Undefined, optional
-        The type of disk used by kubelet. Possible values are OS and Temporary.
+        The type of disk used by kubelet. Possible values are OS and Temporary. Changing this property requires specifying temporary_name_for_rotation.
     kubernetesClusterId : str, default is Undefined, optional
         The ID of the Kubernetes Cluster where this Node Pool should exist. Changing this forces a new resource to be created.
     kubernetesClusterIdRef : ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecForProviderKubernetesClusterIDRef, default is Undefined, optional
@@ -123,13 +115,11 @@ schema ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecForProv
     kubernetesClusterIdSelector : ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecForProviderKubernetesClusterIDSelector, default is Undefined, optional
         kubernetes cluster Id selector
     linuxOsConfig : [ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecForProviderLinuxOsConfigItems0], default is Undefined, optional
-        A linux_os_config block as defined below. Changing this forces a new resource to be created.
+        A linux_os_config block as defined below. Changing this requires specifying temporary_name_for_rotation.
     maxCount : float, default is Undefined, optional
         The maximum number of nodes which should exist within this Node Pool. Valid values are between 0 and 1000 and must be greater than or equal to min_count.
     maxPods : float, default is Undefined, optional
-        The maximum number of pods that can run on each agent. Changing this forces a new resource to be created.
-    messageOfTheDay : str, default is Undefined, optional
-        A base64-encoded string which will be written to /etc/motd after decoding. This allows customization of the message of the day for Linux nodes. It cannot be specified for Windows nodes and must be a static string (i.e. will be printed raw and not executed as a script). Changing this forces a new resource to be created.
+        The maximum number of pods that can run on each agent. Changing this property requires specifying temporary_name_for_rotation.
     minCount : float, default is Undefined, optional
         The minimum number of nodes which should exist within this Node Pool. Valid values are between 0 and 1000 and must be less than or equal to max_count.
     mode : str, default is Undefined, optional
@@ -140,22 +130,24 @@ schema ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecForProv
         A map of Kubernetes labels which should be applied to nodes in this Node Pool.
     nodeNetworkProfile : [ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecForProviderNodeNetworkProfileItems0], default is Undefined, optional
         A node_network_profile block as documented below.
+    nodePublicIpEnabled : bool, default is Undefined, optional
+        Should each node have a Public IP Address? Changing this property requires specifying temporary_name_for_rotation.
     nodePublicIpPrefixId : str, default is Undefined, optional
-        Resource ID for the Public IP Addresses Prefix for the nodes in this Node Pool. enable_node_public_ip should be true. Changing this forces a new resource to be created.
+        Resource ID for the Public IP Addresses Prefix for the nodes in this Node Pool. node_public_ip_enabled should be true. Changing this forces a new resource to be created.
     nodeTaints : [str], default is Undefined, optional
         A list of Kubernetes taints which should be applied to nodes in the agent pool (e.g key=value:NoSchedule).
     orchestratorVersion : str, default is Undefined, optional
         Version of Kubernetes used for the Agents. If not specified, the latest recommended version will be used at provisioning time (but won't auto-upgrade). AKS does not require an exact patch version to be specified, minor version aliases such as 1.22 are also supported. - The minor version's latest GA patch is automatically chosen in that case. More details can be found in the documentation.
     osDiskSizeGb : float, default is Undefined, optional
-        The Agent Operating System disk size in GB. Changing this forces a new resource to be created.
+        The Agent Operating System disk size in GB. Changing this property requires specifying temporary_name_for_rotation.
     osDiskType : str, default is Undefined, optional
-        The type of disk which should be used for the Operating System. Possible values are Ephemeral and Managed. Defaults to Managed. Changing this forces a new resource to be created.
+        The type of disk which should be used for the Operating System. Possible values are Ephemeral and Managed. Defaults to Managed. Changing this property requires specifying temporary_name_for_rotation.
     osSku : str, default is Undefined, optional
-        Specifies the OS SKU used by the agent pool. Possible values are AzureLinux, Ubuntu, Windows2019 and Windows2022. If not specified, the default is Ubuntu if OSType=Linux or Windows2019 if OSType=Windows. And the default Windows OSSKU will be changed to Windows2022 after Windows2019 is deprecated. Changing this forces a new resource to be created.
+        Specifies the OS SKU used by the agent pool. Possible values are AzureLinux, Ubuntu, Windows2019 and Windows2022. If not specified, the default is Ubuntu if OSType=Linux or Windows2019 if OSType=Windows. And the default Windows OSSKU will be changed to Windows2022 after Windows2019 is deprecated. Changing this from AzureLinux or Ubuntu to AzureLinux or Ubuntu will not replace the resource, otherwise it forces a new resource to be created.
     osType : str, default is Undefined, optional
         The Operating System which should be used for this Node Pool. Changing this forces a new resource to be created. Possible values are Linux and Windows. Defaults to Linux.
     podSubnetId : str, default is Undefined, optional
-        The ID of the Subnet where the pods in the Node Pool should exist. Changing this forces a new resource to be created.
+        The ID of the Subnet where the pods in the Node Pool should exist. Changing this property requires specifying temporary_name_for_rotation.
     podSubnetIdRef : ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecForProviderPodSubnetIDRef, default is Undefined, optional
         pod subnet Id ref
     podSubnetIdSelector : ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecForProviderPodSubnetIDSelector, default is Undefined, optional
@@ -167,19 +159,21 @@ schema ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecForProv
     scaleDownMode : str, default is Undefined, optional
         Specifies how the node pool should deal with scaled-down nodes. Allowed values are Delete and Deallocate. Defaults to Delete.
     snapshotId : str, default is Undefined, optional
-        The ID of the Snapshot which should be used to create this Node Pool. Changing this forces a new resource to be created.
+        The ID of the Snapshot which should be used to create this Node Pool. Changing this property requires specifying temporary_name_for_rotation.
     spotMaxPrice : float, default is Undefined, optional
         The maximum price you're willing to pay in USD per Virtual Machine. Valid values are -1 (the current on-demand price for a Virtual Machine) or a positive value with up to five decimal places. Changing this forces a new resource to be created.
     tags : {str:str}, default is Undefined, optional
         A mapping of tags to assign to the resource.
+    temporaryNameForRotation : str, default is Undefined, optional
+        Specifies the name of the temporary node pool used to cycle the node pool when one of the relevant properties are updated.
     ultraSsdEnabled : bool, default is Undefined, optional
-        Used to specify whether the UltraSSD is enabled in the Node Pool. Defaults to false. See the documentation for more information. Changing this forces a new resource to be created.
+        Used to specify whether the UltraSSD is enabled in the Node Pool. Defaults to false. See the documentation for more information. Changing this property requires specifying temporary_name_for_rotation.
     upgradeSettings : [ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecForProviderUpgradeSettingsItems0], default is Undefined, optional
         A upgrade_settings block as documented below.
     vmSize : str, default is Undefined, optional
-        The SKU which should be used for the Virtual Machines used in this Node Pool. Changing this forces a new resource to be created.
+        The SKU which should be used for the Virtual Machines used in this Node Pool. Changing this property requires specifying temporary_name_for_rotation.
     vnetSubnetId : str, default is Undefined, optional
-        The ID of the Subnet where this Node Pool should exist. Changing this forces a new resource to be created.
+        The ID of the Subnet where this Node Pool should exist. Changing this property requires specifying temporary_name_for_rotation.
     vnetSubnetIdRef : ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecForProviderVnetSubnetIDRef, default is Undefined, optional
         vnet subnet Id ref
     vnetSubnetIdSelector : ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecForProviderVnetSubnetIDSelector, default is Undefined, optional
@@ -187,27 +181,23 @@ schema ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecForProv
     windowsProfile : [ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecForProviderWindowsProfileItems0], default is Undefined, optional
         A windows_profile block as documented below. Changing this forces a new resource to be created.
     workloadRuntime : str, default is Undefined, optional
-        Used to specify the workload runtime. Allowed values are OCIContainer, WasmWasi and KataMshvVmIsolation.
+        Used to specify the workload runtime. Allowed values are OCIContainer and WasmWasi.
     zones : [str], default is Undefined, optional
-        Specifies a list of Availability Zones in which this Kubernetes Cluster Node Pool should be located. Changing this forces a new Kubernetes Cluster Node Pool to be created.
+        Specifies a list of Availability Zones in which this Kubernetes Cluster Node Pool should be located. Changing this property requires specifying temporary_name_for_rotation.
     """
 
 
+    autoScalingEnabled?: bool
+
     capacityReservationGroupId?: str
-
-    customCaTrustEnabled?: bool
-
-    enableAutoScaling?: bool
-
-    enableHostEncryption?: bool
-
-    enableNodePublicIp?: bool
 
     evictionPolicy?: str
 
     fipsEnabled?: bool
 
     gpuInstance?: str
+
+    hostEncryptionEnabled?: bool
 
     hostGroupId?: str
 
@@ -227,8 +217,6 @@ schema ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecForProv
 
     maxPods?: float
 
-    messageOfTheDay?: str
-
     minCount?: float
 
     mode?: str
@@ -238,6 +226,8 @@ schema ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecForProv
     nodeLabels?: {str:str}
 
     nodeNetworkProfile?: [ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecForProviderNodeNetworkProfileItems0]
+
+    nodePublicIpEnabled?: bool
 
     nodePublicIpPrefixId?: str
 
@@ -271,6 +261,8 @@ schema ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecForProv
 
     tags?: {str:str}
 
+    temporaryNameForRotation?: str
+
     ultraSsdEnabled?: bool
 
     upgradeSettings?: [ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecForProviderUpgradeSettingsItems0]
@@ -297,25 +289,25 @@ schema ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecForProv
     Attributes
     ----------
     allowedUnsafeSysctls : [str], default is Undefined, optional
-        Specifies the allow list of unsafe sysctls command or patterns (ending in *). Changing this forces a new resource to be created.
+        Specifies the allow list of unsafe sysctls command or patterns (ending in *).
     containerLogMaxLine : float, default is Undefined, optional
-        Specifies the maximum number of container log files that can be present for a container. must be at least 2. Changing this forces a new resource to be created.
+        Specifies the maximum number of container log files that can be present for a container. must be at least 2.
     containerLogMaxSizeMb : float, default is Undefined, optional
-        Specifies the maximum size (e.g. 10MB) of container log file before it is rotated. Changing this forces a new resource to be created.
+        Specifies the maximum size (e.g. 10MB) of container log file before it is rotated.
     cpuCfsQuotaEnabled : bool, default is Undefined, optional
-        Is CPU CFS quota enforcement for containers enabled? Changing this forces a new resource to be created.
+        Is CPU CFS quota enforcement for containers enabled? Defaults to true.
     cpuCfsQuotaPeriod : str, default is Undefined, optional
-        Specifies the CPU CFS quota period value. Changing this forces a new resource to be created.
+        Specifies the CPU CFS quota period value.
     cpuManagerPolicy : str, default is Undefined, optional
-        Specifies the CPU Manager policy to use. Possible values are none and static, Changing this forces a new resource to be created.
+        Specifies the CPU Manager policy to use. Possible values are none and static,
     imageGcHighThreshold : float, default is Undefined, optional
-        Specifies the percent of disk usage above which image garbage collection is always run. Must be between 0 and 100. Changing this forces a new resource to be created.
+        Specifies the percent of disk usage above which image garbage collection is always run. Must be between 0 and 100.
     imageGcLowThreshold : float, default is Undefined, optional
-        Specifies the percent of disk usage lower than which image garbage collection is never run. Must be between 0 and 100. Changing this forces a new resource to be created.
+        Specifies the percent of disk usage lower than which image garbage collection is never run. Must be between 0 and 100.
     podMaxPid : float, default is Undefined, optional
-        Specifies the maximum number of processes per pod. Changing this forces a new resource to be created.
+        Specifies the maximum number of processes per pod.
     topologyManagerPolicy : str, default is Undefined, optional
-        Specifies the Topology Manager policy to use. Possible values are none, best-effort, restricted or single-numa-node. Changing this forces a new resource to be created.
+        Specifies the Topology Manager policy to use. Possible values are none, best-effort, restricted or single-numa-node.
     """
 
 
@@ -436,13 +428,13 @@ schema ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecForProv
     Attributes
     ----------
     swapFileSizeMb : float, default is Undefined, optional
-        Specifies the size of swap file on each node in MB. Changing this forces a new resource to be created.
+        Specifies the size of swap file on each node in MB.
     sysctlConfig : [ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecForProviderLinuxOsConfigItems0SysctlConfigItems0], default is Undefined, optional
-        A sysctl_config block as defined below. Changing this forces a new resource to be created.
+        A sysctl_config block as defined below.
     transparentHugePageDefrag : str, default is Undefined, optional
-        specifies the defrag configuration for Transparent Huge Page. Possible values are always, defer, defer+madvise, madvise and never. Changing this forces a new resource to be created.
+        specifies the defrag configuration for Transparent Huge Page. Possible values are always, defer, defer+madvise, madvise and never.
     transparentHugePageEnabled : str, default is Undefined, optional
-        Specifies the Transparent Huge Page enabled configuration. Possible values are always, madvise and never. Changing this forces a new resource to be created.
+        Specifies the Transparent Huge Page enabled configuration. Possible values are always, madvise and never.
     """
 
 
@@ -462,63 +454,63 @@ schema ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecForProv
     Attributes
     ----------
     fsAioMaxNr : float, default is Undefined, optional
-        The sysctl setting fs.aio-max-nr. Must be between 65536 and 6553500. Changing this forces a new resource to be created.
+        The sysctl setting fs.aio-max-nr. Must be between 65536 and 6553500.
     fsFileMax : float, default is Undefined, optional
-        The sysctl setting fs.file-max. Must be between 8192 and 12000500. Changing this forces a new resource to be created.
+        The sysctl setting fs.file-max. Must be between 8192 and 12000500.
     fsInotifyMaxUserWatches : float, default is Undefined, optional
-        The sysctl setting fs.inotify.max_user_watches. Must be between 781250 and 2097152. Changing this forces a new resource to be created.
+        The sysctl setting fs.inotify.max_user_watches. Must be between 781250 and 2097152.
     fsNrOpen : float, default is Undefined, optional
-        The sysctl setting fs.nr_open. Must be between 8192 and 20000500. Changing this forces a new resource to be created.
+        The sysctl setting fs.nr_open. Must be between 8192 and 20000500.
     kernelThreadsMax : float, default is Undefined, optional
-        The sysctl setting kernel.threads-max. Must be between 20 and 513785. Changing this forces a new resource to be created.
+        The sysctl setting kernel.threads-max. Must be between 20 and 513785.
     netCoreNetdevMaxBacklog : float, default is Undefined, optional
-        The sysctl setting net.core.netdev_max_backlog. Must be between 1000 and 3240000. Changing this forces a new resource to be created.
+        The sysctl setting net.core.netdev_max_backlog. Must be between 1000 and 3240000.
     netCoreOptmemMax : float, default is Undefined, optional
-        The sysctl setting net.core.optmem_max. Must be between 20480 and 4194304. Changing this forces a new resource to be created.
+        The sysctl setting net.core.optmem_max. Must be between 20480 and 4194304.
     netCoreRmemDefault : float, default is Undefined, optional
-        The sysctl setting net.core.rmem_default. Must be between 212992 and 134217728. Changing this forces a new resource to be created.
+        The sysctl setting net.core.rmem_default. Must be between 212992 and 134217728.
     netCoreRmemMax : float, default is Undefined, optional
-        The sysctl setting net.core.rmem_max. Must be between 212992 and 134217728. Changing this forces a new resource to be created.
+        The sysctl setting net.core.rmem_max. Must be between 212992 and 134217728.
     netCoreSomaxconn : float, default is Undefined, optional
-        The sysctl setting net.core.somaxconn. Must be between 4096 and 3240000. Changing this forces a new resource to be created.
+        The sysctl setting net.core.somaxconn. Must be between 4096 and 3240000.
     netCoreWmemDefault : float, default is Undefined, optional
-        The sysctl setting net.core.wmem_default. Must be between 212992 and 134217728. Changing this forces a new resource to be created.
+        The sysctl setting net.core.wmem_default. Must be between 212992 and 134217728.
     netCoreWmemMax : float, default is Undefined, optional
-        The sysctl setting net.core.wmem_max. Must be between 212992 and 134217728. Changing this forces a new resource to be created.
+        The sysctl setting net.core.wmem_max. Must be between 212992 and 134217728.
     netIpv4IpLocalPortRangeMax : float, default is Undefined, optional
-        The sysctl setting net.ipv4.ip_local_port_range max value. Must be between 32768 and 65535. Changing this forces a new resource to be created.
+        The sysctl setting net.ipv4.ip_local_port_range max value. Must be between 32768 and 65535.
     netIpv4IpLocalPortRangeMin : float, default is Undefined, optional
-        The sysctl setting net.ipv4.ip_local_port_range min value. Must be between 1024 and 60999. Changing this forces a new resource to be created.
+        The sysctl setting net.ipv4.ip_local_port_range min value. Must be between 1024 and 60999.
     netIpv4NeighDefaultGcThresh1 : float, default is Undefined, optional
-        The sysctl setting net.ipv4.neigh.default.gc_thresh1. Must be between 128 and 80000. Changing this forces a new resource to be created.
+        The sysctl setting net.ipv4.neigh.default.gc_thresh1. Must be between 128 and 80000.
     netIpv4NeighDefaultGcThresh2 : float, default is Undefined, optional
-        The sysctl setting net.ipv4.neigh.default.gc_thresh2. Must be between 512 and 90000. Changing this forces a new resource to be created.
+        The sysctl setting net.ipv4.neigh.default.gc_thresh2. Must be between 512 and 90000.
     netIpv4NeighDefaultGcThresh3 : float, default is Undefined, optional
-        The sysctl setting net.ipv4.neigh.default.gc_thresh3. Must be between 1024 and 100000. Changing this forces a new resource to be created.
+        The sysctl setting net.ipv4.neigh.default.gc_thresh3. Must be between 1024 and 100000.
     netIpv4TcpFinTimeout : float, default is Undefined, optional
-        The sysctl setting net.ipv4.tcp_fin_timeout. Must be between 5 and 120. Changing this forces a new resource to be created.
+        The sysctl setting net.ipv4.tcp_fin_timeout. Must be between 5 and 120.
     netIpv4TcpKeepaliveIntvl : float, default is Undefined, optional
-        The sysctl setting net.ipv4.tcp_keepalive_intvl. Must be between 10 and 90. Changing this forces a new resource to be created.
+        The sysctl setting net.ipv4.tcp_keepalive_intvl. Must be between 10 and 90.
     netIpv4TcpKeepaliveProbes : float, default is Undefined, optional
-        The sysctl setting net.ipv4.tcp_keepalive_probes. Must be between 1 and 15. Changing this forces a new resource to be created.
+        The sysctl setting net.ipv4.tcp_keepalive_probes. Must be between 1 and 15.
     netIpv4TcpKeepaliveTime : float, default is Undefined, optional
-        The sysctl setting net.ipv4.tcp_keepalive_time. Must be between 30 and 432000. Changing this forces a new resource to be created.
+        The sysctl setting net.ipv4.tcp_keepalive_time. Must be between 30 and 432000.
     netIpv4TcpMaxSynBacklog : float, default is Undefined, optional
-        The sysctl setting net.ipv4.tcp_max_syn_backlog. Must be between 128 and 3240000. Changing this forces a new resource to be created.
+        The sysctl setting net.ipv4.tcp_max_syn_backlog. Must be between 128 and 3240000.
     netIpv4TcpMaxTwBuckets : float, default is Undefined, optional
-        The sysctl setting net.ipv4.tcp_max_tw_buckets. Must be between 8000 and 1440000. Changing this forces a new resource to be created.
+        The sysctl setting net.ipv4.tcp_max_tw_buckets. Must be between 8000 and 1440000.
     netIpv4TcpTwReuse : bool, default is Undefined, optional
-        Is sysctl setting net.ipv4.tcp_tw_reuse enabled? Changing this forces a new resource to be created.
+        Is sysctl setting net.ipv4.tcp_tw_reuse enabled?
     netNetfilterNfConntrackBuckets : float, default is Undefined, optional
-        The sysctl setting net.netfilter.nf_conntrack_buckets. Must be between 65536 and 524288. Changing this forces a new resource to be created.
+        The sysctl setting net.netfilter.nf_conntrack_buckets. Must be between 65536 and 524288.
     netNetfilterNfConntrackMax : float, default is Undefined, optional
-        The sysctl setting net.netfilter.nf_conntrack_max. Must be between 131072 and 2097152. Changing this forces a new resource to be created.
+        The sysctl setting net.netfilter.nf_conntrack_max. Must be between 131072 and 2097152.
     vmMaxMapCount : float, default is Undefined, optional
-        The sysctl setting vm.max_map_count. Must be between 65530 and 262144. Changing this forces a new resource to be created.
+        The sysctl setting vm.max_map_count. Must be between 65530 and 262144.
     vmSwappiness : float, default is Undefined, optional
-        The sysctl setting vm.swappiness. Must be between 0 and 100. Changing this forces a new resource to be created.
+        The sysctl setting vm.swappiness. Must be between 0 and 100.
     vmVfsCachePressure : float, default is Undefined, optional
-        The sysctl setting vm.vfs_cache_pressure. Must be between 0 and 100. Changing this forces a new resource to be created.
+        The sysctl setting vm.vfs_cache_pressure. Must be between 0 and 100.
     """
 
 
@@ -725,7 +717,7 @@ schema ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecForProv
     maxSurge : str, default is Undefined, optional
         The maximum number or percentage of nodes which will be added to the Node Pool size during an upgrade.
     nodeSoakDurationInMinutes : float, default is Undefined, optional
-        The amount of time in minutes to wait after draining a node and before reimaging and moving on to next node. Defaults to 0.
+        The amount of time in minutes to wait after draining a node and before reimaging and moving on to next node.
     """
 
 
@@ -854,36 +846,30 @@ schema ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecInitPro
 
     Attributes
     ----------
+    autoScalingEnabled : bool, default is Undefined, optional
+        Whether to enable auto-scaler.
     capacityReservationGroupId : str, default is Undefined, optional
         Specifies the ID of the Capacity Reservation Group where this Node Pool should exist. Changing this forces a new resource to be created.
-    customCaTrustEnabled : bool, default is Undefined, optional
-        Specifies whether to trust a Custom CA.
-    enableAutoScaling : bool, default is Undefined, optional
-        Whether to enable auto-scaler.
-    enableHostEncryption : bool, default is Undefined, optional
-        Should the nodes in this Node Pool have host encryption enabled? Changing this forces a new resource to be created.
-    enableNodePublicIp : bool, default is Undefined, optional
-        Should each node have a Public IP Address? Changing this forces a new resource to be created.
     evictionPolicy : str, default is Undefined, optional
         The Eviction Policy which should be used for Virtual Machines within the Virtual Machine Scale Set powering this Node Pool. Possible values are Deallocate and Delete. Changing this forces a new resource to be created.
     fipsEnabled : bool, default is Undefined, optional
-        Should the nodes in this Node Pool have Federal Information Processing Standard enabled? Changing this forces a new resource to be created.
+        Should the nodes in this Node Pool have Federal Information Processing Standard enabled? Changing this property requires specifying temporary_name_for_rotation.
     gpuInstance : str, default is Undefined, optional
         Specifies the GPU MIG instance profile for supported GPU VM SKU. The allowed values are MIG1g, MIG2g, MIG3g, MIG4g and MIG7g. Changing this forces a new resource to be created.
+    hostEncryptionEnabled : bool, default is Undefined, optional
+        Should the nodes in this Node Pool have host encryption enabled? Changing this property requires specifying temporary_name_for_rotation.
     hostGroupId : str, default is Undefined, optional
         The fully qualified resource ID of the Dedicated Host Group to provision virtual machines from. Changing this forces a new resource to be created.
     kubeletConfig : [ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecInitProviderKubeletConfigItems0], default is Undefined, optional
-        A kubelet_config block as defined below. Changing this forces a new resource to be created.
+        A kubelet_config block as defined below. Changing this requires specifying temporary_name_for_rotation.
     kubeletDiskType : str, default is Undefined, optional
-        The type of disk used by kubelet. Possible values are OS and Temporary.
+        The type of disk used by kubelet. Possible values are OS and Temporary. Changing this property requires specifying temporary_name_for_rotation.
     linuxOsConfig : [ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecInitProviderLinuxOsConfigItems0], default is Undefined, optional
-        A linux_os_config block as defined below. Changing this forces a new resource to be created.
+        A linux_os_config block as defined below. Changing this requires specifying temporary_name_for_rotation.
     maxCount : float, default is Undefined, optional
         The maximum number of nodes which should exist within this Node Pool. Valid values are between 0 and 1000 and must be greater than or equal to min_count.
     maxPods : float, default is Undefined, optional
-        The maximum number of pods that can run on each agent. Changing this forces a new resource to be created.
-    messageOfTheDay : str, default is Undefined, optional
-        A base64-encoded string which will be written to /etc/motd after decoding. This allows customization of the message of the day for Linux nodes. It cannot be specified for Windows nodes and must be a static string (i.e. will be printed raw and not executed as a script). Changing this forces a new resource to be created.
+        The maximum number of pods that can run on each agent. Changing this property requires specifying temporary_name_for_rotation.
     minCount : float, default is Undefined, optional
         The minimum number of nodes which should exist within this Node Pool. Valid values are between 0 and 1000 and must be less than or equal to max_count.
     mode : str, default is Undefined, optional
@@ -894,22 +880,24 @@ schema ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecInitPro
         A map of Kubernetes labels which should be applied to nodes in this Node Pool.
     nodeNetworkProfile : [ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecInitProviderNodeNetworkProfileItems0], default is Undefined, optional
         A node_network_profile block as documented below.
+    nodePublicIpEnabled : bool, default is Undefined, optional
+        Should each node have a Public IP Address? Changing this property requires specifying temporary_name_for_rotation.
     nodePublicIpPrefixId : str, default is Undefined, optional
-        Resource ID for the Public IP Addresses Prefix for the nodes in this Node Pool. enable_node_public_ip should be true. Changing this forces a new resource to be created.
+        Resource ID for the Public IP Addresses Prefix for the nodes in this Node Pool. node_public_ip_enabled should be true. Changing this forces a new resource to be created.
     nodeTaints : [str], default is Undefined, optional
         A list of Kubernetes taints which should be applied to nodes in the agent pool (e.g key=value:NoSchedule).
     orchestratorVersion : str, default is Undefined, optional
         Version of Kubernetes used for the Agents. If not specified, the latest recommended version will be used at provisioning time (but won't auto-upgrade). AKS does not require an exact patch version to be specified, minor version aliases such as 1.22 are also supported. - The minor version's latest GA patch is automatically chosen in that case. More details can be found in the documentation.
     osDiskSizeGb : float, default is Undefined, optional
-        The Agent Operating System disk size in GB. Changing this forces a new resource to be created.
+        The Agent Operating System disk size in GB. Changing this property requires specifying temporary_name_for_rotation.
     osDiskType : str, default is Undefined, optional
-        The type of disk which should be used for the Operating System. Possible values are Ephemeral and Managed. Defaults to Managed. Changing this forces a new resource to be created.
+        The type of disk which should be used for the Operating System. Possible values are Ephemeral and Managed. Defaults to Managed. Changing this property requires specifying temporary_name_for_rotation.
     osSku : str, default is Undefined, optional
-        Specifies the OS SKU used by the agent pool. Possible values are AzureLinux, Ubuntu, Windows2019 and Windows2022. If not specified, the default is Ubuntu if OSType=Linux or Windows2019 if OSType=Windows. And the default Windows OSSKU will be changed to Windows2022 after Windows2019 is deprecated. Changing this forces a new resource to be created.
+        Specifies the OS SKU used by the agent pool. Possible values are AzureLinux, Ubuntu, Windows2019 and Windows2022. If not specified, the default is Ubuntu if OSType=Linux or Windows2019 if OSType=Windows. And the default Windows OSSKU will be changed to Windows2022 after Windows2019 is deprecated. Changing this from AzureLinux or Ubuntu to AzureLinux or Ubuntu will not replace the resource, otherwise it forces a new resource to be created.
     osType : str, default is Undefined, optional
         The Operating System which should be used for this Node Pool. Changing this forces a new resource to be created. Possible values are Linux and Windows. Defaults to Linux.
     podSubnetId : str, default is Undefined, optional
-        The ID of the Subnet where the pods in the Node Pool should exist. Changing this forces a new resource to be created.
+        The ID of the Subnet where the pods in the Node Pool should exist. Changing this property requires specifying temporary_name_for_rotation.
     podSubnetIdRef : ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecInitProviderPodSubnetIDRef, default is Undefined, optional
         pod subnet Id ref
     podSubnetIdSelector : ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecInitProviderPodSubnetIDSelector, default is Undefined, optional
@@ -921,19 +909,21 @@ schema ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecInitPro
     scaleDownMode : str, default is Undefined, optional
         Specifies how the node pool should deal with scaled-down nodes. Allowed values are Delete and Deallocate. Defaults to Delete.
     snapshotId : str, default is Undefined, optional
-        The ID of the Snapshot which should be used to create this Node Pool. Changing this forces a new resource to be created.
+        The ID of the Snapshot which should be used to create this Node Pool. Changing this property requires specifying temporary_name_for_rotation.
     spotMaxPrice : float, default is Undefined, optional
         The maximum price you're willing to pay in USD per Virtual Machine. Valid values are -1 (the current on-demand price for a Virtual Machine) or a positive value with up to five decimal places. Changing this forces a new resource to be created.
     tags : {str:str}, default is Undefined, optional
         A mapping of tags to assign to the resource.
+    temporaryNameForRotation : str, default is Undefined, optional
+        Specifies the name of the temporary node pool used to cycle the node pool when one of the relevant properties are updated.
     ultraSsdEnabled : bool, default is Undefined, optional
-        Used to specify whether the UltraSSD is enabled in the Node Pool. Defaults to false. See the documentation for more information. Changing this forces a new resource to be created.
+        Used to specify whether the UltraSSD is enabled in the Node Pool. Defaults to false. See the documentation for more information. Changing this property requires specifying temporary_name_for_rotation.
     upgradeSettings : [ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecInitProviderUpgradeSettingsItems0], default is Undefined, optional
         A upgrade_settings block as documented below.
     vmSize : str, default is Undefined, optional
-        The SKU which should be used for the Virtual Machines used in this Node Pool. Changing this forces a new resource to be created.
+        The SKU which should be used for the Virtual Machines used in this Node Pool. Changing this property requires specifying temporary_name_for_rotation.
     vnetSubnetId : str, default is Undefined, optional
-        The ID of the Subnet where this Node Pool should exist. Changing this forces a new resource to be created.
+        The ID of the Subnet where this Node Pool should exist. Changing this property requires specifying temporary_name_for_rotation.
     vnetSubnetIdRef : ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecInitProviderVnetSubnetIDRef, default is Undefined, optional
         vnet subnet Id ref
     vnetSubnetIdSelector : ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecInitProviderVnetSubnetIDSelector, default is Undefined, optional
@@ -941,27 +931,23 @@ schema ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecInitPro
     windowsProfile : [ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecInitProviderWindowsProfileItems0], default is Undefined, optional
         A windows_profile block as documented below. Changing this forces a new resource to be created.
     workloadRuntime : str, default is Undefined, optional
-        Used to specify the workload runtime. Allowed values are OCIContainer, WasmWasi and KataMshvVmIsolation.
+        Used to specify the workload runtime. Allowed values are OCIContainer and WasmWasi.
     zones : [str], default is Undefined, optional
-        Specifies a list of Availability Zones in which this Kubernetes Cluster Node Pool should be located. Changing this forces a new Kubernetes Cluster Node Pool to be created.
+        Specifies a list of Availability Zones in which this Kubernetes Cluster Node Pool should be located. Changing this property requires specifying temporary_name_for_rotation.
     """
 
 
+    autoScalingEnabled?: bool
+
     capacityReservationGroupId?: str
-
-    customCaTrustEnabled?: bool
-
-    enableAutoScaling?: bool
-
-    enableHostEncryption?: bool
-
-    enableNodePublicIp?: bool
 
     evictionPolicy?: str
 
     fipsEnabled?: bool
 
     gpuInstance?: str
+
+    hostEncryptionEnabled?: bool
 
     hostGroupId?: str
 
@@ -975,8 +961,6 @@ schema ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecInitPro
 
     maxPods?: float
 
-    messageOfTheDay?: str
-
     minCount?: float
 
     mode?: str
@@ -986,6 +970,8 @@ schema ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecInitPro
     nodeLabels?: {str:str}
 
     nodeNetworkProfile?: [ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecInitProviderNodeNetworkProfileItems0]
+
+    nodePublicIpEnabled?: bool
 
     nodePublicIpPrefixId?: str
 
@@ -1019,6 +1005,8 @@ schema ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecInitPro
 
     tags?: {str:str}
 
+    temporaryNameForRotation?: str
+
     ultraSsdEnabled?: bool
 
     upgradeSettings?: [ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecInitProviderUpgradeSettingsItems0]
@@ -1045,25 +1033,25 @@ schema ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecInitPro
     Attributes
     ----------
     allowedUnsafeSysctls : [str], default is Undefined, optional
-        Specifies the allow list of unsafe sysctls command or patterns (ending in *). Changing this forces a new resource to be created.
+        Specifies the allow list of unsafe sysctls command or patterns (ending in *).
     containerLogMaxLine : float, default is Undefined, optional
-        Specifies the maximum number of container log files that can be present for a container. must be at least 2. Changing this forces a new resource to be created.
+        Specifies the maximum number of container log files that can be present for a container. must be at least 2.
     containerLogMaxSizeMb : float, default is Undefined, optional
-        Specifies the maximum size (e.g. 10MB) of container log file before it is rotated. Changing this forces a new resource to be created.
+        Specifies the maximum size (e.g. 10MB) of container log file before it is rotated.
     cpuCfsQuotaEnabled : bool, default is Undefined, optional
-        Is CPU CFS quota enforcement for containers enabled? Changing this forces a new resource to be created.
+        Is CPU CFS quota enforcement for containers enabled? Defaults to true.
     cpuCfsQuotaPeriod : str, default is Undefined, optional
-        Specifies the CPU CFS quota period value. Changing this forces a new resource to be created.
+        Specifies the CPU CFS quota period value.
     cpuManagerPolicy : str, default is Undefined, optional
-        Specifies the CPU Manager policy to use. Possible values are none and static, Changing this forces a new resource to be created.
+        Specifies the CPU Manager policy to use. Possible values are none and static,
     imageGcHighThreshold : float, default is Undefined, optional
-        Specifies the percent of disk usage above which image garbage collection is always run. Must be between 0 and 100. Changing this forces a new resource to be created.
+        Specifies the percent of disk usage above which image garbage collection is always run. Must be between 0 and 100.
     imageGcLowThreshold : float, default is Undefined, optional
-        Specifies the percent of disk usage lower than which image garbage collection is never run. Must be between 0 and 100. Changing this forces a new resource to be created.
+        Specifies the percent of disk usage lower than which image garbage collection is never run. Must be between 0 and 100.
     podMaxPid : float, default is Undefined, optional
-        Specifies the maximum number of processes per pod. Changing this forces a new resource to be created.
+        Specifies the maximum number of processes per pod.
     topologyManagerPolicy : str, default is Undefined, optional
-        Specifies the Topology Manager policy to use. Possible values are none, best-effort, restricted or single-numa-node. Changing this forces a new resource to be created.
+        Specifies the Topology Manager policy to use. Possible values are none, best-effort, restricted or single-numa-node.
     """
 
 
@@ -1095,13 +1083,13 @@ schema ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecInitPro
     Attributes
     ----------
     swapFileSizeMb : float, default is Undefined, optional
-        Specifies the size of swap file on each node in MB. Changing this forces a new resource to be created.
+        Specifies the size of swap file on each node in MB.
     sysctlConfig : [ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecInitProviderLinuxOsConfigItems0SysctlConfigItems0], default is Undefined, optional
-        A sysctl_config block as defined below. Changing this forces a new resource to be created.
+        A sysctl_config block as defined below.
     transparentHugePageDefrag : str, default is Undefined, optional
-        specifies the defrag configuration for Transparent Huge Page. Possible values are always, defer, defer+madvise, madvise and never. Changing this forces a new resource to be created.
+        specifies the defrag configuration for Transparent Huge Page. Possible values are always, defer, defer+madvise, madvise and never.
     transparentHugePageEnabled : str, default is Undefined, optional
-        Specifies the Transparent Huge Page enabled configuration. Possible values are always, madvise and never. Changing this forces a new resource to be created.
+        Specifies the Transparent Huge Page enabled configuration. Possible values are always, madvise and never.
     """
 
 
@@ -1121,63 +1109,63 @@ schema ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecInitPro
     Attributes
     ----------
     fsAioMaxNr : float, default is Undefined, optional
-        The sysctl setting fs.aio-max-nr. Must be between 65536 and 6553500. Changing this forces a new resource to be created.
+        The sysctl setting fs.aio-max-nr. Must be between 65536 and 6553500.
     fsFileMax : float, default is Undefined, optional
-        The sysctl setting fs.file-max. Must be between 8192 and 12000500. Changing this forces a new resource to be created.
+        The sysctl setting fs.file-max. Must be between 8192 and 12000500.
     fsInotifyMaxUserWatches : float, default is Undefined, optional
-        The sysctl setting fs.inotify.max_user_watches. Must be between 781250 and 2097152. Changing this forces a new resource to be created.
+        The sysctl setting fs.inotify.max_user_watches. Must be between 781250 and 2097152.
     fsNrOpen : float, default is Undefined, optional
-        The sysctl setting fs.nr_open. Must be between 8192 and 20000500. Changing this forces a new resource to be created.
+        The sysctl setting fs.nr_open. Must be between 8192 and 20000500.
     kernelThreadsMax : float, default is Undefined, optional
-        The sysctl setting kernel.threads-max. Must be between 20 and 513785. Changing this forces a new resource to be created.
+        The sysctl setting kernel.threads-max. Must be between 20 and 513785.
     netCoreNetdevMaxBacklog : float, default is Undefined, optional
-        The sysctl setting net.core.netdev_max_backlog. Must be between 1000 and 3240000. Changing this forces a new resource to be created.
+        The sysctl setting net.core.netdev_max_backlog. Must be between 1000 and 3240000.
     netCoreOptmemMax : float, default is Undefined, optional
-        The sysctl setting net.core.optmem_max. Must be between 20480 and 4194304. Changing this forces a new resource to be created.
+        The sysctl setting net.core.optmem_max. Must be between 20480 and 4194304.
     netCoreRmemDefault : float, default is Undefined, optional
-        The sysctl setting net.core.rmem_default. Must be between 212992 and 134217728. Changing this forces a new resource to be created.
+        The sysctl setting net.core.rmem_default. Must be between 212992 and 134217728.
     netCoreRmemMax : float, default is Undefined, optional
-        The sysctl setting net.core.rmem_max. Must be between 212992 and 134217728. Changing this forces a new resource to be created.
+        The sysctl setting net.core.rmem_max. Must be between 212992 and 134217728.
     netCoreSomaxconn : float, default is Undefined, optional
-        The sysctl setting net.core.somaxconn. Must be between 4096 and 3240000. Changing this forces a new resource to be created.
+        The sysctl setting net.core.somaxconn. Must be between 4096 and 3240000.
     netCoreWmemDefault : float, default is Undefined, optional
-        The sysctl setting net.core.wmem_default. Must be between 212992 and 134217728. Changing this forces a new resource to be created.
+        The sysctl setting net.core.wmem_default. Must be between 212992 and 134217728.
     netCoreWmemMax : float, default is Undefined, optional
-        The sysctl setting net.core.wmem_max. Must be between 212992 and 134217728. Changing this forces a new resource to be created.
+        The sysctl setting net.core.wmem_max. Must be between 212992 and 134217728.
     netIpv4IpLocalPortRangeMax : float, default is Undefined, optional
-        The sysctl setting net.ipv4.ip_local_port_range max value. Must be between 32768 and 65535. Changing this forces a new resource to be created.
+        The sysctl setting net.ipv4.ip_local_port_range max value. Must be between 32768 and 65535.
     netIpv4IpLocalPortRangeMin : float, default is Undefined, optional
-        The sysctl setting net.ipv4.ip_local_port_range min value. Must be between 1024 and 60999. Changing this forces a new resource to be created.
+        The sysctl setting net.ipv4.ip_local_port_range min value. Must be between 1024 and 60999.
     netIpv4NeighDefaultGcThresh1 : float, default is Undefined, optional
-        The sysctl setting net.ipv4.neigh.default.gc_thresh1. Must be between 128 and 80000. Changing this forces a new resource to be created.
+        The sysctl setting net.ipv4.neigh.default.gc_thresh1. Must be between 128 and 80000.
     netIpv4NeighDefaultGcThresh2 : float, default is Undefined, optional
-        The sysctl setting net.ipv4.neigh.default.gc_thresh2. Must be between 512 and 90000. Changing this forces a new resource to be created.
+        The sysctl setting net.ipv4.neigh.default.gc_thresh2. Must be between 512 and 90000.
     netIpv4NeighDefaultGcThresh3 : float, default is Undefined, optional
-        The sysctl setting net.ipv4.neigh.default.gc_thresh3. Must be between 1024 and 100000. Changing this forces a new resource to be created.
+        The sysctl setting net.ipv4.neigh.default.gc_thresh3. Must be between 1024 and 100000.
     netIpv4TcpFinTimeout : float, default is Undefined, optional
-        The sysctl setting net.ipv4.tcp_fin_timeout. Must be between 5 and 120. Changing this forces a new resource to be created.
+        The sysctl setting net.ipv4.tcp_fin_timeout. Must be between 5 and 120.
     netIpv4TcpKeepaliveIntvl : float, default is Undefined, optional
-        The sysctl setting net.ipv4.tcp_keepalive_intvl. Must be between 10 and 90. Changing this forces a new resource to be created.
+        The sysctl setting net.ipv4.tcp_keepalive_intvl. Must be between 10 and 90.
     netIpv4TcpKeepaliveProbes : float, default is Undefined, optional
-        The sysctl setting net.ipv4.tcp_keepalive_probes. Must be between 1 and 15. Changing this forces a new resource to be created.
+        The sysctl setting net.ipv4.tcp_keepalive_probes. Must be between 1 and 15.
     netIpv4TcpKeepaliveTime : float, default is Undefined, optional
-        The sysctl setting net.ipv4.tcp_keepalive_time. Must be between 30 and 432000. Changing this forces a new resource to be created.
+        The sysctl setting net.ipv4.tcp_keepalive_time. Must be between 30 and 432000.
     netIpv4TcpMaxSynBacklog : float, default is Undefined, optional
-        The sysctl setting net.ipv4.tcp_max_syn_backlog. Must be between 128 and 3240000. Changing this forces a new resource to be created.
+        The sysctl setting net.ipv4.tcp_max_syn_backlog. Must be between 128 and 3240000.
     netIpv4TcpMaxTwBuckets : float, default is Undefined, optional
-        The sysctl setting net.ipv4.tcp_max_tw_buckets. Must be between 8000 and 1440000. Changing this forces a new resource to be created.
+        The sysctl setting net.ipv4.tcp_max_tw_buckets. Must be between 8000 and 1440000.
     netIpv4TcpTwReuse : bool, default is Undefined, optional
-        Is sysctl setting net.ipv4.tcp_tw_reuse enabled? Changing this forces a new resource to be created.
+        Is sysctl setting net.ipv4.tcp_tw_reuse enabled?
     netNetfilterNfConntrackBuckets : float, default is Undefined, optional
-        The sysctl setting net.netfilter.nf_conntrack_buckets. Must be between 65536 and 524288. Changing this forces a new resource to be created.
+        The sysctl setting net.netfilter.nf_conntrack_buckets. Must be between 65536 and 524288.
     netNetfilterNfConntrackMax : float, default is Undefined, optional
-        The sysctl setting net.netfilter.nf_conntrack_max. Must be between 131072 and 2097152. Changing this forces a new resource to be created.
+        The sysctl setting net.netfilter.nf_conntrack_max. Must be between 131072 and 2097152.
     vmMaxMapCount : float, default is Undefined, optional
-        The sysctl setting vm.max_map_count. Must be between 65530 and 262144. Changing this forces a new resource to be created.
+        The sysctl setting vm.max_map_count. Must be between 65530 and 262144.
     vmSwappiness : float, default is Undefined, optional
-        The sysctl setting vm.swappiness. Must be between 0 and 100. Changing this forces a new resource to be created.
+        The sysctl setting vm.swappiness. Must be between 0 and 100.
     vmVfsCachePressure : float, default is Undefined, optional
-        The sysctl setting vm.vfs_cache_pressure. Must be between 0 and 100. Changing this forces a new resource to be created.
+        The sysctl setting vm.vfs_cache_pressure. Must be between 0 and 100.
     """
 
 
@@ -1384,7 +1372,7 @@ schema ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecInitPro
     maxSurge : str, default is Undefined, optional
         The maximum number or percentage of nodes which will be added to the Node Pool size during an upgrade.
     nodeSoakDurationInMinutes : float, default is Undefined, optional
-        The amount of time in minutes to wait after draining a node and before reimaging and moving on to next node. Defaults to 0.
+        The amount of time in minutes to wait after draining a node and before reimaging and moving on to next node.
     """
 
 
@@ -1542,112 +1530,12 @@ schema ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecProvide
     resolve?: "Always" | "IfNotPresent"
 
 
-schema ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecPublishConnectionDetailsToConfigRef
-
-    metadata?: ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------
@@ -1693,40 +1581,34 @@ schema ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolStatusAtPro
 
     Attributes
     ----------
+    autoScalingEnabled : bool, default is Undefined, optional
+        Whether to enable auto-scaler.
     capacityReservationGroupId : str, default is Undefined, optional
         Specifies the ID of the Capacity Reservation Group where this Node Pool should exist. Changing this forces a new resource to be created.
-    customCaTrustEnabled : bool, default is Undefined, optional
-        Specifies whether to trust a Custom CA.
-    enableAutoScaling : bool, default is Undefined, optional
-        Whether to enable auto-scaler.
-    enableHostEncryption : bool, default is Undefined, optional
-        Should the nodes in this Node Pool have host encryption enabled? Changing this forces a new resource to be created.
-    enableNodePublicIp : bool, default is Undefined, optional
-        Should each node have a Public IP Address? Changing this forces a new resource to be created.
     evictionPolicy : str, default is Undefined, optional
         The Eviction Policy which should be used for Virtual Machines within the Virtual Machine Scale Set powering this Node Pool. Possible values are Deallocate and Delete. Changing this forces a new resource to be created.
     fipsEnabled : bool, default is Undefined, optional
-        Should the nodes in this Node Pool have Federal Information Processing Standard enabled? Changing this forces a new resource to be created.
+        Should the nodes in this Node Pool have Federal Information Processing Standard enabled? Changing this property requires specifying temporary_name_for_rotation.
     gpuInstance : str, default is Undefined, optional
         Specifies the GPU MIG instance profile for supported GPU VM SKU. The allowed values are MIG1g, MIG2g, MIG3g, MIG4g and MIG7g. Changing this forces a new resource to be created.
+    hostEncryptionEnabled : bool, default is Undefined, optional
+        Should the nodes in this Node Pool have host encryption enabled? Changing this property requires specifying temporary_name_for_rotation.
     hostGroupId : str, default is Undefined, optional
         The fully qualified resource ID of the Dedicated Host Group to provision virtual machines from. Changing this forces a new resource to be created.
     id : str, default is Undefined, optional
         The ID of the Kubernetes Cluster Node Pool.
     kubeletConfig : [ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolStatusAtProviderKubeletConfigItems0], default is Undefined, optional
-        A kubelet_config block as defined below. Changing this forces a new resource to be created.
+        A kubelet_config block as defined below. Changing this requires specifying temporary_name_for_rotation.
     kubeletDiskType : str, default is Undefined, optional
-        The type of disk used by kubelet. Possible values are OS and Temporary.
+        The type of disk used by kubelet. Possible values are OS and Temporary. Changing this property requires specifying temporary_name_for_rotation.
     kubernetesClusterId : str, default is Undefined, optional
         The ID of the Kubernetes Cluster where this Node Pool should exist. Changing this forces a new resource to be created.
     linuxOsConfig : [ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolStatusAtProviderLinuxOsConfigItems0], default is Undefined, optional
-        A linux_os_config block as defined below. Changing this forces a new resource to be created.
+        A linux_os_config block as defined below. Changing this requires specifying temporary_name_for_rotation.
     maxCount : float, default is Undefined, optional
         The maximum number of nodes which should exist within this Node Pool. Valid values are between 0 and 1000 and must be greater than or equal to min_count.
     maxPods : float, default is Undefined, optional
-        The maximum number of pods that can run on each agent. Changing this forces a new resource to be created.
-    messageOfTheDay : str, default is Undefined, optional
-        A base64-encoded string which will be written to /etc/motd after decoding. This allows customization of the message of the day for Linux nodes. It cannot be specified for Windows nodes and must be a static string (i.e. will be printed raw and not executed as a script). Changing this forces a new resource to be created.
+        The maximum number of pods that can run on each agent. Changing this property requires specifying temporary_name_for_rotation.
     minCount : float, default is Undefined, optional
         The minimum number of nodes which should exist within this Node Pool. Valid values are between 0 and 1000 and must be less than or equal to max_count.
     mode : str, default is Undefined, optional
@@ -1737,22 +1619,24 @@ schema ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolStatusAtPro
         A map of Kubernetes labels which should be applied to nodes in this Node Pool.
     nodeNetworkProfile : [ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolStatusAtProviderNodeNetworkProfileItems0], default is Undefined, optional
         A node_network_profile block as documented below.
+    nodePublicIpEnabled : bool, default is Undefined, optional
+        Should each node have a Public IP Address? Changing this property requires specifying temporary_name_for_rotation.
     nodePublicIpPrefixId : str, default is Undefined, optional
-        Resource ID for the Public IP Addresses Prefix for the nodes in this Node Pool. enable_node_public_ip should be true. Changing this forces a new resource to be created.
+        Resource ID for the Public IP Addresses Prefix for the nodes in this Node Pool. node_public_ip_enabled should be true. Changing this forces a new resource to be created.
     nodeTaints : [str], default is Undefined, optional
         A list of Kubernetes taints which should be applied to nodes in the agent pool (e.g key=value:NoSchedule).
     orchestratorVersion : str, default is Undefined, optional
         Version of Kubernetes used for the Agents. If not specified, the latest recommended version will be used at provisioning time (but won't auto-upgrade). AKS does not require an exact patch version to be specified, minor version aliases such as 1.22 are also supported. - The minor version's latest GA patch is automatically chosen in that case. More details can be found in the documentation.
     osDiskSizeGb : float, default is Undefined, optional
-        The Agent Operating System disk size in GB. Changing this forces a new resource to be created.
+        The Agent Operating System disk size in GB. Changing this property requires specifying temporary_name_for_rotation.
     osDiskType : str, default is Undefined, optional
-        The type of disk which should be used for the Operating System. Possible values are Ephemeral and Managed. Defaults to Managed. Changing this forces a new resource to be created.
+        The type of disk which should be used for the Operating System. Possible values are Ephemeral and Managed. Defaults to Managed. Changing this property requires specifying temporary_name_for_rotation.
     osSku : str, default is Undefined, optional
-        Specifies the OS SKU used by the agent pool. Possible values are AzureLinux, Ubuntu, Windows2019 and Windows2022. If not specified, the default is Ubuntu if OSType=Linux or Windows2019 if OSType=Windows. And the default Windows OSSKU will be changed to Windows2022 after Windows2019 is deprecated. Changing this forces a new resource to be created.
+        Specifies the OS SKU used by the agent pool. Possible values are AzureLinux, Ubuntu, Windows2019 and Windows2022. If not specified, the default is Ubuntu if OSType=Linux or Windows2019 if OSType=Windows. And the default Windows OSSKU will be changed to Windows2022 after Windows2019 is deprecated. Changing this from AzureLinux or Ubuntu to AzureLinux or Ubuntu will not replace the resource, otherwise it forces a new resource to be created.
     osType : str, default is Undefined, optional
         The Operating System which should be used for this Node Pool. Changing this forces a new resource to be created. Possible values are Linux and Windows. Defaults to Linux.
     podSubnetId : str, default is Undefined, optional
-        The ID of the Subnet where the pods in the Node Pool should exist. Changing this forces a new resource to be created.
+        The ID of the Subnet where the pods in the Node Pool should exist. Changing this property requires specifying temporary_name_for_rotation.
     priority : str, default is Undefined, optional
         The Priority for Virtual Machines within the Virtual Machine Scale Set that powers this Node Pool. Possible values are Regular and Spot. Defaults to Regular. Changing this forces a new resource to be created.
     proximityPlacementGroupId : str, default is Undefined, optional
@@ -1760,43 +1644,41 @@ schema ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolStatusAtPro
     scaleDownMode : str, default is Undefined, optional
         Specifies how the node pool should deal with scaled-down nodes. Allowed values are Delete and Deallocate. Defaults to Delete.
     snapshotId : str, default is Undefined, optional
-        The ID of the Snapshot which should be used to create this Node Pool. Changing this forces a new resource to be created.
+        The ID of the Snapshot which should be used to create this Node Pool. Changing this property requires specifying temporary_name_for_rotation.
     spotMaxPrice : float, default is Undefined, optional
         The maximum price you're willing to pay in USD per Virtual Machine. Valid values are -1 (the current on-demand price for a Virtual Machine) or a positive value with up to five decimal places. Changing this forces a new resource to be created.
     tags : {str:str}, default is Undefined, optional
         A mapping of tags to assign to the resource.
+    temporaryNameForRotation : str, default is Undefined, optional
+        Specifies the name of the temporary node pool used to cycle the node pool when one of the relevant properties are updated.
     ultraSsdEnabled : bool, default is Undefined, optional
-        Used to specify whether the UltraSSD is enabled in the Node Pool. Defaults to false. See the documentation for more information. Changing this forces a new resource to be created.
+        Used to specify whether the UltraSSD is enabled in the Node Pool. Defaults to false. See the documentation for more information. Changing this property requires specifying temporary_name_for_rotation.
     upgradeSettings : [ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolStatusAtProviderUpgradeSettingsItems0], default is Undefined, optional
         A upgrade_settings block as documented below.
     vmSize : str, default is Undefined, optional
-        The SKU which should be used for the Virtual Machines used in this Node Pool. Changing this forces a new resource to be created.
+        The SKU which should be used for the Virtual Machines used in this Node Pool. Changing this property requires specifying temporary_name_for_rotation.
     vnetSubnetId : str, default is Undefined, optional
-        The ID of the Subnet where this Node Pool should exist. Changing this forces a new resource to be created.
+        The ID of the Subnet where this Node Pool should exist. Changing this property requires specifying temporary_name_for_rotation.
     windowsProfile : [ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolStatusAtProviderWindowsProfileItems0], default is Undefined, optional
         A windows_profile block as documented below. Changing this forces a new resource to be created.
     workloadRuntime : str, default is Undefined, optional
-        Used to specify the workload runtime. Allowed values are OCIContainer, WasmWasi and KataMshvVmIsolation.
+        Used to specify the workload runtime. Allowed values are OCIContainer and WasmWasi.
     zones : [str], default is Undefined, optional
-        Specifies a list of Availability Zones in which this Kubernetes Cluster Node Pool should be located. Changing this forces a new Kubernetes Cluster Node Pool to be created.
+        Specifies a list of Availability Zones in which this Kubernetes Cluster Node Pool should be located. Changing this property requires specifying temporary_name_for_rotation.
     """
 
 
+    autoScalingEnabled?: bool
+
     capacityReservationGroupId?: str
-
-    customCaTrustEnabled?: bool
-
-    enableAutoScaling?: bool
-
-    enableHostEncryption?: bool
-
-    enableNodePublicIp?: bool
 
     evictionPolicy?: str
 
     fipsEnabled?: bool
 
     gpuInstance?: str
+
+    hostEncryptionEnabled?: bool
 
     hostGroupId?: str
 
@@ -1814,8 +1696,6 @@ schema ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolStatusAtPro
 
     maxPods?: float
 
-    messageOfTheDay?: str
-
     minCount?: float
 
     mode?: str
@@ -1825,6 +1705,8 @@ schema ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolStatusAtPro
     nodeLabels?: {str:str}
 
     nodeNetworkProfile?: [ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolStatusAtProviderNodeNetworkProfileItems0]
+
+    nodePublicIpEnabled?: bool
 
     nodePublicIpPrefixId?: str
 
@@ -1854,6 +1736,8 @@ schema ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolStatusAtPro
 
     tags?: {str:str}
 
+    temporaryNameForRotation?: str
+
     ultraSsdEnabled?: bool
 
     upgradeSettings?: [ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolStatusAtProviderUpgradeSettingsItems0]
@@ -1876,25 +1760,25 @@ schema ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolStatusAtPro
     Attributes
     ----------
     allowedUnsafeSysctls : [str], default is Undefined, optional
-        Specifies the allow list of unsafe sysctls command or patterns (ending in *). Changing this forces a new resource to be created.
+        Specifies the allow list of unsafe sysctls command or patterns (ending in *).
     containerLogMaxLine : float, default is Undefined, optional
-        Specifies the maximum number of container log files that can be present for a container. must be at least 2. Changing this forces a new resource to be created.
+        Specifies the maximum number of container log files that can be present for a container. must be at least 2.
     containerLogMaxSizeMb : float, default is Undefined, optional
-        Specifies the maximum size (e.g. 10MB) of container log file before it is rotated. Changing this forces a new resource to be created.
+        Specifies the maximum size (e.g. 10MB) of container log file before it is rotated.
     cpuCfsQuotaEnabled : bool, default is Undefined, optional
-        Is CPU CFS quota enforcement for containers enabled? Changing this forces a new resource to be created.
+        Is CPU CFS quota enforcement for containers enabled? Defaults to true.
     cpuCfsQuotaPeriod : str, default is Undefined, optional
-        Specifies the CPU CFS quota period value. Changing this forces a new resource to be created.
+        Specifies the CPU CFS quota period value.
     cpuManagerPolicy : str, default is Undefined, optional
-        Specifies the CPU Manager policy to use. Possible values are none and static, Changing this forces a new resource to be created.
+        Specifies the CPU Manager policy to use. Possible values are none and static,
     imageGcHighThreshold : float, default is Undefined, optional
-        Specifies the percent of disk usage above which image garbage collection is always run. Must be between 0 and 100. Changing this forces a new resource to be created.
+        Specifies the percent of disk usage above which image garbage collection is always run. Must be between 0 and 100.
     imageGcLowThreshold : float, default is Undefined, optional
-        Specifies the percent of disk usage lower than which image garbage collection is never run. Must be between 0 and 100. Changing this forces a new resource to be created.
+        Specifies the percent of disk usage lower than which image garbage collection is never run. Must be between 0 and 100.
     podMaxPid : float, default is Undefined, optional
-        Specifies the maximum number of processes per pod. Changing this forces a new resource to be created.
+        Specifies the maximum number of processes per pod.
     topologyManagerPolicy : str, default is Undefined, optional
-        Specifies the Topology Manager policy to use. Possible values are none, best-effort, restricted or single-numa-node. Changing this forces a new resource to be created.
+        Specifies the Topology Manager policy to use. Possible values are none, best-effort, restricted or single-numa-node.
     """
 
 
@@ -1926,13 +1810,13 @@ schema ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolStatusAtPro
     Attributes
     ----------
     swapFileSizeMb : float, default is Undefined, optional
-        Specifies the size of swap file on each node in MB. Changing this forces a new resource to be created.
+        Specifies the size of swap file on each node in MB.
     sysctlConfig : [ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolStatusAtProviderLinuxOsConfigItems0SysctlConfigItems0], default is Undefined, optional
-        A sysctl_config block as defined below. Changing this forces a new resource to be created.
+        A sysctl_config block as defined below.
     transparentHugePageDefrag : str, default is Undefined, optional
-        specifies the defrag configuration for Transparent Huge Page. Possible values are always, defer, defer+madvise, madvise and never. Changing this forces a new resource to be created.
+        specifies the defrag configuration for Transparent Huge Page. Possible values are always, defer, defer+madvise, madvise and never.
     transparentHugePageEnabled : str, default is Undefined, optional
-        Specifies the Transparent Huge Page enabled configuration. Possible values are always, madvise and never. Changing this forces a new resource to be created.
+        Specifies the Transparent Huge Page enabled configuration. Possible values are always, madvise and never.
     """
 
 
@@ -1952,63 +1836,63 @@ schema ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolStatusAtPro
     Attributes
     ----------
     fsAioMaxNr : float, default is Undefined, optional
-        The sysctl setting fs.aio-max-nr. Must be between 65536 and 6553500. Changing this forces a new resource to be created.
+        The sysctl setting fs.aio-max-nr. Must be between 65536 and 6553500.
     fsFileMax : float, default is Undefined, optional
-        The sysctl setting fs.file-max. Must be between 8192 and 12000500. Changing this forces a new resource to be created.
+        The sysctl setting fs.file-max. Must be between 8192 and 12000500.
     fsInotifyMaxUserWatches : float, default is Undefined, optional
-        The sysctl setting fs.inotify.max_user_watches. Must be between 781250 and 2097152. Changing this forces a new resource to be created.
+        The sysctl setting fs.inotify.max_user_watches. Must be between 781250 and 2097152.
     fsNrOpen : float, default is Undefined, optional
-        The sysctl setting fs.nr_open. Must be between 8192 and 20000500. Changing this forces a new resource to be created.
+        The sysctl setting fs.nr_open. Must be between 8192 and 20000500.
     kernelThreadsMax : float, default is Undefined, optional
-        The sysctl setting kernel.threads-max. Must be between 20 and 513785. Changing this forces a new resource to be created.
+        The sysctl setting kernel.threads-max. Must be between 20 and 513785.
     netCoreNetdevMaxBacklog : float, default is Undefined, optional
-        The sysctl setting net.core.netdev_max_backlog. Must be between 1000 and 3240000. Changing this forces a new resource to be created.
+        The sysctl setting net.core.netdev_max_backlog. Must be between 1000 and 3240000.
     netCoreOptmemMax : float, default is Undefined, optional
-        The sysctl setting net.core.optmem_max. Must be between 20480 and 4194304. Changing this forces a new resource to be created.
+        The sysctl setting net.core.optmem_max. Must be between 20480 and 4194304.
     netCoreRmemDefault : float, default is Undefined, optional
-        The sysctl setting net.core.rmem_default. Must be between 212992 and 134217728. Changing this forces a new resource to be created.
+        The sysctl setting net.core.rmem_default. Must be between 212992 and 134217728.
     netCoreRmemMax : float, default is Undefined, optional
-        The sysctl setting net.core.rmem_max. Must be between 212992 and 134217728. Changing this forces a new resource to be created.
+        The sysctl setting net.core.rmem_max. Must be between 212992 and 134217728.
     netCoreSomaxconn : float, default is Undefined, optional
-        The sysctl setting net.core.somaxconn. Must be between 4096 and 3240000. Changing this forces a new resource to be created.
+        The sysctl setting net.core.somaxconn. Must be between 4096 and 3240000.
     netCoreWmemDefault : float, default is Undefined, optional
-        The sysctl setting net.core.wmem_default. Must be between 212992 and 134217728. Changing this forces a new resource to be created.
+        The sysctl setting net.core.wmem_default. Must be between 212992 and 134217728.
     netCoreWmemMax : float, default is Undefined, optional
-        The sysctl setting net.core.wmem_max. Must be between 212992 and 134217728. Changing this forces a new resource to be created.
+        The sysctl setting net.core.wmem_max. Must be between 212992 and 134217728.
     netIpv4IpLocalPortRangeMax : float, default is Undefined, optional
-        The sysctl setting net.ipv4.ip_local_port_range max value. Must be between 32768 and 65535. Changing this forces a new resource to be created.
+        The sysctl setting net.ipv4.ip_local_port_range max value. Must be between 32768 and 65535.
     netIpv4IpLocalPortRangeMin : float, default is Undefined, optional
-        The sysctl setting net.ipv4.ip_local_port_range min value. Must be between 1024 and 60999. Changing this forces a new resource to be created.
+        The sysctl setting net.ipv4.ip_local_port_range min value. Must be between 1024 and 60999.
     netIpv4NeighDefaultGcThresh1 : float, default is Undefined, optional
-        The sysctl setting net.ipv4.neigh.default.gc_thresh1. Must be between 128 and 80000. Changing this forces a new resource to be created.
+        The sysctl setting net.ipv4.neigh.default.gc_thresh1. Must be between 128 and 80000.
     netIpv4NeighDefaultGcThresh2 : float, default is Undefined, optional
-        The sysctl setting net.ipv4.neigh.default.gc_thresh2. Must be between 512 and 90000. Changing this forces a new resource to be created.
+        The sysctl setting net.ipv4.neigh.default.gc_thresh2. Must be between 512 and 90000.
     netIpv4NeighDefaultGcThresh3 : float, default is Undefined, optional
-        The sysctl setting net.ipv4.neigh.default.gc_thresh3. Must be between 1024 and 100000. Changing this forces a new resource to be created.
+        The sysctl setting net.ipv4.neigh.default.gc_thresh3. Must be between 1024 and 100000.
     netIpv4TcpFinTimeout : float, default is Undefined, optional
-        The sysctl setting net.ipv4.tcp_fin_timeout. Must be between 5 and 120. Changing this forces a new resource to be created.
+        The sysctl setting net.ipv4.tcp_fin_timeout. Must be between 5 and 120.
     netIpv4TcpKeepaliveIntvl : float, default is Undefined, optional
-        The sysctl setting net.ipv4.tcp_keepalive_intvl. Must be between 10 and 90. Changing this forces a new resource to be created.
+        The sysctl setting net.ipv4.tcp_keepalive_intvl. Must be between 10 and 90.
     netIpv4TcpKeepaliveProbes : float, default is Undefined, optional
-        The sysctl setting net.ipv4.tcp_keepalive_probes. Must be between 1 and 15. Changing this forces a new resource to be created.
+        The sysctl setting net.ipv4.tcp_keepalive_probes. Must be between 1 and 15.
     netIpv4TcpKeepaliveTime : float, default is Undefined, optional
-        The sysctl setting net.ipv4.tcp_keepalive_time. Must be between 30 and 432000. Changing this forces a new resource to be created.
+        The sysctl setting net.ipv4.tcp_keepalive_time. Must be between 30 and 432000.
     netIpv4TcpMaxSynBacklog : float, default is Undefined, optional
-        The sysctl setting net.ipv4.tcp_max_syn_backlog. Must be between 128 and 3240000. Changing this forces a new resource to be created.
+        The sysctl setting net.ipv4.tcp_max_syn_backlog. Must be between 128 and 3240000.
     netIpv4TcpMaxTwBuckets : float, default is Undefined, optional
-        The sysctl setting net.ipv4.tcp_max_tw_buckets. Must be between 8000 and 1440000. Changing this forces a new resource to be created.
+        The sysctl setting net.ipv4.tcp_max_tw_buckets. Must be between 8000 and 1440000.
     netIpv4TcpTwReuse : bool, default is Undefined, optional
-        Is sysctl setting net.ipv4.tcp_tw_reuse enabled? Changing this forces a new resource to be created.
+        Is sysctl setting net.ipv4.tcp_tw_reuse enabled?
     netNetfilterNfConntrackBuckets : float, default is Undefined, optional
-        The sysctl setting net.netfilter.nf_conntrack_buckets. Must be between 65536 and 524288. Changing this forces a new resource to be created.
+        The sysctl setting net.netfilter.nf_conntrack_buckets. Must be between 65536 and 524288.
     netNetfilterNfConntrackMax : float, default is Undefined, optional
-        The sysctl setting net.netfilter.nf_conntrack_max. Must be between 131072 and 2097152. Changing this forces a new resource to be created.
+        The sysctl setting net.netfilter.nf_conntrack_max. Must be between 131072 and 2097152.
     vmMaxMapCount : float, default is Undefined, optional
-        The sysctl setting vm.max_map_count. Must be between 65530 and 262144. Changing this forces a new resource to be created.
+        The sysctl setting vm.max_map_count. Must be between 65530 and 262144.
     vmSwappiness : float, default is Undefined, optional
-        The sysctl setting vm.swappiness. Must be between 0 and 100. Changing this forces a new resource to be created.
+        The sysctl setting vm.swappiness. Must be between 0 and 100.
     vmVfsCachePressure : float, default is Undefined, optional
-        The sysctl setting vm.vfs_cache_pressure. Must be between 0 and 100. Changing this forces a new resource to be created.
+        The sysctl setting vm.vfs_cache_pressure. Must be between 0 and 100.
     """
 
 
@@ -2126,7 +2010,7 @@ schema ContainerserviceAzureUpboundIoV1beta1KubernetesClusterNodePoolStatusAtPro
     maxSurge : str, default is Undefined, optional
         The maximum number or percentage of nodes which will be added to the Node Pool size during an upgrade.
     nodeSoakDurationInMinutes : float, default is Undefined, optional
-        The amount of time in minutes to wait after draining a node and before reimaging and moving on to next node. Defaults to 0.
+        The amount of time in minutes to wait after draining a node and before reimaging and moving on to next node.
     """
 
 

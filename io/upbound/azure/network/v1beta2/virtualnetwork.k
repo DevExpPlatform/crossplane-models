@@ -66,8 +66,6 @@ schema NetworkAzureUpboundIoV1beta2VirtualNetworkSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : NetworkAzureUpboundIoV1beta2VirtualNetworkSpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : NetworkAzureUpboundIoV1beta2VirtualNetworkSpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : NetworkAzureUpboundIoV1beta2VirtualNetworkSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -82,8 +80,6 @@ schema NetworkAzureUpboundIoV1beta2VirtualNetworkSpec:
     managementPolicies?: [str] = ["*"]
 
     providerConfigRef?: NetworkAzureUpboundIoV1beta2VirtualNetworkSpecProviderConfigRef
-
-    publishConnectionDetailsTo?: NetworkAzureUpboundIoV1beta2VirtualNetworkSpecPublishConnectionDetailsTo
 
     writeConnectionSecretToRef?: NetworkAzureUpboundIoV1beta2VirtualNetworkSpecWriteConnectionSecretToRef
 
@@ -108,8 +104,12 @@ schema NetworkAzureUpboundIoV1beta2VirtualNetworkSpecForProvider:
         encryption
     flowTimeoutInMinutes : float, default is Undefined, optional
         The flow timeout in minutes for the Virtual Network, which is used to enable connection tracking for intra-VM flows. Possible values are between 4 and 30 minutes.
+    ipAddressPool : [NetworkAzureUpboundIoV1beta2VirtualNetworkSpecForProviderIPAddressPoolItems0], default is Undefined, optional
+        One or two ip_address_pool blocks as defined below. Only one association of each IP type(IPv4 or IPv6) is allowed.
     location : str, default is Undefined, optional
         The location/region where the virtual network is created. Changing this forces a new resource to be created.
+    privateEndpointVnetPolicies : str, default is Undefined, optional
+        The Private Endpoint VNet Policies for the Virtual Network. Possible values are Disabled and Basic. Defaults to Disabled.
     resourceGroupName : str, default is Undefined, optional
         The name of the resource group in which to create the virtual network. Changing this forces a new resource to be created.
     resourceGroupNameRef : NetworkAzureUpboundIoV1beta2VirtualNetworkSpecForProviderResourceGroupNameRef, default is Undefined, optional
@@ -135,7 +135,11 @@ schema NetworkAzureUpboundIoV1beta2VirtualNetworkSpecForProvider:
 
     flowTimeoutInMinutes?: float
 
+    ipAddressPool?: [NetworkAzureUpboundIoV1beta2VirtualNetworkSpecForProviderIPAddressPoolItems0]
+
     location?: str
+
+    privateEndpointVnetPolicies?: str
 
     resourceGroupName?: str
 
@@ -176,6 +180,24 @@ schema NetworkAzureUpboundIoV1beta2VirtualNetworkSpecForProviderEncryption:
 
 
     enforcement?: str
+
+
+schema NetworkAzureUpboundIoV1beta2VirtualNetworkSpecForProviderIPAddressPoolItems0:
+    r"""
+    network azure upbound io v1beta2 virtual network spec for provider IP address pool items0
+
+    Attributes
+    ----------
+    id : str, default is Undefined, optional
+        The ID of the Network Manager IP Address Management (IPAM) Pool.
+    numberOfIpAddresses : str, default is Undefined, optional
+        The number of IP addresses to allocated to the Virtual Network. The value must be a string that represents a positive number, e.g., "100".
+    """
+
+
+    id?: str
+
+    numberOfIpAddresses?: str
 
 
 schema NetworkAzureUpboundIoV1beta2VirtualNetworkSpecForProviderResourceGroupNameRef:
@@ -296,8 +318,12 @@ schema NetworkAzureUpboundIoV1beta2VirtualNetworkSpecInitProvider:
         encryption
     flowTimeoutInMinutes : float, default is Undefined, optional
         The flow timeout in minutes for the Virtual Network, which is used to enable connection tracking for intra-VM flows. Possible values are between 4 and 30 minutes.
+    ipAddressPool : [NetworkAzureUpboundIoV1beta2VirtualNetworkSpecInitProviderIPAddressPoolItems0], default is Undefined, optional
+        One or two ip_address_pool blocks as defined below. Only one association of each IP type(IPv4 or IPv6) is allowed.
     location : str, default is Undefined, optional
         The location/region where the virtual network is created. Changing this forces a new resource to be created.
+    privateEndpointVnetPolicies : str, default is Undefined, optional
+        The Private Endpoint VNet Policies for the Virtual Network. Possible values are Disabled and Basic. Defaults to Disabled.
     tags : {str:str}, default is Undefined, optional
         A mapping of tags to assign to the resource.
     """
@@ -317,7 +343,11 @@ schema NetworkAzureUpboundIoV1beta2VirtualNetworkSpecInitProvider:
 
     flowTimeoutInMinutes?: float
 
+    ipAddressPool?: [NetworkAzureUpboundIoV1beta2VirtualNetworkSpecInitProviderIPAddressPoolItems0]
+
     location?: str
+
+    privateEndpointVnetPolicies?: str
 
     tags?: {str:str}
 
@@ -352,6 +382,24 @@ schema NetworkAzureUpboundIoV1beta2VirtualNetworkSpecInitProviderEncryption:
 
 
     enforcement?: str
+
+
+schema NetworkAzureUpboundIoV1beta2VirtualNetworkSpecInitProviderIPAddressPoolItems0:
+    r"""
+    network azure upbound io v1beta2 virtual network spec init provider IP address pool items0
+
+    Attributes
+    ----------
+    id : str, default is Undefined, optional
+        The ID of the Network Manager IP Address Management (IPAM) Pool.
+    numberOfIpAddresses : str, default is Undefined, optional
+        The number of IP addresses to allocated to the Virtual Network. The value must be a string that represents a positive number, e.g., "100".
+    """
+
+
+    id?: str
+
+    numberOfIpAddresses?: str
 
 
 schema NetworkAzureUpboundIoV1beta2VirtualNetworkSpecProviderConfigRef:
@@ -398,112 +446,12 @@ schema NetworkAzureUpboundIoV1beta2VirtualNetworkSpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
-schema NetworkAzureUpboundIoV1beta2VirtualNetworkSpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : NetworkAzureUpboundIoV1beta2VirtualNetworkSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : NetworkAzureUpboundIoV1beta2VirtualNetworkSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: NetworkAzureUpboundIoV1beta2VirtualNetworkSpecPublishConnectionDetailsToConfigRef
-
-    metadata?: NetworkAzureUpboundIoV1beta2VirtualNetworkSpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema NetworkAzureUpboundIoV1beta2VirtualNetworkSpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : NetworkAzureUpboundIoV1beta2VirtualNetworkSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: NetworkAzureUpboundIoV1beta2VirtualNetworkSpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema NetworkAzureUpboundIoV1beta2VirtualNetworkSpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema NetworkAzureUpboundIoV1beta2VirtualNetworkSpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema NetworkAzureUpboundIoV1beta2VirtualNetworkSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------
@@ -564,11 +512,15 @@ schema NetworkAzureUpboundIoV1beta2VirtualNetworkStatusAtProvider:
     flowTimeoutInMinutes : float, default is Undefined, optional
         The flow timeout in minutes for the Virtual Network, which is used to enable connection tracking for intra-VM flows. Possible values are between 4 and 30 minutes.
     guid : str, default is Undefined, optional
-        The GUID of the virtual network.
+        The GUID of the Virtual Network.
     id : str, default is Undefined, optional
-        The virtual NetworkConfiguration ID.
+        The Virtual Network ID.
+    ipAddressPool : [NetworkAzureUpboundIoV1beta2VirtualNetworkStatusAtProviderIPAddressPoolItems0], default is Undefined, optional
+        One or two ip_address_pool blocks as defined below. Only one association of each IP type(IPv4 or IPv6) is allowed.
     location : str, default is Undefined, optional
         The location/region where the virtual network is created. Changing this forces a new resource to be created.
+    privateEndpointVnetPolicies : str, default is Undefined, optional
+        The Private Endpoint VNet Policies for the Virtual Network. Possible values are Disabled and Basic. Defaults to Disabled.
     resourceGroupName : str, default is Undefined, optional
         The name of the resource group in which to create the virtual network. Changing this forces a new resource to be created.
     subnet : [NetworkAzureUpboundIoV1beta2VirtualNetworkStatusAtProviderSubnetItems0], default is Undefined, optional
@@ -596,7 +548,11 @@ schema NetworkAzureUpboundIoV1beta2VirtualNetworkStatusAtProvider:
 
     id?: str
 
+    ipAddressPool?: [NetworkAzureUpboundIoV1beta2VirtualNetworkStatusAtProviderIPAddressPoolItems0]
+
     location?: str
+
+    privateEndpointVnetPolicies?: str
 
     resourceGroupName?: str
 
@@ -637,30 +593,116 @@ schema NetworkAzureUpboundIoV1beta2VirtualNetworkStatusAtProviderEncryption:
     enforcement?: str
 
 
+schema NetworkAzureUpboundIoV1beta2VirtualNetworkStatusAtProviderIPAddressPoolItems0:
+    r"""
+    network azure upbound io v1beta2 virtual network status at provider IP address pool items0
+
+    Attributes
+    ----------
+    allocatedIpAddressPrefixes : [str], default is Undefined, optional
+        The list of IP address prefixes allocated to the Virtual Network.
+    id : str, default is Undefined, optional
+        The ID of the Network Manager IP Address Management (IPAM) Pool.
+    numberOfIpAddresses : str, default is Undefined, optional
+        The number of IP addresses to allocated to the Virtual Network. The value must be a string that represents a positive number, e.g., "100".
+    """
+
+
+    allocatedIpAddressPrefixes?: [str]
+
+    id?: str
+
+    numberOfIpAddresses?: str
+
+
 schema NetworkAzureUpboundIoV1beta2VirtualNetworkStatusAtProviderSubnetItems0:
     r"""
     network azure upbound io v1beta2 virtual network status at provider subnet items0
 
     Attributes
     ----------
-    addressPrefix : str, default is Undefined, optional
-        The address prefix to use for the subnet.
+    addressPrefixes : [str], default is Undefined, optional
+        The address prefixes to use for the subnet.
+    defaultOutboundAccessEnabled : bool, default is Undefined, optional
+        Enable default outbound access to the internet for the subnet. Defaults to true.
+    delegation : NetworkAzureUpboundIoV1beta2VirtualNetworkStatusAtProviderSubnetItems0Delegation, default is Undefined, optional
+        delegation
     id : str, default is Undefined, optional
         The ID of this subnet.
     name : str, default is Undefined, optional
         The name of the subnet.
+    privateEndpointNetworkPolicies : str, default is Undefined, optional
+        Enable or Disable network policies for the private endpoint on the subnet. Possible values are Disabled, Enabled, NetworkSecurityGroupEnabled and RouteTableEnabled. Defaults to Disabled.
+    privateLinkServiceNetworkPoliciesEnabled : bool, default is Undefined, optional
+        Enable or Disable network policies for the private link service on the subnet. Defaults to true.
+    routeTableId : str, default is Undefined, optional
+        The ID of the Route Table that should be associated with this subnet.
     securityGroup : str, default is Undefined, optional
-        The Network Security Group to associate with the subnet. (Referenced by id, ie. azurerm_network_security_group.example.id)
+        The Network Security Group to associate with the subnet. (Referenced by id, i.e. azurerm_network_security_group.example.id)
+    serviceEndpointPolicyIds : [str], default is Undefined, optional
+        The list of IDs of Service Endpoint Policies to associate with the subnet.
+    serviceEndpoints : [str], default is Undefined, optional
+        The list of Service endpoints to associate with the subnet. Possible values include: Microsoft.AzureActiveDirectory, Microsoft.AzureCosmosDB, Microsoft.ContainerRegistry, Microsoft.EventHub, Microsoft.KeyVault, Microsoft.ServiceBus, Microsoft.Sql, Microsoft.Storage, Microsoft.Storage.Global and Microsoft.Web.
     """
 
 
-    addressPrefix?: str
+    addressPrefixes?: [str]
+
+    defaultOutboundAccessEnabled?: bool
+
+    delegation?: NetworkAzureUpboundIoV1beta2VirtualNetworkStatusAtProviderSubnetItems0Delegation
 
     id?: str
 
     name?: str
 
+    privateEndpointNetworkPolicies?: str
+
+    privateLinkServiceNetworkPoliciesEnabled?: bool
+
+    routeTableId?: str
+
     securityGroup?: str
+
+    serviceEndpointPolicyIds?: [str]
+
+    serviceEndpoints?: [str]
+
+
+schema NetworkAzureUpboundIoV1beta2VirtualNetworkStatusAtProviderSubnetItems0Delegation:
+    r"""
+    One or more delegation blocks as defined below.
+
+    Attributes
+    ----------
+    name : str, default is Undefined, optional
+        The name of the subnet.
+    serviceDelegation : NetworkAzureUpboundIoV1beta2VirtualNetworkStatusAtProviderSubnetItems0DelegationServiceDelegation, default is Undefined, optional
+        service delegation
+    """
+
+
+    name?: str
+
+    serviceDelegation?: NetworkAzureUpboundIoV1beta2VirtualNetworkStatusAtProviderSubnetItems0DelegationServiceDelegation
+
+
+schema NetworkAzureUpboundIoV1beta2VirtualNetworkStatusAtProviderSubnetItems0DelegationServiceDelegation:
+    r"""
+    A service_delegation block as defined below.
+
+    Attributes
+    ----------
+    actions : [str], default is Undefined, optional
+        A list of Actions which should be delegated. This list is specific to the service to delegate to. Possible values are Microsoft.Network/networkinterfaces/*, Microsoft.Network/publicIPAddresses/join/action, Microsoft.Network/publicIPAddresses/read, Microsoft.Network/virtualNetworks/read, Microsoft.Network/virtualNetworks/subnets/action, Microsoft.Network/virtualNetworks/subnets/join/action, Microsoft.Network/virtualNetworks/subnets/prepareNetworkPolicies/action, and Microsoft.Network/virtualNetworks/subnets/unprepareNetworkPolicies/action.
+    name : str, default is Undefined, optional
+        The name of the subnet.
+    """
+
+
+    actions?: [str]
+
+    name?: str
 
 
 schema NetworkAzureUpboundIoV1beta2VirtualNetworkStatusConditionsItems0:
