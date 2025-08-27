@@ -66,6 +66,8 @@ schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecProviderConfigRef, default is Undefined, optional
         provider config ref
+    publishConnectionDetailsTo : NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecPublishConnectionDetailsTo, default is Undefined, optional
+        publish connection details to
     writeConnectionSecretToRef : NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -81,6 +83,8 @@ schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpec:
 
     providerConfigRef?: NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecProviderConfigRef
 
+    publishConnectionDetailsTo?: NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecPublishConnectionDetailsTo
+
     writeConnectionSecretToRef?: NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecWriteConnectionSecretToRef
 
 
@@ -90,8 +94,8 @@ schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecForProvi
 
     Attributes
     ----------
-    ipConfigurations : NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecForProviderIPConfigurations, default is Undefined, optional
-        ip configurations
+    ipConfigurations : [NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecForProviderIPConfigurationsItems0], default is Undefined, optional
+        Can be specified multiple times to define multiple IP configurations. Each ip_configurations block as defined below.
     location : str, default is Undefined, optional
         Specifies the Azure Region where the Private DNS Resolver Inbound Endpoint should exist. Changing this forces a new Private DNS Resolver Inbound Endpoint to be created.
     privateDnsResolverId : str, default is Undefined, optional
@@ -105,7 +109,7 @@ schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecForProvi
     """
 
 
-    ipConfigurations?: NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecForProviderIPConfigurations
+    ipConfigurations?: [NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecForProviderIPConfigurationsItems0]
 
     location?: str
 
@@ -118,9 +122,9 @@ schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecForProvi
     tags?: {str:str}
 
 
-schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecForProviderIPConfigurations:
+schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecForProviderIPConfigurationsItems0:
     r"""
-    One ip_configurations block as defined below. Changing this forces a new Private DNS Resolver Inbound Endpoint to be created.
+    network azure upbound io v1beta1 private DNS resolver inbound endpoint spec for provider IP configurations items0
 
     Attributes
     ----------
@@ -130,9 +134,9 @@ schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecForProvi
         Private IP address allocation method. Allowed value is Dynamic and Static. Defaults to Dynamic.
     subnetId : str, default is Undefined, optional
         The subnet ID of the IP configuration.
-    subnetIdRef : NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecForProviderIPConfigurationsSubnetIDRef, default is Undefined, optional
+    subnetIdRef : NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecForProviderIPConfigurationsItems0SubnetIDRef, default is Undefined, optional
         subnet Id ref
-    subnetIdSelector : NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecForProviderIPConfigurationsSubnetIDSelector, default is Undefined, optional
+    subnetIdSelector : NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecForProviderIPConfigurationsItems0SubnetIDSelector, default is Undefined, optional
         subnet Id selector
     """
 
@@ -143,12 +147,12 @@ schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecForProvi
 
     subnetId?: str
 
-    subnetIdRef?: NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecForProviderIPConfigurationsSubnetIDRef
+    subnetIdRef?: NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecForProviderIPConfigurationsItems0SubnetIDRef
 
-    subnetIdSelector?: NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecForProviderIPConfigurationsSubnetIDSelector
+    subnetIdSelector?: NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecForProviderIPConfigurationsItems0SubnetIDSelector
 
 
-schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecForProviderIPConfigurationsSubnetIDRef:
+schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecForProviderIPConfigurationsItems0SubnetIDRef:
     r"""
     Reference to a Subnet in network to populate subnetId.
 
@@ -156,17 +160,17 @@ schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecForProvi
     ----------
     name : str, default is Undefined, required
         Name of the referenced object.
-    policy : NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecForProviderIPConfigurationsSubnetIDRefPolicy, default is Undefined, optional
+    policy : NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecForProviderIPConfigurationsItems0SubnetIDRefPolicy, default is Undefined, optional
         policy
     """
 
 
     name: str
 
-    policy?: NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecForProviderIPConfigurationsSubnetIDRefPolicy
+    policy?: NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecForProviderIPConfigurationsItems0SubnetIDRefPolicy
 
 
-schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecForProviderIPConfigurationsSubnetIDRefPolicy:
+schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecForProviderIPConfigurationsItems0SubnetIDRefPolicy:
     r"""
     Policies for referencing.
 
@@ -190,7 +194,7 @@ schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecForProvi
     resolve?: "Always" | "IfNotPresent"
 
 
-schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecForProviderIPConfigurationsSubnetIDSelector:
+schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecForProviderIPConfigurationsItems0SubnetIDSelector:
     r"""
     Selector for a Subnet in network to populate subnetId.
 
@@ -201,7 +205,7 @@ schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecForProvi
         as the selecting object is selected.
     matchLabels : {str:str}, default is Undefined, optional
         MatchLabels ensures an object with matching labels is selected.
-    policy : NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecForProviderIPConfigurationsSubnetIDSelectorPolicy, default is Undefined, optional
+    policy : NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecForProviderIPConfigurationsItems0SubnetIDSelectorPolicy, default is Undefined, optional
         policy
     """
 
@@ -210,10 +214,10 @@ schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecForProvi
 
     matchLabels?: {str:str}
 
-    policy?: NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecForProviderIPConfigurationsSubnetIDSelectorPolicy
+    policy?: NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecForProviderIPConfigurationsItems0SubnetIDSelectorPolicy
 
 
-schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecForProviderIPConfigurationsSubnetIDSelectorPolicy:
+schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecForProviderIPConfigurationsItems0SubnetIDSelectorPolicy:
     r"""
     Policies for selection.
 
@@ -341,8 +345,8 @@ schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecInitProv
 
     Attributes
     ----------
-    ipConfigurations : NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecInitProviderIPConfigurations, default is Undefined, optional
-        ip configurations
+    ipConfigurations : [NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecInitProviderIPConfigurationsItems0], default is Undefined, optional
+        Can be specified multiple times to define multiple IP configurations. Each ip_configurations block as defined below.
     location : str, default is Undefined, optional
         Specifies the Azure Region where the Private DNS Resolver Inbound Endpoint should exist. Changing this forces a new Private DNS Resolver Inbound Endpoint to be created.
     tags : {str:str}, default is Undefined, optional
@@ -350,16 +354,16 @@ schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecInitProv
     """
 
 
-    ipConfigurations?: NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecInitProviderIPConfigurations
+    ipConfigurations?: [NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecInitProviderIPConfigurationsItems0]
 
     location?: str
 
     tags?: {str:str}
 
 
-schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecInitProviderIPConfigurations:
+schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecInitProviderIPConfigurationsItems0:
     r"""
-    One ip_configurations block as defined below. Changing this forces a new Private DNS Resolver Inbound Endpoint to be created.
+    network azure upbound io v1beta1 private DNS resolver inbound endpoint spec init provider IP configurations items0
 
     Attributes
     ----------
@@ -369,9 +373,9 @@ schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecInitProv
         Private IP address allocation method. Allowed value is Dynamic and Static. Defaults to Dynamic.
     subnetId : str, default is Undefined, optional
         The subnet ID of the IP configuration.
-    subnetIdRef : NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecInitProviderIPConfigurationsSubnetIDRef, default is Undefined, optional
+    subnetIdRef : NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecInitProviderIPConfigurationsItems0SubnetIDRef, default is Undefined, optional
         subnet Id ref
-    subnetIdSelector : NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecInitProviderIPConfigurationsSubnetIDSelector, default is Undefined, optional
+    subnetIdSelector : NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecInitProviderIPConfigurationsItems0SubnetIDSelector, default is Undefined, optional
         subnet Id selector
     """
 
@@ -382,12 +386,12 @@ schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecInitProv
 
     subnetId?: str
 
-    subnetIdRef?: NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecInitProviderIPConfigurationsSubnetIDRef
+    subnetIdRef?: NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecInitProviderIPConfigurationsItems0SubnetIDRef
 
-    subnetIdSelector?: NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecInitProviderIPConfigurationsSubnetIDSelector
+    subnetIdSelector?: NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecInitProviderIPConfigurationsItems0SubnetIDSelector
 
 
-schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecInitProviderIPConfigurationsSubnetIDRef:
+schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecInitProviderIPConfigurationsItems0SubnetIDRef:
     r"""
     Reference to a Subnet in network to populate subnetId.
 
@@ -395,17 +399,17 @@ schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecInitProv
     ----------
     name : str, default is Undefined, required
         Name of the referenced object.
-    policy : NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecInitProviderIPConfigurationsSubnetIDRefPolicy, default is Undefined, optional
+    policy : NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecInitProviderIPConfigurationsItems0SubnetIDRefPolicy, default is Undefined, optional
         policy
     """
 
 
     name: str
 
-    policy?: NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecInitProviderIPConfigurationsSubnetIDRefPolicy
+    policy?: NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecInitProviderIPConfigurationsItems0SubnetIDRefPolicy
 
 
-schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecInitProviderIPConfigurationsSubnetIDRefPolicy:
+schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecInitProviderIPConfigurationsItems0SubnetIDRefPolicy:
     r"""
     Policies for referencing.
 
@@ -429,7 +433,7 @@ schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecInitProv
     resolve?: "Always" | "IfNotPresent"
 
 
-schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecInitProviderIPConfigurationsSubnetIDSelector:
+schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecInitProviderIPConfigurationsItems0SubnetIDSelector:
     r"""
     Selector for a Subnet in network to populate subnetId.
 
@@ -440,7 +444,7 @@ schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecInitProv
         as the selecting object is selected.
     matchLabels : {str:str}, default is Undefined, optional
         MatchLabels ensures an object with matching labels is selected.
-    policy : NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecInitProviderIPConfigurationsSubnetIDSelectorPolicy, default is Undefined, optional
+    policy : NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecInitProviderIPConfigurationsItems0SubnetIDSelectorPolicy, default is Undefined, optional
         policy
     """
 
@@ -449,10 +453,10 @@ schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecInitProv
 
     matchLabels?: {str:str}
 
-    policy?: NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecInitProviderIPConfigurationsSubnetIDSelectorPolicy
+    policy?: NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecInitProviderIPConfigurationsItems0SubnetIDSelectorPolicy
 
 
-schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecInitProviderIPConfigurationsSubnetIDSelectorPolicy:
+schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecInitProviderIPConfigurationsItems0SubnetIDSelectorPolicy:
     r"""
     Policies for selection.
 
@@ -520,12 +524,112 @@ schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecProvider
     resolve?: "Always" | "IfNotPresent"
 
 
+schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecPublishConnectionDetailsTo:
+    r"""
+    PublishConnectionDetailsTo specifies the connection secret config which
+    contains a name, metadata and a reference to secret store config to
+    which any connection details for this managed resource should be written.
+    Connection details frequently include the endpoint, username,
+    and password required to connect to the managed resource.
+
+    Attributes
+    ----------
+    configRef : NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
+        config ref
+    metadata : NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
+        metadata
+    name : str, default is Undefined, required
+        Name is the name of the connection secret.
+    """
+
+
+    configRef?: NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecPublishConnectionDetailsToConfigRef
+
+    metadata?: NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecPublishConnectionDetailsToMetadata
+
+    name: str
+
+
+schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecPublishConnectionDetailsToConfigRef:
+    r"""
+    SecretStoreConfigRef specifies which secret store config should be used
+    for this ConnectionSecret.
+
+    Attributes
+    ----------
+    name : str, default is Undefined, required
+        Name of the referenced object.
+    policy : NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    name: str
+
+    policy?: NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecPublishConnectionDetailsToConfigRefPolicy
+
+
+schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecPublishConnectionDetailsToConfigRefPolicy:
+    r"""
+    Policies for referencing.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
+schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecPublishConnectionDetailsToMetadata:
+    r"""
+    Metadata is the metadata for connection secret.
+
+    Attributes
+    ----------
+    annotations : {str:str}, default is Undefined, optional
+        Annotations are the annotations to be added to connection secret.
+        - For Kubernetes secrets, this will be used as "metadata.annotations".
+        - It is up to Secret Store implementation for others store types.
+    labels : {str:str}, default is Undefined, optional
+        Labels are the labels/tags to be added to connection secret.
+        - For Kubernetes secrets, this will be used as "metadata.labels".
+        - It is up to Secret Store implementation for others store types.
+    $type : str, default is Undefined, optional
+        Type is the SecretType for the connection secret.
+        - Only valid for Kubernetes Secret Stores.
+    """
+
+
+    annotations?: {str:str}
+
+    labels?: {str:str}
+
+    $type?: str
+
+
 schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
+    This field is planned to be replaced in a future release in favor of
+    PublishConnectionDetailsTo. Currently, both could be set independently
+    and connection details would be published to both without affecting
+    each other.
 
     Attributes
     ----------
@@ -573,8 +677,8 @@ schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointStatusAtProv
     ----------
     id : str, default is Undefined, optional
         The ID of the Private DNS Resolver Inbound Endpoint.
-    ipConfigurations : NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointStatusAtProviderIPConfigurations, default is Undefined, optional
-        ip configurations
+    ipConfigurations : [NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointStatusAtProviderIPConfigurationsItems0], default is Undefined, optional
+        Can be specified multiple times to define multiple IP configurations. Each ip_configurations block as defined below.
     location : str, default is Undefined, optional
         Specifies the Azure Region where the Private DNS Resolver Inbound Endpoint should exist. Changing this forces a new Private DNS Resolver Inbound Endpoint to be created.
     privateDnsResolverId : str, default is Undefined, optional
@@ -586,7 +690,7 @@ schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointStatusAtProv
 
     id?: str
 
-    ipConfigurations?: NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointStatusAtProviderIPConfigurations
+    ipConfigurations?: [NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointStatusAtProviderIPConfigurationsItems0]
 
     location?: str
 
@@ -595,9 +699,9 @@ schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointStatusAtProv
     tags?: {str:str}
 
 
-schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointStatusAtProviderIPConfigurations:
+schema NetworkAzureUpboundIoV1beta1PrivateDNSResolverInboundEndpointStatusAtProviderIPConfigurationsItems0:
     r"""
-    One ip_configurations block as defined below. Changing this forces a new Private DNS Resolver Inbound Endpoint to be created.
+    network azure upbound io v1beta1 private DNS resolver inbound endpoint status at provider IP configurations items0
 
     Attributes
     ----------

@@ -66,6 +66,8 @@ schema CloudwatcheventsAwsUpboundIoV1beta1RuleSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : CloudwatcheventsAwsUpboundIoV1beta1RuleSpecProviderConfigRef, default is Undefined, optional
         provider config ref
+    publishConnectionDetailsTo : CloudwatcheventsAwsUpboundIoV1beta1RuleSpecPublishConnectionDetailsTo, default is Undefined, optional
+        publish connection details to
     writeConnectionSecretToRef : CloudwatcheventsAwsUpboundIoV1beta1RuleSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -81,6 +83,8 @@ schema CloudwatcheventsAwsUpboundIoV1beta1RuleSpec:
 
     providerConfigRef?: CloudwatcheventsAwsUpboundIoV1beta1RuleSpecProviderConfigRef
 
+    publishConnectionDetailsTo?: CloudwatcheventsAwsUpboundIoV1beta1RuleSpecPublishConnectionDetailsTo
+
     writeConnectionSecretToRef?: CloudwatcheventsAwsUpboundIoV1beta1RuleSpecWriteConnectionSecretToRef
 
 
@@ -93,7 +97,8 @@ schema CloudwatcheventsAwsUpboundIoV1beta1RuleSpecForProvider:
     description : str, default is Undefined, optional
         The description of the rule.
     eventBusName : str, default is Undefined, optional
-        The name or ARN of the event bus to associate with this rule. If you omit this, the default event bus is used.
+        The name or ARN of the event bus to associate with this rule.
+        If you omit this, the default event bus is used.
     eventBusNameRef : CloudwatcheventsAwsUpboundIoV1beta1RuleSpecForProviderEventBusNameRef, default is Undefined, optional
         event bus name ref
     eventBusNameSelector : CloudwatcheventsAwsUpboundIoV1beta1RuleSpecForProviderEventBusNameSelector, default is Undefined, optional
@@ -103,9 +108,10 @@ schema CloudwatcheventsAwsUpboundIoV1beta1RuleSpecForProvider:
     forceDestroy : bool, default is Undefined, optional
         Used to delete managed rules created by AWS. Defaults to false.
     isEnabled : bool, default is Undefined, optional
-        Whether the rule should be enabled. Defaults to true. Conflicts with state.
+        Whether the rule should be enabled.
+        Defaults to true.
+        Conflicts with state.
     region : str, default is Undefined, required
-        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
     roleArn : str, default is Undefined, optional
         The Amazon Resource Name (ARN) associated with the role that is used for target invocation.
@@ -116,7 +122,12 @@ schema CloudwatcheventsAwsUpboundIoV1beta1RuleSpecForProvider:
     scheduleExpression : str, default is Undefined, optional
         The scheduling expression. For example, cron(0 20 * * ? *) or rate(5 minutes). At least one of schedule_expression or event_pattern is required. Can only be used on the default event bus. For more information, refer to the AWS documentation Schedule Expressions for Rules.
     state : str, default is Undefined, optional
-        State of the rule. Valid values are DISABLED, ENABLED, and ENABLED_WITH_ALL_CLOUDTRAIL_MANAGEMENT_EVENTS. When state is ENABLED, the rule is enabled for all events except those delivered by CloudTrail. To also enable the rule for events delivered by CloudTrail, set state to ENABLED_WITH_ALL_CLOUDTRAIL_MANAGEMENT_EVENTS. Defaults to ENABLED. Conflicts with is_enabled.
+        State of the rule.
+        Valid values are DISABLED, ENABLED, and ENABLED_WITH_ALL_CLOUDTRAIL_MANAGEMENT_EVENTS.
+        When state is ENABLED, the rule is enabled for all events except those delivered by CloudTrail.
+        To also enable the rule for events delivered by CloudTrail, set state to ENABLED_WITH_ALL_CLOUDTRAIL_MANAGEMENT_EVENTS.
+        Defaults to ENABLED.
+        Conflicts with is_enabled.
     tags : {str:str}, default is Undefined, optional
         Key-value map of resource tags.
     """
@@ -347,7 +358,8 @@ schema CloudwatcheventsAwsUpboundIoV1beta1RuleSpecInitProvider:
     description : str, default is Undefined, optional
         The description of the rule.
     eventBusName : str, default is Undefined, optional
-        The name or ARN of the event bus to associate with this rule. If you omit this, the default event bus is used.
+        The name or ARN of the event bus to associate with this rule.
+        If you omit this, the default event bus is used.
     eventBusNameRef : CloudwatcheventsAwsUpboundIoV1beta1RuleSpecInitProviderEventBusNameRef, default is Undefined, optional
         event bus name ref
     eventBusNameSelector : CloudwatcheventsAwsUpboundIoV1beta1RuleSpecInitProviderEventBusNameSelector, default is Undefined, optional
@@ -357,7 +369,9 @@ schema CloudwatcheventsAwsUpboundIoV1beta1RuleSpecInitProvider:
     forceDestroy : bool, default is Undefined, optional
         Used to delete managed rules created by AWS. Defaults to false.
     isEnabled : bool, default is Undefined, optional
-        Whether the rule should be enabled. Defaults to true. Conflicts with state.
+        Whether the rule should be enabled.
+        Defaults to true.
+        Conflicts with state.
     roleArn : str, default is Undefined, optional
         The Amazon Resource Name (ARN) associated with the role that is used for target invocation.
     roleArnRef : CloudwatcheventsAwsUpboundIoV1beta1RuleSpecInitProviderRoleArnRef, default is Undefined, optional
@@ -367,7 +381,12 @@ schema CloudwatcheventsAwsUpboundIoV1beta1RuleSpecInitProvider:
     scheduleExpression : str, default is Undefined, optional
         The scheduling expression. For example, cron(0 20 * * ? *) or rate(5 minutes). At least one of schedule_expression or event_pattern is required. Can only be used on the default event bus. For more information, refer to the AWS documentation Schedule Expressions for Rules.
     state : str, default is Undefined, optional
-        State of the rule. Valid values are DISABLED, ENABLED, and ENABLED_WITH_ALL_CLOUDTRAIL_MANAGEMENT_EVENTS. When state is ENABLED, the rule is enabled for all events except those delivered by CloudTrail. To also enable the rule for events delivered by CloudTrail, set state to ENABLED_WITH_ALL_CLOUDTRAIL_MANAGEMENT_EVENTS. Defaults to ENABLED. Conflicts with is_enabled.
+        State of the rule.
+        Valid values are DISABLED, ENABLED, and ENABLED_WITH_ALL_CLOUDTRAIL_MANAGEMENT_EVENTS.
+        When state is ENABLED, the rule is enabled for all events except those delivered by CloudTrail.
+        To also enable the rule for events delivered by CloudTrail, set state to ENABLED_WITH_ALL_CLOUDTRAIL_MANAGEMENT_EVENTS.
+        Defaults to ENABLED.
+        Conflicts with is_enabled.
     tags : {str:str}, default is Undefined, optional
         Key-value map of resource tags.
     """
@@ -622,12 +641,112 @@ schema CloudwatcheventsAwsUpboundIoV1beta1RuleSpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
+schema CloudwatcheventsAwsUpboundIoV1beta1RuleSpecPublishConnectionDetailsTo:
+    r"""
+    PublishConnectionDetailsTo specifies the connection secret config which
+    contains a name, metadata and a reference to secret store config to
+    which any connection details for this managed resource should be written.
+    Connection details frequently include the endpoint, username,
+    and password required to connect to the managed resource.
+
+    Attributes
+    ----------
+    configRef : CloudwatcheventsAwsUpboundIoV1beta1RuleSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
+        config ref
+    metadata : CloudwatcheventsAwsUpboundIoV1beta1RuleSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
+        metadata
+    name : str, default is Undefined, required
+        Name is the name of the connection secret.
+    """
+
+
+    configRef?: CloudwatcheventsAwsUpboundIoV1beta1RuleSpecPublishConnectionDetailsToConfigRef
+
+    metadata?: CloudwatcheventsAwsUpboundIoV1beta1RuleSpecPublishConnectionDetailsToMetadata
+
+    name: str
+
+
+schema CloudwatcheventsAwsUpboundIoV1beta1RuleSpecPublishConnectionDetailsToConfigRef:
+    r"""
+    SecretStoreConfigRef specifies which secret store config should be used
+    for this ConnectionSecret.
+
+    Attributes
+    ----------
+    name : str, default is Undefined, required
+        Name of the referenced object.
+    policy : CloudwatcheventsAwsUpboundIoV1beta1RuleSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    name: str
+
+    policy?: CloudwatcheventsAwsUpboundIoV1beta1RuleSpecPublishConnectionDetailsToConfigRefPolicy
+
+
+schema CloudwatcheventsAwsUpboundIoV1beta1RuleSpecPublishConnectionDetailsToConfigRefPolicy:
+    r"""
+    Policies for referencing.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
+schema CloudwatcheventsAwsUpboundIoV1beta1RuleSpecPublishConnectionDetailsToMetadata:
+    r"""
+    Metadata is the metadata for connection secret.
+
+    Attributes
+    ----------
+    annotations : {str:str}, default is Undefined, optional
+        Annotations are the annotations to be added to connection secret.
+        - For Kubernetes secrets, this will be used as "metadata.annotations".
+        - It is up to Secret Store implementation for others store types.
+    labels : {str:str}, default is Undefined, optional
+        Labels are the labels/tags to be added to connection secret.
+        - For Kubernetes secrets, this will be used as "metadata.labels".
+        - It is up to Secret Store implementation for others store types.
+    $type : str, default is Undefined, optional
+        Type is the SecretType for the connection secret.
+        - Only valid for Kubernetes Secret Stores.
+    """
+
+
+    annotations?: {str:str}
+
+    labels?: {str:str}
+
+    $type?: str
+
+
 schema CloudwatcheventsAwsUpboundIoV1beta1RuleSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
+    This field is planned to be replaced in a future release in favor of
+    PublishConnectionDetailsTo. Currently, both could be set independently
+    and connection details would be published to both without affecting
+    each other.
 
     Attributes
     ----------
@@ -678,7 +797,8 @@ schema CloudwatcheventsAwsUpboundIoV1beta1RuleStatusAtProvider:
     description : str, default is Undefined, optional
         The description of the rule.
     eventBusName : str, default is Undefined, optional
-        The name or ARN of the event bus to associate with this rule. If you omit this, the default event bus is used.
+        The name or ARN of the event bus to associate with this rule.
+        If you omit this, the default event bus is used.
     eventPattern : str, default is Undefined, optional
         The event pattern described a JSON object. At least one of schedule_expression or event_pattern is required. See full documentation of Events and Event Patterns in EventBridge for details. Note: The event pattern size is 2048 by default but it is adjustable up to 4096 characters by submitting a service quota increase request. See Amazon EventBridge quotas for details.
     forceDestroy : bool, default is Undefined, optional
@@ -686,16 +806,20 @@ schema CloudwatcheventsAwsUpboundIoV1beta1RuleStatusAtProvider:
     id : str, default is Undefined, optional
         The name of the rule.
     isEnabled : bool, default is Undefined, optional
-        Whether the rule should be enabled. Defaults to true. Conflicts with state.
-    region : str, default is Undefined, optional
-        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
-        Region is the region you'd like your resource to be created in.
+        Whether the rule should be enabled.
+        Defaults to true.
+        Conflicts with state.
     roleArn : str, default is Undefined, optional
         The Amazon Resource Name (ARN) associated with the role that is used for target invocation.
     scheduleExpression : str, default is Undefined, optional
         The scheduling expression. For example, cron(0 20 * * ? *) or rate(5 minutes). At least one of schedule_expression or event_pattern is required. Can only be used on the default event bus. For more information, refer to the AWS documentation Schedule Expressions for Rules.
     state : str, default is Undefined, optional
-        State of the rule. Valid values are DISABLED, ENABLED, and ENABLED_WITH_ALL_CLOUDTRAIL_MANAGEMENT_EVENTS. When state is ENABLED, the rule is enabled for all events except those delivered by CloudTrail. To also enable the rule for events delivered by CloudTrail, set state to ENABLED_WITH_ALL_CLOUDTRAIL_MANAGEMENT_EVENTS. Defaults to ENABLED. Conflicts with is_enabled.
+        State of the rule.
+        Valid values are DISABLED, ENABLED, and ENABLED_WITH_ALL_CLOUDTRAIL_MANAGEMENT_EVENTS.
+        When state is ENABLED, the rule is enabled for all events except those delivered by CloudTrail.
+        To also enable the rule for events delivered by CloudTrail, set state to ENABLED_WITH_ALL_CLOUDTRAIL_MANAGEMENT_EVENTS.
+        Defaults to ENABLED.
+        Conflicts with is_enabled.
     tags : {str:str}, default is Undefined, optional
         Key-value map of resource tags.
     tagsAll : {str:str}, default is Undefined, optional
@@ -716,8 +840,6 @@ schema CloudwatcheventsAwsUpboundIoV1beta1RuleStatusAtProvider:
     id?: str
 
     isEnabled?: bool
-
-    region?: str
 
     roleArn?: str
 

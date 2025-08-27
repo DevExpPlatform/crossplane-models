@@ -66,6 +66,8 @@ schema DynamodbAwsUpboundIoV1beta1TagSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : DynamodbAwsUpboundIoV1beta1TagSpecProviderConfigRef, default is Undefined, optional
         provider config ref
+    publishConnectionDetailsTo : DynamodbAwsUpboundIoV1beta1TagSpecPublishConnectionDetailsTo, default is Undefined, optional
+        publish connection details to
     writeConnectionSecretToRef : DynamodbAwsUpboundIoV1beta1TagSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -81,6 +83,8 @@ schema DynamodbAwsUpboundIoV1beta1TagSpec:
 
     providerConfigRef?: DynamodbAwsUpboundIoV1beta1TagSpecProviderConfigRef
 
+    publishConnectionDetailsTo?: DynamodbAwsUpboundIoV1beta1TagSpecPublishConnectionDetailsTo
+
     writeConnectionSecretToRef?: DynamodbAwsUpboundIoV1beta1TagSpecWriteConnectionSecretToRef
 
 
@@ -93,7 +97,6 @@ schema DynamodbAwsUpboundIoV1beta1TagSpecForProvider:
     key : str, default is Undefined, required
         Tag name.
     region : str, default is Undefined, required
-        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
     resourceArn : str, default is Undefined, required
         Amazon Resource Name (ARN) of the DynamoDB resource to tag.
@@ -178,12 +181,112 @@ schema DynamodbAwsUpboundIoV1beta1TagSpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
+schema DynamodbAwsUpboundIoV1beta1TagSpecPublishConnectionDetailsTo:
+    r"""
+    PublishConnectionDetailsTo specifies the connection secret config which
+    contains a name, metadata and a reference to secret store config to
+    which any connection details for this managed resource should be written.
+    Connection details frequently include the endpoint, username,
+    and password required to connect to the managed resource.
+
+    Attributes
+    ----------
+    configRef : DynamodbAwsUpboundIoV1beta1TagSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
+        config ref
+    metadata : DynamodbAwsUpboundIoV1beta1TagSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
+        metadata
+    name : str, default is Undefined, required
+        Name is the name of the connection secret.
+    """
+
+
+    configRef?: DynamodbAwsUpboundIoV1beta1TagSpecPublishConnectionDetailsToConfigRef
+
+    metadata?: DynamodbAwsUpboundIoV1beta1TagSpecPublishConnectionDetailsToMetadata
+
+    name: str
+
+
+schema DynamodbAwsUpboundIoV1beta1TagSpecPublishConnectionDetailsToConfigRef:
+    r"""
+    SecretStoreConfigRef specifies which secret store config should be used
+    for this ConnectionSecret.
+
+    Attributes
+    ----------
+    name : str, default is Undefined, required
+        Name of the referenced object.
+    policy : DynamodbAwsUpboundIoV1beta1TagSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    name: str
+
+    policy?: DynamodbAwsUpboundIoV1beta1TagSpecPublishConnectionDetailsToConfigRefPolicy
+
+
+schema DynamodbAwsUpboundIoV1beta1TagSpecPublishConnectionDetailsToConfigRefPolicy:
+    r"""
+    Policies for referencing.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
+schema DynamodbAwsUpboundIoV1beta1TagSpecPublishConnectionDetailsToMetadata:
+    r"""
+    Metadata is the metadata for connection secret.
+
+    Attributes
+    ----------
+    annotations : {str:str}, default is Undefined, optional
+        Annotations are the annotations to be added to connection secret.
+        - For Kubernetes secrets, this will be used as "metadata.annotations".
+        - It is up to Secret Store implementation for others store types.
+    labels : {str:str}, default is Undefined, optional
+        Labels are the labels/tags to be added to connection secret.
+        - For Kubernetes secrets, this will be used as "metadata.labels".
+        - It is up to Secret Store implementation for others store types.
+    $type : str, default is Undefined, optional
+        Type is the SecretType for the connection secret.
+        - Only valid for Kubernetes Secret Stores.
+    """
+
+
+    annotations?: {str:str}
+
+    labels?: {str:str}
+
+    $type?: str
+
+
 schema DynamodbAwsUpboundIoV1beta1TagSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
+    This field is planned to be replaced in a future release in favor of
+    PublishConnectionDetailsTo. Currently, both could be set independently
+    and connection details would be published to both without affecting
+    each other.
 
     Attributes
     ----------
@@ -233,9 +336,6 @@ schema DynamodbAwsUpboundIoV1beta1TagStatusAtProvider:
         DynamoDB resource identifier and key, separated by a comma (,)
     key : str, default is Undefined, optional
         Tag name.
-    region : str, default is Undefined, optional
-        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
-        Region is the region you'd like your resource to be created in.
     resourceArn : str, default is Undefined, optional
         Amazon Resource Name (ARN) of the DynamoDB resource to tag.
     value : str, default is Undefined, optional
@@ -246,8 +346,6 @@ schema DynamodbAwsUpboundIoV1beta1TagStatusAtProvider:
     id?: str
 
     key?: str
-
-    region?: str
 
     resourceArn?: str
 

@@ -66,6 +66,8 @@ schema CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecProviderConfigRef, default is Undefined, optional
         provider config ref
+    publishConnectionDetailsTo : CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecPublishConnectionDetailsTo, default is Undefined, optional
+        publish connection details to
     writeConnectionSecretToRef : CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -81,6 +83,8 @@ schema CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpec:
 
     providerConfigRef?: CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecProviderConfigRef
 
+    publishConnectionDetailsTo?: CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecPublishConnectionDetailsTo
+
     writeConnectionSecretToRef?: CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecWriteConnectionSecretToRef
 
 
@@ -93,19 +97,10 @@ schema CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecForProvider:
     authParameters : CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecForProviderAuthParameters, default is Undefined, optional
         auth parameters
     authorizationType : str, default is Undefined, optional
-        Type of authorization to use for the connection. One of API_KEY,BASIC,OAUTH_CLIENT_CREDENTIALS.
+        Choose the type of authorization to use for the connection. One of API_KEY,BASIC,OAUTH_CLIENT_CREDENTIALS.
     description : str, default is Undefined, optional
-        Description for the connection. Maximum of 512 characters.
-    invocationConnectivityParameters : CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecForProviderInvocationConnectivityParameters, default is Undefined, optional
-        invocation connectivity parameters
-    kmsKeyIdentifier : str, default is Undefined, optional
-        Identifier of the AWS KMS customer managed key for EventBridge to use, if you choose to use a customer managed key to encrypt this connection. The identifier can be the key Amazon Resource Name (ARN), KeyId, key alias, or key alias ARN.
-    kmsKeyIdentifierRef : CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecForProviderKmsKeyIdentifierRef, default is Undefined, optional
-        kms key identifier ref
-    kmsKeyIdentifierSelector : CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecForProviderKmsKeyIdentifierSelector, default is Undefined, optional
-        kms key identifier selector
+        Enter a description for the connection. Maximum of 512 characters.
     region : str, default is Undefined, required
-        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
     """
 
@@ -115,14 +110,6 @@ schema CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecForProvider:
     authorizationType?: str
 
     description?: str
-
-    invocationConnectivityParameters?: CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecForProviderInvocationConnectivityParameters
-
-    kmsKeyIdentifier?: str
-
-    kmsKeyIdentifierRef?: CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecForProviderKmsKeyIdentifierRef
-
-    kmsKeyIdentifierSelector?: CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecForProviderKmsKeyIdentifierSelector
 
     region: str
 
@@ -607,123 +594,6 @@ schema CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecForProviderAuthParameter
     namespace: str
 
 
-schema CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecForProviderInvocationConnectivityParameters:
-    r"""
-    Parameters to use for invoking a private API. Documented below.
-
-    Attributes
-    ----------
-    resourceParameters : CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecForProviderInvocationConnectivityParametersResourceParameters, default is Undefined, optional
-        resource parameters
-    """
-
-
-    resourceParameters?: CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecForProviderInvocationConnectivityParametersResourceParameters
-
-
-schema CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecForProviderInvocationConnectivityParametersResourceParameters:
-    r"""
-    The parameters for EventBridge to use when invoking the resource endpoint. Documented below.
-
-    Attributes
-    ----------
-    resourceConfigurationArn : str, default is Undefined, optional
-        ARN of the Amazon VPC Lattice resource configuration for the resource endpoint.
-    """
-
-
-    resourceConfigurationArn?: str
-
-
-schema CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecForProviderKmsKeyIdentifierRef:
-    r"""
-    Reference to a Key in kms to populate kmsKeyIdentifier.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecForProviderKmsKeyIdentifierRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecForProviderKmsKeyIdentifierRefPolicy
-
-
-schema CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecForProviderKmsKeyIdentifierRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecForProviderKmsKeyIdentifierSelector:
-    r"""
-    Selector for a Key in kms to populate kmsKeyIdentifier.
-
-    Attributes
-    ----------
-    matchControllerRef : bool, default is Undefined, optional
-        MatchControllerRef ensures an object with the same controller reference
-        as the selecting object is selected.
-    matchLabels : {str:str}, default is Undefined, optional
-        MatchLabels ensures an object with matching labels is selected.
-    policy : CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecForProviderKmsKeyIdentifierSelectorPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    matchControllerRef?: bool
-
-    matchLabels?: {str:str}
-
-    policy?: CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecForProviderKmsKeyIdentifierSelectorPolicy
-
-
-schema CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecForProviderKmsKeyIdentifierSelectorPolicy:
-    r"""
-    Policies for selection.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
 schema CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecInitProvider:
     r"""
     THIS IS A BETA FIELD. It will be honored
@@ -742,17 +612,9 @@ schema CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecInitProvider:
     authParameters : CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecInitProviderAuthParameters, default is Undefined, optional
         auth parameters
     authorizationType : str, default is Undefined, optional
-        Type of authorization to use for the connection. One of API_KEY,BASIC,OAUTH_CLIENT_CREDENTIALS.
+        Choose the type of authorization to use for the connection. One of API_KEY,BASIC,OAUTH_CLIENT_CREDENTIALS.
     description : str, default is Undefined, optional
-        Description for the connection. Maximum of 512 characters.
-    invocationConnectivityParameters : CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecInitProviderInvocationConnectivityParameters, default is Undefined, optional
-        invocation connectivity parameters
-    kmsKeyIdentifier : str, default is Undefined, optional
-        Identifier of the AWS KMS customer managed key for EventBridge to use, if you choose to use a customer managed key to encrypt this connection. The identifier can be the key Amazon Resource Name (ARN), KeyId, key alias, or key alias ARN.
-    kmsKeyIdentifierRef : CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecInitProviderKmsKeyIdentifierRef, default is Undefined, optional
-        kms key identifier ref
-    kmsKeyIdentifierSelector : CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecInitProviderKmsKeyIdentifierSelector, default is Undefined, optional
-        kms key identifier selector
+        Enter a description for the connection. Maximum of 512 characters.
     """
 
 
@@ -761,14 +623,6 @@ schema CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecInitProvider:
     authorizationType?: str
 
     description?: str
-
-    invocationConnectivityParameters?: CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecInitProviderInvocationConnectivityParameters
-
-    kmsKeyIdentifier?: str
-
-    kmsKeyIdentifierRef?: CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecInitProviderKmsKeyIdentifierRef
-
-    kmsKeyIdentifierSelector?: CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecInitProviderKmsKeyIdentifierSelector
 
 
 schema CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecInitProviderAuthParameters:
@@ -1251,123 +1105,6 @@ schema CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecInitProviderAuthParamete
     namespace: str
 
 
-schema CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecInitProviderInvocationConnectivityParameters:
-    r"""
-    Parameters to use for invoking a private API. Documented below.
-
-    Attributes
-    ----------
-    resourceParameters : CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecInitProviderInvocationConnectivityParametersResourceParameters, default is Undefined, optional
-        resource parameters
-    """
-
-
-    resourceParameters?: CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecInitProviderInvocationConnectivityParametersResourceParameters
-
-
-schema CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecInitProviderInvocationConnectivityParametersResourceParameters:
-    r"""
-    The parameters for EventBridge to use when invoking the resource endpoint. Documented below.
-
-    Attributes
-    ----------
-    resourceConfigurationArn : str, default is Undefined, optional
-        ARN of the Amazon VPC Lattice resource configuration for the resource endpoint.
-    """
-
-
-    resourceConfigurationArn?: str
-
-
-schema CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecInitProviderKmsKeyIdentifierRef:
-    r"""
-    Reference to a Key in kms to populate kmsKeyIdentifier.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecInitProviderKmsKeyIdentifierRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecInitProviderKmsKeyIdentifierRefPolicy
-
-
-schema CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecInitProviderKmsKeyIdentifierRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecInitProviderKmsKeyIdentifierSelector:
-    r"""
-    Selector for a Key in kms to populate kmsKeyIdentifier.
-
-    Attributes
-    ----------
-    matchControllerRef : bool, default is Undefined, optional
-        MatchControllerRef ensures an object with the same controller reference
-        as the selecting object is selected.
-    matchLabels : {str:str}, default is Undefined, optional
-        MatchLabels ensures an object with matching labels is selected.
-    policy : CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecInitProviderKmsKeyIdentifierSelectorPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    matchControllerRef?: bool
-
-    matchLabels?: {str:str}
-
-    policy?: CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecInitProviderKmsKeyIdentifierSelectorPolicy
-
-
-schema CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecInitProviderKmsKeyIdentifierSelectorPolicy:
-    r"""
-    Policies for selection.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
 schema CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecProviderConfigRef:
     r"""
     ProviderConfigReference specifies how the provider that will be used to
@@ -1412,12 +1149,112 @@ schema CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
+schema CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecPublishConnectionDetailsTo:
+    r"""
+    PublishConnectionDetailsTo specifies the connection secret config which
+    contains a name, metadata and a reference to secret store config to
+    which any connection details for this managed resource should be written.
+    Connection details frequently include the endpoint, username,
+    and password required to connect to the managed resource.
+
+    Attributes
+    ----------
+    configRef : CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
+        config ref
+    metadata : CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
+        metadata
+    name : str, default is Undefined, required
+        Name is the name of the connection secret.
+    """
+
+
+    configRef?: CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecPublishConnectionDetailsToConfigRef
+
+    metadata?: CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecPublishConnectionDetailsToMetadata
+
+    name: str
+
+
+schema CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecPublishConnectionDetailsToConfigRef:
+    r"""
+    SecretStoreConfigRef specifies which secret store config should be used
+    for this ConnectionSecret.
+
+    Attributes
+    ----------
+    name : str, default is Undefined, required
+        Name of the referenced object.
+    policy : CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    name: str
+
+    policy?: CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecPublishConnectionDetailsToConfigRefPolicy
+
+
+schema CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecPublishConnectionDetailsToConfigRefPolicy:
+    r"""
+    Policies for referencing.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
+schema CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecPublishConnectionDetailsToMetadata:
+    r"""
+    Metadata is the metadata for connection secret.
+
+    Attributes
+    ----------
+    annotations : {str:str}, default is Undefined, optional
+        Annotations are the annotations to be added to connection secret.
+        - For Kubernetes secrets, this will be used as "metadata.annotations".
+        - It is up to Secret Store implementation for others store types.
+    labels : {str:str}, default is Undefined, optional
+        Labels are the labels/tags to be added to connection secret.
+        - For Kubernetes secrets, this will be used as "metadata.labels".
+        - It is up to Secret Store implementation for others store types.
+    $type : str, default is Undefined, optional
+        Type is the SecretType for the connection secret.
+        - Only valid for Kubernetes Secret Stores.
+    """
+
+
+    annotations?: {str:str}
+
+    labels?: {str:str}
+
+    $type?: str
+
+
 schema CloudwatcheventsAwsUpboundIoV1beta2ConnectionSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
+    This field is planned to be replaced in a future release in favor of
+    PublishConnectionDetailsTo. Currently, both could be set independently
+    and connection details would be published to both without affecting
+    each other.
 
     Attributes
     ----------
@@ -1468,18 +1305,11 @@ schema CloudwatcheventsAwsUpboundIoV1beta2ConnectionStatusAtProvider:
     authParameters : CloudwatcheventsAwsUpboundIoV1beta2ConnectionStatusAtProviderAuthParameters, default is Undefined, optional
         auth parameters
     authorizationType : str, default is Undefined, optional
-        Type of authorization to use for the connection. One of API_KEY,BASIC,OAUTH_CLIENT_CREDENTIALS.
+        Choose the type of authorization to use for the connection. One of API_KEY,BASIC,OAUTH_CLIENT_CREDENTIALS.
     description : str, default is Undefined, optional
-        Description for the connection. Maximum of 512 characters.
+        Enter a description for the connection. Maximum of 512 characters.
     id : str, default is Undefined, optional
         id
-    invocationConnectivityParameters : CloudwatcheventsAwsUpboundIoV1beta2ConnectionStatusAtProviderInvocationConnectivityParameters, default is Undefined, optional
-        invocation connectivity parameters
-    kmsKeyIdentifier : str, default is Undefined, optional
-        Identifier of the AWS KMS customer managed key for EventBridge to use, if you choose to use a customer managed key to encrypt this connection. The identifier can be the key Amazon Resource Name (ARN), KeyId, key alias, or key alias ARN.
-    region : str, default is Undefined, optional
-        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
-        Region is the region you'd like your resource to be created in.
     secretArn : str, default is Undefined, optional
         The Amazon Resource Name (ARN) of the secret created from the authorization parameters specified for the connection.
     """
@@ -1494,12 +1324,6 @@ schema CloudwatcheventsAwsUpboundIoV1beta2ConnectionStatusAtProvider:
     description?: str
 
     id?: str
-
-    invocationConnectivityParameters?: CloudwatcheventsAwsUpboundIoV1beta2ConnectionStatusAtProviderInvocationConnectivityParameters
-
-    kmsKeyIdentifier?: str
-
-    region?: str
 
     secretArn?: str
 
@@ -1748,38 +1572,6 @@ schema CloudwatcheventsAwsUpboundIoV1beta2ConnectionStatusAtProviderAuthParamete
     isValueSecret?: bool
 
     key?: str
-
-
-schema CloudwatcheventsAwsUpboundIoV1beta2ConnectionStatusAtProviderInvocationConnectivityParameters:
-    r"""
-    Parameters to use for invoking a private API. Documented below.
-
-    Attributes
-    ----------
-    resourceParameters : CloudwatcheventsAwsUpboundIoV1beta2ConnectionStatusAtProviderInvocationConnectivityParametersResourceParameters, default is Undefined, optional
-        resource parameters
-    """
-
-
-    resourceParameters?: CloudwatcheventsAwsUpboundIoV1beta2ConnectionStatusAtProviderInvocationConnectivityParametersResourceParameters
-
-
-schema CloudwatcheventsAwsUpboundIoV1beta2ConnectionStatusAtProviderInvocationConnectivityParametersResourceParameters:
-    r"""
-    The parameters for EventBridge to use when invoking the resource endpoint. Documented below.
-
-    Attributes
-    ----------
-    resourceAssociationArn : str, default is Undefined, optional
-        The Amazon Resource Name (ARN) of the connection.
-    resourceConfigurationArn : str, default is Undefined, optional
-        ARN of the Amazon VPC Lattice resource configuration for the resource endpoint.
-    """
-
-
-    resourceAssociationArn?: str
-
-    resourceConfigurationArn?: str
 
 
 schema CloudwatcheventsAwsUpboundIoV1beta2ConnectionStatusConditionsItems0:

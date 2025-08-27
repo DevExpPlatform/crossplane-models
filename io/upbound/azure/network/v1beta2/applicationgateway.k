@@ -66,6 +66,8 @@ schema NetworkAzureUpboundIoV1beta2ApplicationGatewaySpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : NetworkAzureUpboundIoV1beta2ApplicationGatewaySpecProviderConfigRef, default is Undefined, optional
         provider config ref
+    publishConnectionDetailsTo : NetworkAzureUpboundIoV1beta2ApplicationGatewaySpecPublishConnectionDetailsTo, default is Undefined, optional
+        publish connection details to
     writeConnectionSecretToRef : NetworkAzureUpboundIoV1beta2ApplicationGatewaySpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -80,6 +82,8 @@ schema NetworkAzureUpboundIoV1beta2ApplicationGatewaySpec:
     managementPolicies?: [str] = ["*"]
 
     providerConfigRef?: NetworkAzureUpboundIoV1beta2ApplicationGatewaySpecProviderConfigRef
+
+    publishConnectionDetailsTo?: NetworkAzureUpboundIoV1beta2ApplicationGatewaySpecPublishConnectionDetailsTo
 
     writeConnectionSecretToRef?: NetworkAzureUpboundIoV1beta2ApplicationGatewaySpecWriteConnectionSecretToRef
 
@@ -137,7 +141,7 @@ schema NetworkAzureUpboundIoV1beta2ApplicationGatewaySpecForProvider:
     resourceGroupNameSelector : NetworkAzureUpboundIoV1beta2ApplicationGatewaySpecForProviderResourceGroupNameSelector, default is Undefined, optional
         resource group name selector
     rewriteRuleSet : [NetworkAzureUpboundIoV1beta2ApplicationGatewaySpecForProviderRewriteRuleSetItems0], default is Undefined, optional
-        One or more rewrite_rule_set blocks as defined below. Only valid for v2 WAF and Standard SKUs.
+        One or more rewrite_rule_set blocks as defined below. Only valid for v2 SKUs.
     sku : NetworkAzureUpboundIoV1beta2ApplicationGatewaySpecForProviderSku, default is Undefined, optional
         sku
     sslCertificate : [NetworkAzureUpboundIoV1beta2ApplicationGatewaySpecForProviderSslCertificateItems0], default is Undefined, optional
@@ -413,7 +417,7 @@ schema NetworkAzureUpboundIoV1beta2ApplicationGatewaySpecForProviderCustomErrorC
     customErrorPageUrl : str, default is Undefined, optional
         Error page URL of the application gateway customer error.
     statusCode : str, default is Undefined, optional
-        Status code of the application gateway customer error. Possible values are HttpStatus400, HttpStatus403, HttpStatus404, HttpStatus405, HttpStatus408, HttpStatus500, HttpStatus502, HttpStatus503 and HttpStatus504
+        Status code of the application gateway customer error. Possible values are HttpStatus403 and HttpStatus502
     """
 
 
@@ -1057,7 +1061,7 @@ schema NetworkAzureUpboundIoV1beta2ApplicationGatewaySpecForProviderProbeItems0:
     pickHostNameFromBackendHttpSettings : bool, default is Undefined, optional
         Whether the host header should be picked from the backend HTTP settings. Defaults to false.
     port : float, default is Undefined, optional
-        Custom port which will be used for probing the backend servers. The valid value ranges from 1 to 65535. In case not set, port from HTTP settings will be used. This property is valid for Basic, Standard_v2 and WAF_v2 only.
+        Custom port which will be used for probing the backend servers. The valid value ranges from 1 to 65535. In case not set, port from HTTP settings will be used. This property is valid for Standard_v2 and WAF_v2 only.
     $protocol : str, default is Undefined, optional
         The Protocol used for this Probe. Possible values are Http and Https.
     timeout : float, default is Undefined, optional
@@ -1424,11 +1428,11 @@ schema NetworkAzureUpboundIoV1beta2ApplicationGatewaySpecForProviderSku:
     Attributes
     ----------
     capacity : float, default is Undefined, optional
-        The Capacity of the SKU to use for this Application Gateway. When using a V1 SKU this value must be between 1 and 32, and 1 to 125 for a V2 SKU. When using a Basic SKU this property must be between 1 and 2. This property is optional if autoscale_configuration is set.
+        The Capacity of the SKU to use for this Application Gateway. When using a V1 SKU this value must be between 1 and 32, and 1 to 125 for a V2 SKU. This property is optional if autoscale_configuration is set.
     name : str, default is Undefined, optional
-        The Name of the SKU to use for this Application Gateway. Possible values are Basic, Standard_v2, and WAF_v2.
+        The Name of the SKU to use for this Application Gateway. Possible values are Standard_Small, Standard_Medium, Standard_Large, Standard_v2, WAF_Medium, WAF_Large, and WAF_v2.
     tier : str, default is Undefined, optional
-        The Tier of the SKU to use for this Application Gateway. Possible values are Basic, Standard_v2, and WAF_v2.
+        The Tier of the SKU to use for this Application Gateway. Possible values are Standard, Standard_v2, WAF and WAF_v2.
     """
 
 
@@ -1448,7 +1452,7 @@ schema NetworkAzureUpboundIoV1beta2ApplicationGatewaySpecForProviderSslCertifica
     dataSecretRef : NetworkAzureUpboundIoV1beta2ApplicationGatewaySpecForProviderSslCertificateItems0DataSecretRef, default is Undefined, optional
         data secret ref
     keyVaultSecretId : str, default is Undefined, optional
-        The Secret ID of the (base-64 encoded unencrypted pfx) Secret or Certificate object stored in Azure KeyVault. You need to enable soft delete for Key Vault to use this feature. Required if data is not set.
+        The Secret ID of (base-64 encoded unencrypted pfx) the Secret or Certificate object stored in Azure KeyVault. You need to enable soft delete for Key Vault to use this feature. Required if data is not set.
     name : str, default is Undefined, optional
         The Name of the SSL certificate that is unique within this Application Gateway
     passwordSecretRef : NetworkAzureUpboundIoV1beta2ApplicationGatewaySpecForProviderSslCertificateItems0PasswordSecretRef, default is Undefined, optional
@@ -1648,7 +1652,7 @@ schema NetworkAzureUpboundIoV1beta2ApplicationGatewaySpecForProviderTrustedRootC
     dataSecretRef : NetworkAzureUpboundIoV1beta2ApplicationGatewaySpecForProviderTrustedRootCertificateItems0DataSecretRef, default is Undefined, optional
         data secret ref
     keyVaultSecretId : str, default is Undefined, optional
-        The Secret ID of the (base-64 encoded unencrypted pfx) Secret or Certificate object stored in Azure KeyVault. You need to enable soft delete for the Key Vault to use this feature. Required if data is not set.
+        The Secret ID of (base-64 encoded unencrypted pfx) Secret or Certificate object stored in Azure KeyVault. You need to enable soft delete for the Key Vault to use this feature. Required if data is not set.
     name : str, default is Undefined, optional
         The Name of the Trusted Root Certificate to use.
     """
@@ -1778,7 +1782,7 @@ schema NetworkAzureUpboundIoV1beta2ApplicationGatewaySpecForProviderWafConfigura
     ruleSetType : str, default is Undefined, optional
         The Type of the Rule Set used for this Web Application Firewall. Possible values are OWASP, Microsoft_BotManagerRuleSet and Microsoft_DefaultRuleSet. Defaults to OWASP.
     ruleSetVersion : str, default is Undefined, optional
-        The Version of the Rule Set used for this Web Application Firewall. Possible values are 0.1, 1.0, 1.1, 2.1, 2.2.9, 3.0, 3.1 and 3.2.
+        The Version of the Rule Set used for this Web Application Firewall. Possible values are 0.1, 1.0, 2.1, 2.2.9, 3.0, 3.1 and 3.2.
     """
 
 
@@ -1897,7 +1901,7 @@ schema NetworkAzureUpboundIoV1beta2ApplicationGatewaySpecInitProvider:
     requestRoutingRule : [NetworkAzureUpboundIoV1beta2ApplicationGatewaySpecInitProviderRequestRoutingRuleItems0], default is Undefined, optional
         One or more request_routing_rule blocks as defined below.
     rewriteRuleSet : [NetworkAzureUpboundIoV1beta2ApplicationGatewaySpecInitProviderRewriteRuleSetItems0], default is Undefined, optional
-        One or more rewrite_rule_set blocks as defined below. Only valid for v2 WAF and Standard SKUs.
+        One or more rewrite_rule_set blocks as defined below. Only valid for v2 SKUs.
     sku : NetworkAzureUpboundIoV1beta2ApplicationGatewaySpecInitProviderSku, default is Undefined, optional
         sku
     sslCertificate : [NetworkAzureUpboundIoV1beta2ApplicationGatewaySpecInitProviderSslCertificateItems0], default is Undefined, optional
@@ -2167,7 +2171,7 @@ schema NetworkAzureUpboundIoV1beta2ApplicationGatewaySpecInitProviderCustomError
     customErrorPageUrl : str, default is Undefined, optional
         Error page URL of the application gateway customer error.
     statusCode : str, default is Undefined, optional
-        Status code of the application gateway customer error. Possible values are HttpStatus400, HttpStatus403, HttpStatus404, HttpStatus405, HttpStatus408, HttpStatus500, HttpStatus502, HttpStatus503 and HttpStatus504
+        Status code of the application gateway customer error. Possible values are HttpStatus403 and HttpStatus502
     """
 
 
@@ -2811,7 +2815,7 @@ schema NetworkAzureUpboundIoV1beta2ApplicationGatewaySpecInitProviderProbeItems0
     pickHostNameFromBackendHttpSettings : bool, default is Undefined, optional
         Whether the host header should be picked from the backend HTTP settings. Defaults to false.
     port : float, default is Undefined, optional
-        Custom port which will be used for probing the backend servers. The valid value ranges from 1 to 65535. In case not set, port from HTTP settings will be used. This property is valid for Basic, Standard_v2 and WAF_v2 only.
+        Custom port which will be used for probing the backend servers. The valid value ranges from 1 to 65535. In case not set, port from HTTP settings will be used. This property is valid for Standard_v2 and WAF_v2 only.
     $protocol : str, default is Undefined, optional
         The Protocol used for this Probe. Possible values are Http and Https.
     timeout : float, default is Undefined, optional
@@ -3089,11 +3093,11 @@ schema NetworkAzureUpboundIoV1beta2ApplicationGatewaySpecInitProviderSku:
     Attributes
     ----------
     capacity : float, default is Undefined, optional
-        The Capacity of the SKU to use for this Application Gateway. When using a V1 SKU this value must be between 1 and 32, and 1 to 125 for a V2 SKU. When using a Basic SKU this property must be between 1 and 2. This property is optional if autoscale_configuration is set.
+        The Capacity of the SKU to use for this Application Gateway. When using a V1 SKU this value must be between 1 and 32, and 1 to 125 for a V2 SKU. This property is optional if autoscale_configuration is set.
     name : str, default is Undefined, optional
-        The Name of the SKU to use for this Application Gateway. Possible values are Basic, Standard_v2, and WAF_v2.
+        The Name of the SKU to use for this Application Gateway. Possible values are Standard_Small, Standard_Medium, Standard_Large, Standard_v2, WAF_Medium, WAF_Large, and WAF_v2.
     tier : str, default is Undefined, optional
-        The Tier of the SKU to use for this Application Gateway. Possible values are Basic, Standard_v2, and WAF_v2.
+        The Tier of the SKU to use for this Application Gateway. Possible values are Standard, Standard_v2, WAF and WAF_v2.
     """
 
 
@@ -3113,7 +3117,7 @@ schema NetworkAzureUpboundIoV1beta2ApplicationGatewaySpecInitProviderSslCertific
     dataSecretRef : NetworkAzureUpboundIoV1beta2ApplicationGatewaySpecInitProviderSslCertificateItems0DataSecretRef, default is Undefined, optional
         data secret ref
     keyVaultSecretId : str, default is Undefined, optional
-        The Secret ID of the (base-64 encoded unencrypted pfx) Secret or Certificate object stored in Azure KeyVault. You need to enable soft delete for Key Vault to use this feature. Required if data is not set.
+        The Secret ID of (base-64 encoded unencrypted pfx) the Secret or Certificate object stored in Azure KeyVault. You need to enable soft delete for Key Vault to use this feature. Required if data is not set.
     name : str, default is Undefined, optional
         The Name of the SSL certificate that is unique within this Application Gateway
     passwordSecretRef : NetworkAzureUpboundIoV1beta2ApplicationGatewaySpecInitProviderSslCertificateItems0PasswordSecretRef, default is Undefined, optional
@@ -3313,7 +3317,7 @@ schema NetworkAzureUpboundIoV1beta2ApplicationGatewaySpecInitProviderTrustedRoot
     dataSecretRef : NetworkAzureUpboundIoV1beta2ApplicationGatewaySpecInitProviderTrustedRootCertificateItems0DataSecretRef, default is Undefined, optional
         data secret ref
     keyVaultSecretId : str, default is Undefined, optional
-        The Secret ID of the (base-64 encoded unencrypted pfx) Secret or Certificate object stored in Azure KeyVault. You need to enable soft delete for the Key Vault to use this feature. Required if data is not set.
+        The Secret ID of (base-64 encoded unencrypted pfx) Secret or Certificate object stored in Azure KeyVault. You need to enable soft delete for the Key Vault to use this feature. Required if data is not set.
     name : str, default is Undefined, optional
         The Name of the Trusted Root Certificate to use.
     """
@@ -3443,7 +3447,7 @@ schema NetworkAzureUpboundIoV1beta2ApplicationGatewaySpecInitProviderWafConfigur
     ruleSetType : str, default is Undefined, optional
         The Type of the Rule Set used for this Web Application Firewall. Possible values are OWASP, Microsoft_BotManagerRuleSet and Microsoft_DefaultRuleSet. Defaults to OWASP.
     ruleSetVersion : str, default is Undefined, optional
-        The Version of the Rule Set used for this Web Application Firewall. Possible values are 0.1, 1.0, 1.1, 2.1, 2.2.9, 3.0, 3.1 and 3.2.
+        The Version of the Rule Set used for this Web Application Firewall. Possible values are 0.1, 1.0, 2.1, 2.2.9, 3.0, 3.1 and 3.2.
     """
 
 
@@ -3550,12 +3554,112 @@ schema NetworkAzureUpboundIoV1beta2ApplicationGatewaySpecProviderConfigRefPolicy
     resolve?: "Always" | "IfNotPresent"
 
 
+schema NetworkAzureUpboundIoV1beta2ApplicationGatewaySpecPublishConnectionDetailsTo:
+    r"""
+    PublishConnectionDetailsTo specifies the connection secret config which
+    contains a name, metadata and a reference to secret store config to
+    which any connection details for this managed resource should be written.
+    Connection details frequently include the endpoint, username,
+    and password required to connect to the managed resource.
+
+    Attributes
+    ----------
+    configRef : NetworkAzureUpboundIoV1beta2ApplicationGatewaySpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
+        config ref
+    metadata : NetworkAzureUpboundIoV1beta2ApplicationGatewaySpecPublishConnectionDetailsToMetadata, default is Undefined, optional
+        metadata
+    name : str, default is Undefined, required
+        Name is the name of the connection secret.
+    """
+
+
+    configRef?: NetworkAzureUpboundIoV1beta2ApplicationGatewaySpecPublishConnectionDetailsToConfigRef
+
+    metadata?: NetworkAzureUpboundIoV1beta2ApplicationGatewaySpecPublishConnectionDetailsToMetadata
+
+    name: str
+
+
+schema NetworkAzureUpboundIoV1beta2ApplicationGatewaySpecPublishConnectionDetailsToConfigRef:
+    r"""
+    SecretStoreConfigRef specifies which secret store config should be used
+    for this ConnectionSecret.
+
+    Attributes
+    ----------
+    name : str, default is Undefined, required
+        Name of the referenced object.
+    policy : NetworkAzureUpboundIoV1beta2ApplicationGatewaySpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    name: str
+
+    policy?: NetworkAzureUpboundIoV1beta2ApplicationGatewaySpecPublishConnectionDetailsToConfigRefPolicy
+
+
+schema NetworkAzureUpboundIoV1beta2ApplicationGatewaySpecPublishConnectionDetailsToConfigRefPolicy:
+    r"""
+    Policies for referencing.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
+schema NetworkAzureUpboundIoV1beta2ApplicationGatewaySpecPublishConnectionDetailsToMetadata:
+    r"""
+    Metadata is the metadata for connection secret.
+
+    Attributes
+    ----------
+    annotations : {str:str}, default is Undefined, optional
+        Annotations are the annotations to be added to connection secret.
+        - For Kubernetes secrets, this will be used as "metadata.annotations".
+        - It is up to Secret Store implementation for others store types.
+    labels : {str:str}, default is Undefined, optional
+        Labels are the labels/tags to be added to connection secret.
+        - For Kubernetes secrets, this will be used as "metadata.labels".
+        - It is up to Secret Store implementation for others store types.
+    $type : str, default is Undefined, optional
+        Type is the SecretType for the connection secret.
+        - Only valid for Kubernetes Secret Stores.
+    """
+
+
+    annotations?: {str:str}
+
+    labels?: {str:str}
+
+    $type?: str
+
+
 schema NetworkAzureUpboundIoV1beta2ApplicationGatewaySpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
+    This field is planned to be replaced in a future release in favor of
+    PublishConnectionDetailsTo. Currently, both could be set independently
+    and connection details would be published to both without affecting
+    each other.
 
     Attributes
     ----------
@@ -3648,7 +3752,7 @@ schema NetworkAzureUpboundIoV1beta2ApplicationGatewayStatusAtProvider:
     resourceGroupName : str, default is Undefined, optional
         The name of the resource group in which to the Application Gateway should exist. Changing this forces a new resource to be created.
     rewriteRuleSet : [NetworkAzureUpboundIoV1beta2ApplicationGatewayStatusAtProviderRewriteRuleSetItems0], default is Undefined, optional
-        One or more rewrite_rule_set blocks as defined below. Only valid for v2 WAF and Standard SKUs.
+        One or more rewrite_rule_set blocks as defined below. Only valid for v2 SKUs.
     sku : NetworkAzureUpboundIoV1beta2ApplicationGatewayStatusAtProviderSku, default is Undefined, optional
         sku
     sslCertificate : [NetworkAzureUpboundIoV1beta2ApplicationGatewayStatusAtProviderSslCertificateItems0], default is Undefined, optional
@@ -3920,7 +4024,7 @@ schema NetworkAzureUpboundIoV1beta2ApplicationGatewayStatusAtProviderCustomError
     id : str, default is Undefined, optional
         The ID of the Custom Error Configuration.
     statusCode : str, default is Undefined, optional
-        Status code of the application gateway customer error. Possible values are HttpStatus400, HttpStatus403, HttpStatus404, HttpStatus405, HttpStatus408, HttpStatus500, HttpStatus502, HttpStatus503 and HttpStatus504
+        Status code of the application gateway customer error. Possible values are HttpStatus403 and HttpStatus502
     """
 
 
@@ -4250,7 +4354,7 @@ schema NetworkAzureUpboundIoV1beta2ApplicationGatewayStatusAtProviderProbeItems0
     pickHostNameFromBackendHttpSettings : bool, default is Undefined, optional
         Whether the host header should be picked from the backend HTTP settings. Defaults to false.
     port : float, default is Undefined, optional
-        Custom port which will be used for probing the backend servers. The valid value ranges from 1 to 65535. In case not set, port from HTTP settings will be used. This property is valid for Basic, Standard_v2 and WAF_v2 only.
+        Custom port which will be used for probing the backend servers. The valid value ranges from 1 to 65535. In case not set, port from HTTP settings will be used. This property is valid for Standard_v2 and WAF_v2 only.
     $protocol : str, default is Undefined, optional
         The Protocol used for this Probe. Possible values are Http and Https.
     timeout : float, default is Undefined, optional
@@ -4570,11 +4674,11 @@ schema NetworkAzureUpboundIoV1beta2ApplicationGatewayStatusAtProviderSku:
     Attributes
     ----------
     capacity : float, default is Undefined, optional
-        The Capacity of the SKU to use for this Application Gateway. When using a V1 SKU this value must be between 1 and 32, and 1 to 125 for a V2 SKU. When using a Basic SKU this property must be between 1 and 2. This property is optional if autoscale_configuration is set.
+        The Capacity of the SKU to use for this Application Gateway. When using a V1 SKU this value must be between 1 and 32, and 1 to 125 for a V2 SKU. This property is optional if autoscale_configuration is set.
     name : str, default is Undefined, optional
-        The Name of the SKU to use for this Application Gateway. Possible values are Basic, Standard_v2, and WAF_v2.
+        The Name of the SKU to use for this Application Gateway. Possible values are Standard_Small, Standard_Medium, Standard_Large, Standard_v2, WAF_Medium, WAF_Large, and WAF_v2.
     tier : str, default is Undefined, optional
-        The Tier of the SKU to use for this Application Gateway. Possible values are Basic, Standard_v2, and WAF_v2.
+        The Tier of the SKU to use for this Application Gateway. Possible values are Standard, Standard_v2, WAF and WAF_v2.
     """
 
 
@@ -4594,7 +4698,7 @@ schema NetworkAzureUpboundIoV1beta2ApplicationGatewayStatusAtProviderSslCertific
     id : str, default is Undefined, optional
         The ID of the SSL Certificate.
     keyVaultSecretId : str, default is Undefined, optional
-        The Secret ID of the (base-64 encoded unencrypted pfx) Secret or Certificate object stored in Azure KeyVault. You need to enable soft delete for Key Vault to use this feature. Required if data is not set.
+        The Secret ID of (base-64 encoded unencrypted pfx) the Secret or Certificate object stored in Azure KeyVault. You need to enable soft delete for Key Vault to use this feature. Required if data is not set.
     name : str, default is Undefined, optional
         The Name of the SSL certificate that is unique within this Application Gateway
     publicCertData : str, default is Undefined, optional
@@ -4732,7 +4836,7 @@ schema NetworkAzureUpboundIoV1beta2ApplicationGatewayStatusAtProviderTrustedRoot
     id : str, default is Undefined, optional
         The ID of the URL Path Map.
     keyVaultSecretId : str, default is Undefined, optional
-        The Secret ID of the (base-64 encoded unencrypted pfx) Secret or Certificate object stored in Azure KeyVault. You need to enable soft delete for the Key Vault to use this feature. Required if data is not set.
+        The Secret ID of (base-64 encoded unencrypted pfx) Secret or Certificate object stored in Azure KeyVault. You need to enable soft delete for the Key Vault to use this feature. Required if data is not set.
     name : str, default is Undefined, optional
         The Name of the Trusted Root Certificate to use.
     """
@@ -4880,7 +4984,7 @@ schema NetworkAzureUpboundIoV1beta2ApplicationGatewayStatusAtProviderWafConfigur
     ruleSetType : str, default is Undefined, optional
         The Type of the Rule Set used for this Web Application Firewall. Possible values are OWASP, Microsoft_BotManagerRuleSet and Microsoft_DefaultRuleSet. Defaults to OWASP.
     ruleSetVersion : str, default is Undefined, optional
-        The Version of the Rule Set used for this Web Application Firewall. Possible values are 0.1, 1.0, 1.1, 2.1, 2.2.9, 3.0, 3.1 and 3.2.
+        The Version of the Rule Set used for this Web Application Firewall. Possible values are 0.1, 1.0, 2.1, 2.2.9, 3.0, 3.1 and 3.2.
     """
 
 

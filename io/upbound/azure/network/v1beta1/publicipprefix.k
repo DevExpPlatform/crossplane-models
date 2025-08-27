@@ -66,6 +66,8 @@ schema NetworkAzureUpboundIoV1beta1PublicIPPrefixSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : NetworkAzureUpboundIoV1beta1PublicIPPrefixSpecProviderConfigRef, default is Undefined, optional
         provider config ref
+    publishConnectionDetailsTo : NetworkAzureUpboundIoV1beta1PublicIPPrefixSpecPublishConnectionDetailsTo, default is Undefined, optional
+        publish connection details to
     writeConnectionSecretToRef : NetworkAzureUpboundIoV1beta1PublicIPPrefixSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -80,6 +82,8 @@ schema NetworkAzureUpboundIoV1beta1PublicIPPrefixSpec:
     managementPolicies?: [str] = ["*"]
 
     providerConfigRef?: NetworkAzureUpboundIoV1beta1PublicIPPrefixSpecProviderConfigRef
+
+    publishConnectionDetailsTo?: NetworkAzureUpboundIoV1beta1PublicIPPrefixSpecPublishConnectionDetailsTo
 
     writeConnectionSecretToRef?: NetworkAzureUpboundIoV1beta1PublicIPPrefixSpecWriteConnectionSecretToRef
 
@@ -104,8 +108,6 @@ schema NetworkAzureUpboundIoV1beta1PublicIPPrefixSpecForProvider:
         resource group name selector
     sku : str, default is Undefined, optional
         The SKU of the Public IP Prefix. Accepted values are Standard. Defaults to Standard. Changing this forces a new resource to be created.
-    skuTier : str, default is Undefined, optional
-        The SKU Tier that should be used for the Public IP. Possible values are Regional and Global. Defaults to Regional. Changing this forces a new resource to be created.
     tags : {str:str}, default is Undefined, optional
         A mapping of tags to assign to the resource.
     zones : [str], default is Undefined, optional
@@ -126,8 +128,6 @@ schema NetworkAzureUpboundIoV1beta1PublicIPPrefixSpecForProvider:
     resourceGroupNameSelector?: NetworkAzureUpboundIoV1beta1PublicIPPrefixSpecForProviderResourceGroupNameSelector
 
     sku?: str
-
-    skuTier?: str
 
     tags?: {str:str}
 
@@ -246,8 +246,6 @@ schema NetworkAzureUpboundIoV1beta1PublicIPPrefixSpecInitProvider:
         Specifies the number of bits of the prefix. The value can be set between 0 (4,294,967,296 addresses) and 31 (2 addresses). Defaults to 28(16 addresses). Changing this forces a new resource to be created.
     sku : str, default is Undefined, optional
         The SKU of the Public IP Prefix. Accepted values are Standard. Defaults to Standard. Changing this forces a new resource to be created.
-    skuTier : str, default is Undefined, optional
-        The SKU Tier that should be used for the Public IP. Possible values are Regional and Global. Defaults to Regional. Changing this forces a new resource to be created.
     tags : {str:str}, default is Undefined, optional
         A mapping of tags to assign to the resource.
     zones : [str], default is Undefined, optional
@@ -262,8 +260,6 @@ schema NetworkAzureUpboundIoV1beta1PublicIPPrefixSpecInitProvider:
     prefixLength?: float
 
     sku?: str
-
-    skuTier?: str
 
     tags?: {str:str}
 
@@ -314,12 +310,112 @@ schema NetworkAzureUpboundIoV1beta1PublicIPPrefixSpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
+schema NetworkAzureUpboundIoV1beta1PublicIPPrefixSpecPublishConnectionDetailsTo:
+    r"""
+    PublishConnectionDetailsTo specifies the connection secret config which
+    contains a name, metadata and a reference to secret store config to
+    which any connection details for this managed resource should be written.
+    Connection details frequently include the endpoint, username,
+    and password required to connect to the managed resource.
+
+    Attributes
+    ----------
+    configRef : NetworkAzureUpboundIoV1beta1PublicIPPrefixSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
+        config ref
+    metadata : NetworkAzureUpboundIoV1beta1PublicIPPrefixSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
+        metadata
+    name : str, default is Undefined, required
+        Name is the name of the connection secret.
+    """
+
+
+    configRef?: NetworkAzureUpboundIoV1beta1PublicIPPrefixSpecPublishConnectionDetailsToConfigRef
+
+    metadata?: NetworkAzureUpboundIoV1beta1PublicIPPrefixSpecPublishConnectionDetailsToMetadata
+
+    name: str
+
+
+schema NetworkAzureUpboundIoV1beta1PublicIPPrefixSpecPublishConnectionDetailsToConfigRef:
+    r"""
+    SecretStoreConfigRef specifies which secret store config should be used
+    for this ConnectionSecret.
+
+    Attributes
+    ----------
+    name : str, default is Undefined, required
+        Name of the referenced object.
+    policy : NetworkAzureUpboundIoV1beta1PublicIPPrefixSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    name: str
+
+    policy?: NetworkAzureUpboundIoV1beta1PublicIPPrefixSpecPublishConnectionDetailsToConfigRefPolicy
+
+
+schema NetworkAzureUpboundIoV1beta1PublicIPPrefixSpecPublishConnectionDetailsToConfigRefPolicy:
+    r"""
+    Policies for referencing.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
+schema NetworkAzureUpboundIoV1beta1PublicIPPrefixSpecPublishConnectionDetailsToMetadata:
+    r"""
+    Metadata is the metadata for connection secret.
+
+    Attributes
+    ----------
+    annotations : {str:str}, default is Undefined, optional
+        Annotations are the annotations to be added to connection secret.
+        - For Kubernetes secrets, this will be used as "metadata.annotations".
+        - It is up to Secret Store implementation for others store types.
+    labels : {str:str}, default is Undefined, optional
+        Labels are the labels/tags to be added to connection secret.
+        - For Kubernetes secrets, this will be used as "metadata.labels".
+        - It is up to Secret Store implementation for others store types.
+    $type : str, default is Undefined, optional
+        Type is the SecretType for the connection secret.
+        - Only valid for Kubernetes Secret Stores.
+    """
+
+
+    annotations?: {str:str}
+
+    labels?: {str:str}
+
+    $type?: str
+
+
 schema NetworkAzureUpboundIoV1beta1PublicIPPrefixSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
+    This field is planned to be replaced in a future release in favor of
+    PublishConnectionDetailsTo. Currently, both could be set independently
+    and connection details would be published to both without affecting
+    each other.
 
     Attributes
     ----------
@@ -379,8 +475,6 @@ schema NetworkAzureUpboundIoV1beta1PublicIPPrefixStatusAtProvider:
         The name of the resource group in which to create the Public IP Prefix. Changing this forces a new resource to be created.
     sku : str, default is Undefined, optional
         The SKU of the Public IP Prefix. Accepted values are Standard. Defaults to Standard. Changing this forces a new resource to be created.
-    skuTier : str, default is Undefined, optional
-        The SKU Tier that should be used for the Public IP. Possible values are Regional and Global. Defaults to Regional. Changing this forces a new resource to be created.
     tags : {str:str}, default is Undefined, optional
         A mapping of tags to assign to the resource.
     zones : [str], default is Undefined, optional
@@ -401,8 +495,6 @@ schema NetworkAzureUpboundIoV1beta1PublicIPPrefixStatusAtProvider:
     resourceGroupName?: str
 
     sku?: str
-
-    skuTier?: str
 
     tags?: {str:str}
 

@@ -66,6 +66,8 @@ schema NetworkAzureUpboundIoV1beta2ExpressRoutePortSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : NetworkAzureUpboundIoV1beta2ExpressRoutePortSpecProviderConfigRef, default is Undefined, optional
         provider config ref
+    publishConnectionDetailsTo : NetworkAzureUpboundIoV1beta2ExpressRoutePortSpecPublishConnectionDetailsTo, default is Undefined, optional
+        publish connection details to
     writeConnectionSecretToRef : NetworkAzureUpboundIoV1beta2ExpressRoutePortSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -81,6 +83,8 @@ schema NetworkAzureUpboundIoV1beta2ExpressRoutePortSpec:
 
     providerConfigRef?: NetworkAzureUpboundIoV1beta2ExpressRoutePortSpecProviderConfigRef
 
+    publishConnectionDetailsTo?: NetworkAzureUpboundIoV1beta2ExpressRoutePortSpecPublishConnectionDetailsTo
+
     writeConnectionSecretToRef?: NetworkAzureUpboundIoV1beta2ExpressRoutePortSpecWriteConnectionSecretToRef
 
 
@@ -93,7 +97,7 @@ schema NetworkAzureUpboundIoV1beta2ExpressRoutePortSpecForProvider:
     bandwidthInGbps : float, default is Undefined, optional
         Bandwidth of the Express Route Port in Gbps. Changing this forces a new Express Route Port to be created.
     billingType : str, default is Undefined, optional
-        The billing type of the Express Route Port. Possible values are MeteredData and UnlimitedData. Defaults to MeteredData.
+        The billing type of the Express Route Port. Possible values are MeteredData and UnlimitedData.
     encapsulation : str, default is Undefined, optional
         The encapsulation method used for the Express Route Port. Changing this forces a new Express Route Port to be created. Possible values are: Dot1Q, QinQ.
     identity : NetworkAzureUpboundIoV1beta2ExpressRoutePortSpecForProviderIdentity, default is Undefined, optional
@@ -327,7 +331,7 @@ schema NetworkAzureUpboundIoV1beta2ExpressRoutePortSpecInitProvider:
     bandwidthInGbps : float, default is Undefined, optional
         Bandwidth of the Express Route Port in Gbps. Changing this forces a new Express Route Port to be created.
     billingType : str, default is Undefined, optional
-        The billing type of the Express Route Port. Possible values are MeteredData and UnlimitedData. Defaults to MeteredData.
+        The billing type of the Express Route Port. Possible values are MeteredData and UnlimitedData.
     encapsulation : str, default is Undefined, optional
         The encapsulation method used for the Express Route Port. Changing this forces a new Express Route Port to be created. Possible values are: Dot1Q, QinQ.
     identity : NetworkAzureUpboundIoV1beta2ExpressRoutePortSpecInitProviderIdentity, default is Undefined, optional
@@ -486,12 +490,112 @@ schema NetworkAzureUpboundIoV1beta2ExpressRoutePortSpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
+schema NetworkAzureUpboundIoV1beta2ExpressRoutePortSpecPublishConnectionDetailsTo:
+    r"""
+    PublishConnectionDetailsTo specifies the connection secret config which
+    contains a name, metadata and a reference to secret store config to
+    which any connection details for this managed resource should be written.
+    Connection details frequently include the endpoint, username,
+    and password required to connect to the managed resource.
+
+    Attributes
+    ----------
+    configRef : NetworkAzureUpboundIoV1beta2ExpressRoutePortSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
+        config ref
+    metadata : NetworkAzureUpboundIoV1beta2ExpressRoutePortSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
+        metadata
+    name : str, default is Undefined, required
+        Name is the name of the connection secret.
+    """
+
+
+    configRef?: NetworkAzureUpboundIoV1beta2ExpressRoutePortSpecPublishConnectionDetailsToConfigRef
+
+    metadata?: NetworkAzureUpboundIoV1beta2ExpressRoutePortSpecPublishConnectionDetailsToMetadata
+
+    name: str
+
+
+schema NetworkAzureUpboundIoV1beta2ExpressRoutePortSpecPublishConnectionDetailsToConfigRef:
+    r"""
+    SecretStoreConfigRef specifies which secret store config should be used
+    for this ConnectionSecret.
+
+    Attributes
+    ----------
+    name : str, default is Undefined, required
+        Name of the referenced object.
+    policy : NetworkAzureUpboundIoV1beta2ExpressRoutePortSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    name: str
+
+    policy?: NetworkAzureUpboundIoV1beta2ExpressRoutePortSpecPublishConnectionDetailsToConfigRefPolicy
+
+
+schema NetworkAzureUpboundIoV1beta2ExpressRoutePortSpecPublishConnectionDetailsToConfigRefPolicy:
+    r"""
+    Policies for referencing.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
+schema NetworkAzureUpboundIoV1beta2ExpressRoutePortSpecPublishConnectionDetailsToMetadata:
+    r"""
+    Metadata is the metadata for connection secret.
+
+    Attributes
+    ----------
+    annotations : {str:str}, default is Undefined, optional
+        Annotations are the annotations to be added to connection secret.
+        - For Kubernetes secrets, this will be used as "metadata.annotations".
+        - It is up to Secret Store implementation for others store types.
+    labels : {str:str}, default is Undefined, optional
+        Labels are the labels/tags to be added to connection secret.
+        - For Kubernetes secrets, this will be used as "metadata.labels".
+        - It is up to Secret Store implementation for others store types.
+    $type : str, default is Undefined, optional
+        Type is the SecretType for the connection secret.
+        - Only valid for Kubernetes Secret Stores.
+    """
+
+
+    annotations?: {str:str}
+
+    labels?: {str:str}
+
+    $type?: str
+
+
 schema NetworkAzureUpboundIoV1beta2ExpressRoutePortSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
+    This field is planned to be replaced in a future release in favor of
+    PublishConnectionDetailsTo. Currently, both could be set independently
+    and connection details would be published to both without affecting
+    each other.
 
     Attributes
     ----------
@@ -540,7 +644,7 @@ schema NetworkAzureUpboundIoV1beta2ExpressRoutePortStatusAtProvider:
     bandwidthInGbps : float, default is Undefined, optional
         Bandwidth of the Express Route Port in Gbps. Changing this forces a new Express Route Port to be created.
     billingType : str, default is Undefined, optional
-        The billing type of the Express Route Port. Possible values are MeteredData and UnlimitedData. Defaults to MeteredData.
+        The billing type of the Express Route Port. Possible values are MeteredData and UnlimitedData.
     encapsulation : str, default is Undefined, optional
         The encapsulation method used for the Express Route Port. Changing this forces a new Express Route Port to be created. Possible values are: Dot1Q, QinQ.
     ethertype : str, default is Undefined, optional

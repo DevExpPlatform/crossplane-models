@@ -66,6 +66,8 @@ schema SesAwsUpboundIoV1beta1TemplateSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : SesAwsUpboundIoV1beta1TemplateSpecProviderConfigRef, default is Undefined, optional
         provider config ref
+    publishConnectionDetailsTo : SesAwsUpboundIoV1beta1TemplateSpecPublishConnectionDetailsTo, default is Undefined, optional
+        publish connection details to
     writeConnectionSecretToRef : SesAwsUpboundIoV1beta1TemplateSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -81,6 +83,8 @@ schema SesAwsUpboundIoV1beta1TemplateSpec:
 
     providerConfigRef?: SesAwsUpboundIoV1beta1TemplateSpecProviderConfigRef
 
+    publishConnectionDetailsTo?: SesAwsUpboundIoV1beta1TemplateSpecPublishConnectionDetailsTo
+
     writeConnectionSecretToRef?: SesAwsUpboundIoV1beta1TemplateSpecWriteConnectionSecretToRef
 
 
@@ -93,7 +97,6 @@ schema SesAwsUpboundIoV1beta1TemplateSpecForProvider:
     html : str, default is Undefined, optional
         The HTML body of the email. Must be less than 500KB in size, including both the text and HTML parts.
     region : str, default is Undefined, required
-        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
     subject : str, default is Undefined, optional
         The subject line of the email.
@@ -186,12 +189,112 @@ schema SesAwsUpboundIoV1beta1TemplateSpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
+schema SesAwsUpboundIoV1beta1TemplateSpecPublishConnectionDetailsTo:
+    r"""
+    PublishConnectionDetailsTo specifies the connection secret config which
+    contains a name, metadata and a reference to secret store config to
+    which any connection details for this managed resource should be written.
+    Connection details frequently include the endpoint, username,
+    and password required to connect to the managed resource.
+
+    Attributes
+    ----------
+    configRef : SesAwsUpboundIoV1beta1TemplateSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
+        config ref
+    metadata : SesAwsUpboundIoV1beta1TemplateSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
+        metadata
+    name : str, default is Undefined, required
+        Name is the name of the connection secret.
+    """
+
+
+    configRef?: SesAwsUpboundIoV1beta1TemplateSpecPublishConnectionDetailsToConfigRef
+
+    metadata?: SesAwsUpboundIoV1beta1TemplateSpecPublishConnectionDetailsToMetadata
+
+    name: str
+
+
+schema SesAwsUpboundIoV1beta1TemplateSpecPublishConnectionDetailsToConfigRef:
+    r"""
+    SecretStoreConfigRef specifies which secret store config should be used
+    for this ConnectionSecret.
+
+    Attributes
+    ----------
+    name : str, default is Undefined, required
+        Name of the referenced object.
+    policy : SesAwsUpboundIoV1beta1TemplateSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    name: str
+
+    policy?: SesAwsUpboundIoV1beta1TemplateSpecPublishConnectionDetailsToConfigRefPolicy
+
+
+schema SesAwsUpboundIoV1beta1TemplateSpecPublishConnectionDetailsToConfigRefPolicy:
+    r"""
+    Policies for referencing.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
+schema SesAwsUpboundIoV1beta1TemplateSpecPublishConnectionDetailsToMetadata:
+    r"""
+    Metadata is the metadata for connection secret.
+
+    Attributes
+    ----------
+    annotations : {str:str}, default is Undefined, optional
+        Annotations are the annotations to be added to connection secret.
+        - For Kubernetes secrets, this will be used as "metadata.annotations".
+        - It is up to Secret Store implementation for others store types.
+    labels : {str:str}, default is Undefined, optional
+        Labels are the labels/tags to be added to connection secret.
+        - For Kubernetes secrets, this will be used as "metadata.labels".
+        - It is up to Secret Store implementation for others store types.
+    $type : str, default is Undefined, optional
+        Type is the SecretType for the connection secret.
+        - Only valid for Kubernetes Secret Stores.
+    """
+
+
+    annotations?: {str:str}
+
+    labels?: {str:str}
+
+    $type?: str
+
+
 schema SesAwsUpboundIoV1beta1TemplateSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
+    This field is planned to be replaced in a future release in favor of
+    PublishConnectionDetailsTo. Currently, both could be set independently
+    and connection details would be published to both without affecting
+    each other.
 
     Attributes
     ----------
@@ -243,9 +346,6 @@ schema SesAwsUpboundIoV1beta1TemplateStatusAtProvider:
         The HTML body of the email. Must be less than 500KB in size, including both the text and HTML parts.
     id : str, default is Undefined, optional
         The name of the SES template
-    region : str, default is Undefined, optional
-        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
-        Region is the region you'd like your resource to be created in.
     subject : str, default is Undefined, optional
         The subject line of the email.
     text : str, default is Undefined, optional
@@ -258,8 +358,6 @@ schema SesAwsUpboundIoV1beta1TemplateStatusAtProvider:
     html?: str
 
     id?: str
-
-    region?: str
 
     subject?: str
 

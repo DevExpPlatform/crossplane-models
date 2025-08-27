@@ -66,6 +66,8 @@ schema DynamodbAwsUpboundIoV1beta1TableItemSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : DynamodbAwsUpboundIoV1beta1TableItemSpecProviderConfigRef, default is Undefined, optional
         provider config ref
+    publishConnectionDetailsTo : DynamodbAwsUpboundIoV1beta1TableItemSpecPublishConnectionDetailsTo, default is Undefined, optional
+        publish connection details to
     writeConnectionSecretToRef : DynamodbAwsUpboundIoV1beta1TableItemSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -80,6 +82,8 @@ schema DynamodbAwsUpboundIoV1beta1TableItemSpec:
     managementPolicies?: [str] = ["*"]
 
     providerConfigRef?: DynamodbAwsUpboundIoV1beta1TableItemSpecProviderConfigRef
+
+    publishConnectionDetailsTo?: DynamodbAwsUpboundIoV1beta1TableItemSpecPublishConnectionDetailsTo
 
     writeConnectionSecretToRef?: DynamodbAwsUpboundIoV1beta1TableItemSpecWriteConnectionSecretToRef
 
@@ -97,7 +101,6 @@ schema DynamodbAwsUpboundIoV1beta1TableItemSpecForProvider:
     rangeKey : str, default is Undefined, optional
         Range key to use for lookups and identification of the item. Required if there is range key defined in the table.
     region : str, default is Undefined, required
-        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
     tableName : str, default is Undefined, optional
         Name of the table to contain the item.
@@ -388,12 +391,112 @@ schema DynamodbAwsUpboundIoV1beta1TableItemSpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
+schema DynamodbAwsUpboundIoV1beta1TableItemSpecPublishConnectionDetailsTo:
+    r"""
+    PublishConnectionDetailsTo specifies the connection secret config which
+    contains a name, metadata and a reference to secret store config to
+    which any connection details for this managed resource should be written.
+    Connection details frequently include the endpoint, username,
+    and password required to connect to the managed resource.
+
+    Attributes
+    ----------
+    configRef : DynamodbAwsUpboundIoV1beta1TableItemSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
+        config ref
+    metadata : DynamodbAwsUpboundIoV1beta1TableItemSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
+        metadata
+    name : str, default is Undefined, required
+        Name is the name of the connection secret.
+    """
+
+
+    configRef?: DynamodbAwsUpboundIoV1beta1TableItemSpecPublishConnectionDetailsToConfigRef
+
+    metadata?: DynamodbAwsUpboundIoV1beta1TableItemSpecPublishConnectionDetailsToMetadata
+
+    name: str
+
+
+schema DynamodbAwsUpboundIoV1beta1TableItemSpecPublishConnectionDetailsToConfigRef:
+    r"""
+    SecretStoreConfigRef specifies which secret store config should be used
+    for this ConnectionSecret.
+
+    Attributes
+    ----------
+    name : str, default is Undefined, required
+        Name of the referenced object.
+    policy : DynamodbAwsUpboundIoV1beta1TableItemSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    name: str
+
+    policy?: DynamodbAwsUpboundIoV1beta1TableItemSpecPublishConnectionDetailsToConfigRefPolicy
+
+
+schema DynamodbAwsUpboundIoV1beta1TableItemSpecPublishConnectionDetailsToConfigRefPolicy:
+    r"""
+    Policies for referencing.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
+schema DynamodbAwsUpboundIoV1beta1TableItemSpecPublishConnectionDetailsToMetadata:
+    r"""
+    Metadata is the metadata for connection secret.
+
+    Attributes
+    ----------
+    annotations : {str:str}, default is Undefined, optional
+        Annotations are the annotations to be added to connection secret.
+        - For Kubernetes secrets, this will be used as "metadata.annotations".
+        - It is up to Secret Store implementation for others store types.
+    labels : {str:str}, default is Undefined, optional
+        Labels are the labels/tags to be added to connection secret.
+        - For Kubernetes secrets, this will be used as "metadata.labels".
+        - It is up to Secret Store implementation for others store types.
+    $type : str, default is Undefined, optional
+        Type is the SecretType for the connection secret.
+        - Only valid for Kubernetes Secret Stores.
+    """
+
+
+    annotations?: {str:str}
+
+    labels?: {str:str}
+
+    $type?: str
+
+
 schema DynamodbAwsUpboundIoV1beta1TableItemSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
+    This field is planned to be replaced in a future release in favor of
+    PublishConnectionDetailsTo. Currently, both could be set independently
+    and connection details would be published to both without affecting
+    each other.
 
     Attributes
     ----------
@@ -447,9 +550,6 @@ schema DynamodbAwsUpboundIoV1beta1TableItemStatusAtProvider:
         JSON representation of a map of attribute name/value pairs, one for each attribute. Only the primary key attributes are required; you can optionally provide other attribute name-value pairs for the item.
     rangeKey : str, default is Undefined, optional
         Range key to use for lookups and identification of the item. Required if there is range key defined in the table.
-    region : str, default is Undefined, optional
-        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
-        Region is the region you'd like your resource to be created in.
     tableName : str, default is Undefined, optional
         Name of the table to contain the item.
     """
@@ -462,8 +562,6 @@ schema DynamodbAwsUpboundIoV1beta1TableItemStatusAtProvider:
     item?: str
 
     rangeKey?: str
-
-    region?: str
 
     tableName?: str
 

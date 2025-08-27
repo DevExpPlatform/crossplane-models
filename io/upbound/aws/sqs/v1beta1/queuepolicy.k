@@ -66,6 +66,8 @@ schema SqsAwsUpboundIoV1beta1QueuePolicySpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : SqsAwsUpboundIoV1beta1QueuePolicySpecProviderConfigRef, default is Undefined, optional
         provider config ref
+    publishConnectionDetailsTo : SqsAwsUpboundIoV1beta1QueuePolicySpecPublishConnectionDetailsTo, default is Undefined, optional
+        publish connection details to
     writeConnectionSecretToRef : SqsAwsUpboundIoV1beta1QueuePolicySpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -81,6 +83,8 @@ schema SqsAwsUpboundIoV1beta1QueuePolicySpec:
 
     providerConfigRef?: SqsAwsUpboundIoV1beta1QueuePolicySpecProviderConfigRef
 
+    publishConnectionDetailsTo?: SqsAwsUpboundIoV1beta1QueuePolicySpecPublishConnectionDetailsTo
+
     writeConnectionSecretToRef?: SqsAwsUpboundIoV1beta1QueuePolicySpecWriteConnectionSecretToRef
 
 
@@ -91,15 +95,14 @@ schema SqsAwsUpboundIoV1beta1QueuePolicySpecForProvider:
     Attributes
     ----------
     policy : str, default is Undefined, optional
-        JSON policy for the SQS queue. Ensure that Version = "2012-10-17" is set in the policy or AWS may hang in creating the queue.
+        The JSON policy for the SQS queue.
     queueUrl : str, default is Undefined, optional
-        URL of the SQS Queue to which to attach the policy.
+        The URL of the SQS Queue to which to attach the policy
     queueUrlRef : SqsAwsUpboundIoV1beta1QueuePolicySpecForProviderQueueURLRef, default is Undefined, optional
         queue Url ref
     queueUrlSelector : SqsAwsUpboundIoV1beta1QueuePolicySpecForProviderQueueURLSelector, default is Undefined, optional
         queue Url selector
     region : str, default is Undefined, required
-        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
     """
 
@@ -220,9 +223,9 @@ schema SqsAwsUpboundIoV1beta1QueuePolicySpecInitProvider:
     Attributes
     ----------
     policy : str, default is Undefined, optional
-        JSON policy for the SQS queue. Ensure that Version = "2012-10-17" is set in the policy or AWS may hang in creating the queue.
+        The JSON policy for the SQS queue.
     queueUrl : str, default is Undefined, optional
-        URL of the SQS Queue to which to attach the policy.
+        The URL of the SQS Queue to which to attach the policy
     queueUrlRef : SqsAwsUpboundIoV1beta1QueuePolicySpecInitProviderQueueURLRef, default is Undefined, optional
         queue Url ref
     queueUrlSelector : SqsAwsUpboundIoV1beta1QueuePolicySpecInitProviderQueueURLSelector, default is Undefined, optional
@@ -372,12 +375,112 @@ schema SqsAwsUpboundIoV1beta1QueuePolicySpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
+schema SqsAwsUpboundIoV1beta1QueuePolicySpecPublishConnectionDetailsTo:
+    r"""
+    PublishConnectionDetailsTo specifies the connection secret config which
+    contains a name, metadata and a reference to secret store config to
+    which any connection details for this managed resource should be written.
+    Connection details frequently include the endpoint, username,
+    and password required to connect to the managed resource.
+
+    Attributes
+    ----------
+    configRef : SqsAwsUpboundIoV1beta1QueuePolicySpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
+        config ref
+    metadata : SqsAwsUpboundIoV1beta1QueuePolicySpecPublishConnectionDetailsToMetadata, default is Undefined, optional
+        metadata
+    name : str, default is Undefined, required
+        Name is the name of the connection secret.
+    """
+
+
+    configRef?: SqsAwsUpboundIoV1beta1QueuePolicySpecPublishConnectionDetailsToConfigRef
+
+    metadata?: SqsAwsUpboundIoV1beta1QueuePolicySpecPublishConnectionDetailsToMetadata
+
+    name: str
+
+
+schema SqsAwsUpboundIoV1beta1QueuePolicySpecPublishConnectionDetailsToConfigRef:
+    r"""
+    SecretStoreConfigRef specifies which secret store config should be used
+    for this ConnectionSecret.
+
+    Attributes
+    ----------
+    name : str, default is Undefined, required
+        Name of the referenced object.
+    policy : SqsAwsUpboundIoV1beta1QueuePolicySpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    name: str
+
+    policy?: SqsAwsUpboundIoV1beta1QueuePolicySpecPublishConnectionDetailsToConfigRefPolicy
+
+
+schema SqsAwsUpboundIoV1beta1QueuePolicySpecPublishConnectionDetailsToConfigRefPolicy:
+    r"""
+    Policies for referencing.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
+schema SqsAwsUpboundIoV1beta1QueuePolicySpecPublishConnectionDetailsToMetadata:
+    r"""
+    Metadata is the metadata for connection secret.
+
+    Attributes
+    ----------
+    annotations : {str:str}, default is Undefined, optional
+        Annotations are the annotations to be added to connection secret.
+        - For Kubernetes secrets, this will be used as "metadata.annotations".
+        - It is up to Secret Store implementation for others store types.
+    labels : {str:str}, default is Undefined, optional
+        Labels are the labels/tags to be added to connection secret.
+        - For Kubernetes secrets, this will be used as "metadata.labels".
+        - It is up to Secret Store implementation for others store types.
+    $type : str, default is Undefined, optional
+        Type is the SecretType for the connection secret.
+        - Only valid for Kubernetes Secret Stores.
+    """
+
+
+    annotations?: {str:str}
+
+    labels?: {str:str}
+
+    $type?: str
+
+
 schema SqsAwsUpboundIoV1beta1QueuePolicySpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
+    This field is planned to be replaced in a future release in favor of
+    PublishConnectionDetailsTo. Currently, both could be set independently
+    and connection details would be published to both without affecting
+    each other.
 
     Attributes
     ----------
@@ -426,12 +529,9 @@ schema SqsAwsUpboundIoV1beta1QueuePolicyStatusAtProvider:
     id : str, default is Undefined, optional
         id
     policy : str, default is Undefined, optional
-        JSON policy for the SQS queue. Ensure that Version = "2012-10-17" is set in the policy or AWS may hang in creating the queue.
+        The JSON policy for the SQS queue.
     queueUrl : str, default is Undefined, optional
-        URL of the SQS Queue to which to attach the policy.
-    region : str, default is Undefined, optional
-        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
-        Region is the region you'd like your resource to be created in.
+        The URL of the SQS Queue to which to attach the policy
     """
 
 
@@ -440,8 +540,6 @@ schema SqsAwsUpboundIoV1beta1QueuePolicyStatusAtProvider:
     policy?: str
 
     queueUrl?: str
-
-    region?: str
 
 
 schema SqsAwsUpboundIoV1beta1QueuePolicyStatusConditionsItems0:

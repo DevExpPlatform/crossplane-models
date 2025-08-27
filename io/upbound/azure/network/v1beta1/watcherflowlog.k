@@ -66,6 +66,8 @@ schema NetworkAzureUpboundIoV1beta1WatcherFlowLogSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecProviderConfigRef, default is Undefined, optional
         provider config ref
+    publishConnectionDetailsTo : NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecPublishConnectionDetailsTo, default is Undefined, optional
+        publish connection details to
     writeConnectionSecretToRef : NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -81,6 +83,8 @@ schema NetworkAzureUpboundIoV1beta1WatcherFlowLogSpec:
 
     providerConfigRef?: NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecProviderConfigRef
 
+    publishConnectionDetailsTo?: NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecPublishConnectionDetailsTo
+
     writeConnectionSecretToRef?: NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecWriteConnectionSecretToRef
 
 
@@ -95,7 +99,7 @@ schema NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecForProvider:
     location : str, default is Undefined, optional
         The location where the Network Watcher Flow Log resides. Changing this forces a new resource to be created. Defaults to the location of the Network Watcher.
     networkSecurityGroupId : str, default is Undefined, optional
-        The ID of the Network Watcher.
+        The ID of the Network Security Group for which to enable flow logs for. Changing this forces a new resource to be created.
     networkSecurityGroupIdRef : NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecForProviderNetworkSecurityGroupIDRef, default is Undefined, optional
         network security group Id ref
     networkSecurityGroupIdSelector : NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecForProviderNetworkSecurityGroupIDSelector, default is Undefined, optional
@@ -122,16 +126,10 @@ schema NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecForProvider:
         storage account Id selector
     tags : {str:str}, default is Undefined, optional
         A mapping of tags which should be assigned to the Network Watcher Flow Log.
-    targetResourceId : str, default is Undefined, optional
-        The ID of the Resource for which to enable flow logs for. Changing this forces a new resource to be created.
-    targetResourceIdRef : NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecForProviderTargetResourceIDRef, default is Undefined, optional
-        target resource Id ref
-    targetResourceIdSelector : NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecForProviderTargetResourceIDSelector, default is Undefined, optional
-        target resource Id selector
     trafficAnalytics : [NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecForProviderTrafficAnalyticsItems0], default is Undefined, optional
         A traffic_analytics block as documented below.
     version : float, default is Undefined, optional
-        The version (revision) of the flow log. Possible values are 1 and 2. Defaults to 1.
+        The version (revision) of the flow log. Possible values are 1 and 2.
     """
 
 
@@ -166,12 +164,6 @@ schema NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecForProvider:
     storageAccountIdSelector?: NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecForProviderStorageAccountIDSelector
 
     tags?: {str:str}
-
-    targetResourceId?: str
-
-    targetResourceIdRef?: NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecForProviderTargetResourceIDRef
-
-    targetResourceIdSelector?: NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecForProviderTargetResourceIDSelector
 
     trafficAnalytics?: [NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecForProviderTrafficAnalyticsItems0]
 
@@ -552,95 +544,6 @@ schema NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecForProviderStorageAccountID
     resolve?: "Always" | "IfNotPresent"
 
 
-schema NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecForProviderTargetResourceIDRef:
-    r"""
-    Reference to a SecurityGroup in network to populate targetResourceId.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecForProviderTargetResourceIDRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecForProviderTargetResourceIDRefPolicy
-
-
-schema NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecForProviderTargetResourceIDRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecForProviderTargetResourceIDSelector:
-    r"""
-    Selector for a SecurityGroup in network to populate targetResourceId.
-
-    Attributes
-    ----------
-    matchControllerRef : bool, default is Undefined, optional
-        MatchControllerRef ensures an object with the same controller reference
-        as the selecting object is selected.
-    matchLabels : {str:str}, default is Undefined, optional
-        MatchLabels ensures an object with matching labels is selected.
-    policy : NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecForProviderTargetResourceIDSelectorPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    matchControllerRef?: bool
-
-    matchLabels?: {str:str}
-
-    policy?: NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecForProviderTargetResourceIDSelectorPolicy
-
-
-schema NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecForProviderTargetResourceIDSelectorPolicy:
-    r"""
-    Policies for selection.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
 schema NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecForProviderTrafficAnalyticsItems0:
     r"""
     network azure upbound io v1beta1 watcher flow log spec for provider traffic analytics items0
@@ -885,7 +788,7 @@ schema NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecInitProvider:
     location : str, default is Undefined, optional
         The location where the Network Watcher Flow Log resides. Changing this forces a new resource to be created. Defaults to the location of the Network Watcher.
     networkSecurityGroupId : str, default is Undefined, optional
-        The ID of the Network Watcher.
+        The ID of the Network Security Group for which to enable flow logs for. Changing this forces a new resource to be created.
     networkSecurityGroupIdRef : NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecInitProviderNetworkSecurityGroupIDRef, default is Undefined, optional
         network security group Id ref
     networkSecurityGroupIdSelector : NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecInitProviderNetworkSecurityGroupIDSelector, default is Undefined, optional
@@ -900,16 +803,10 @@ schema NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecInitProvider:
         storage account Id selector
     tags : {str:str}, default is Undefined, optional
         A mapping of tags which should be assigned to the Network Watcher Flow Log.
-    targetResourceId : str, default is Undefined, optional
-        The ID of the Resource for which to enable flow logs for. Changing this forces a new resource to be created.
-    targetResourceIdRef : NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecInitProviderTargetResourceIDRef, default is Undefined, optional
-        target resource Id ref
-    targetResourceIdSelector : NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecInitProviderTargetResourceIDSelector, default is Undefined, optional
-        target resource Id selector
     trafficAnalytics : [NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecInitProviderTrafficAnalyticsItems0], default is Undefined, optional
         A traffic_analytics block as documented below.
     version : float, default is Undefined, optional
-        The version (revision) of the flow log. Possible values are 1 and 2. Defaults to 1.
+        The version (revision) of the flow log. Possible values are 1 and 2.
     """
 
 
@@ -932,12 +829,6 @@ schema NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecInitProvider:
     storageAccountIdSelector?: NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecInitProviderStorageAccountIDSelector
 
     tags?: {str:str}
-
-    targetResourceId?: str
-
-    targetResourceIdRef?: NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecInitProviderTargetResourceIDRef
-
-    targetResourceIdSelector?: NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecInitProviderTargetResourceIDSelector
 
     trafficAnalytics?: [NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecInitProviderTrafficAnalyticsItems0]
 
@@ -1117,95 +1008,6 @@ schema NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecInitProviderStorageAccountI
 
 
 schema NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecInitProviderStorageAccountIDSelectorPolicy:
-    r"""
-    Policies for selection.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecInitProviderTargetResourceIDRef:
-    r"""
-    Reference to a SecurityGroup in network to populate targetResourceId.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecInitProviderTargetResourceIDRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecInitProviderTargetResourceIDRefPolicy
-
-
-schema NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecInitProviderTargetResourceIDRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecInitProviderTargetResourceIDSelector:
-    r"""
-    Selector for a SecurityGroup in network to populate targetResourceId.
-
-    Attributes
-    ----------
-    matchControllerRef : bool, default is Undefined, optional
-        MatchControllerRef ensures an object with the same controller reference
-        as the selecting object is selected.
-    matchLabels : {str:str}, default is Undefined, optional
-        MatchLabels ensures an object with matching labels is selected.
-    policy : NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecInitProviderTargetResourceIDSelectorPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    matchControllerRef?: bool
-
-    matchLabels?: {str:str}
-
-    policy?: NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecInitProviderTargetResourceIDSelectorPolicy
-
-
-schema NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecInitProviderTargetResourceIDSelectorPolicy:
     r"""
     Policies for selection.
 
@@ -1497,12 +1299,112 @@ schema NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
+schema NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecPublishConnectionDetailsTo:
+    r"""
+    PublishConnectionDetailsTo specifies the connection secret config which
+    contains a name, metadata and a reference to secret store config to
+    which any connection details for this managed resource should be written.
+    Connection details frequently include the endpoint, username,
+    and password required to connect to the managed resource.
+
+    Attributes
+    ----------
+    configRef : NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
+        config ref
+    metadata : NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
+        metadata
+    name : str, default is Undefined, required
+        Name is the name of the connection secret.
+    """
+
+
+    configRef?: NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecPublishConnectionDetailsToConfigRef
+
+    metadata?: NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecPublishConnectionDetailsToMetadata
+
+    name: str
+
+
+schema NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecPublishConnectionDetailsToConfigRef:
+    r"""
+    SecretStoreConfigRef specifies which secret store config should be used
+    for this ConnectionSecret.
+
+    Attributes
+    ----------
+    name : str, default is Undefined, required
+        Name of the referenced object.
+    policy : NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    name: str
+
+    policy?: NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecPublishConnectionDetailsToConfigRefPolicy
+
+
+schema NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecPublishConnectionDetailsToConfigRefPolicy:
+    r"""
+    Policies for referencing.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
+schema NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecPublishConnectionDetailsToMetadata:
+    r"""
+    Metadata is the metadata for connection secret.
+
+    Attributes
+    ----------
+    annotations : {str:str}, default is Undefined, optional
+        Annotations are the annotations to be added to connection secret.
+        - For Kubernetes secrets, this will be used as "metadata.annotations".
+        - It is up to Secret Store implementation for others store types.
+    labels : {str:str}, default is Undefined, optional
+        Labels are the labels/tags to be added to connection secret.
+        - For Kubernetes secrets, this will be used as "metadata.labels".
+        - It is up to Secret Store implementation for others store types.
+    $type : str, default is Undefined, optional
+        Type is the SecretType for the connection secret.
+        - Only valid for Kubernetes Secret Stores.
+    """
+
+
+    annotations?: {str:str}
+
+    labels?: {str:str}
+
+    $type?: str
+
+
 schema NetworkAzureUpboundIoV1beta1WatcherFlowLogSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
+    This field is planned to be replaced in a future release in favor of
+    PublishConnectionDetailsTo. Currently, both could be set independently
+    and connection details would be published to both without affecting
+    each other.
 
     Attributes
     ----------
@@ -1555,7 +1457,7 @@ schema NetworkAzureUpboundIoV1beta1WatcherFlowLogStatusAtProvider:
     location : str, default is Undefined, optional
         The location where the Network Watcher Flow Log resides. Changing this forces a new resource to be created. Defaults to the location of the Network Watcher.
     networkSecurityGroupId : str, default is Undefined, optional
-        The ID of the Network Watcher.
+        The ID of the Network Security Group for which to enable flow logs for. Changing this forces a new resource to be created.
     networkWatcherName : str, default is Undefined, optional
         The name of the Network Watcher. Changing this forces a new resource to be created.
     resourceGroupName : str, default is Undefined, optional
@@ -1566,12 +1468,10 @@ schema NetworkAzureUpboundIoV1beta1WatcherFlowLogStatusAtProvider:
         The ID of the Storage Account where flow logs are stored.
     tags : {str:str}, default is Undefined, optional
         A mapping of tags which should be assigned to the Network Watcher Flow Log.
-    targetResourceId : str, default is Undefined, optional
-        The ID of the Resource for which to enable flow logs for. Changing this forces a new resource to be created.
     trafficAnalytics : [NetworkAzureUpboundIoV1beta1WatcherFlowLogStatusAtProviderTrafficAnalyticsItems0], default is Undefined, optional
         A traffic_analytics block as documented below.
     version : float, default is Undefined, optional
-        The version (revision) of the flow log. Possible values are 1 and 2. Defaults to 1.
+        The version (revision) of the flow log. Possible values are 1 and 2.
     """
 
 
@@ -1592,8 +1492,6 @@ schema NetworkAzureUpboundIoV1beta1WatcherFlowLogStatusAtProvider:
     storageAccountId?: str
 
     tags?: {str:str}
-
-    targetResourceId?: str
 
     trafficAnalytics?: [NetworkAzureUpboundIoV1beta1WatcherFlowLogStatusAtProviderTrafficAnalyticsItems0]
 

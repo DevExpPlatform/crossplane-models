@@ -66,6 +66,8 @@ schema CloudwatcheventsAwsUpboundIoV1beta2TargetSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : CloudwatcheventsAwsUpboundIoV1beta2TargetSpecProviderConfigRef, default is Undefined, optional
         provider config ref
+    publishConnectionDetailsTo : CloudwatcheventsAwsUpboundIoV1beta2TargetSpecPublishConnectionDetailsTo, default is Undefined, optional
+        publish connection details to
     writeConnectionSecretToRef : CloudwatcheventsAwsUpboundIoV1beta2TargetSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -80,6 +82,8 @@ schema CloudwatcheventsAwsUpboundIoV1beta2TargetSpec:
     managementPolicies?: [str] = ["*"]
 
     providerConfigRef?: CloudwatcheventsAwsUpboundIoV1beta2TargetSpecProviderConfigRef
+
+    publishConnectionDetailsTo?: CloudwatcheventsAwsUpboundIoV1beta2TargetSpecPublishConnectionDetailsTo
 
     writeConnectionSecretToRef?: CloudwatcheventsAwsUpboundIoV1beta2TargetSpecWriteConnectionSecretToRef
 
@@ -122,7 +126,6 @@ schema CloudwatcheventsAwsUpboundIoV1beta2TargetSpecForProvider:
     redshiftTarget : CloudwatcheventsAwsUpboundIoV1beta2TargetSpecForProviderRedshiftTarget, default is Undefined, optional
         redshift target
     region : str, default is Undefined, required
-        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
     retryPolicy : CloudwatcheventsAwsUpboundIoV1beta2TargetSpecForProviderRetryPolicy, default is Undefined, optional
         retry policy
@@ -890,12 +893,12 @@ schema CloudwatcheventsAwsUpboundIoV1beta2TargetSpecForProviderRunCommandTargets
 
 schema CloudwatcheventsAwsUpboundIoV1beta2TargetSpecForProviderSagemakerPipelineTarget:
     r"""
-    Parameters used when you are using the rule to invoke an Amazon SageMaker AI Pipeline. Documented below. A maximum of 1 are allowed.
+    Parameters used when you are using the rule to invoke an Amazon SageMaker Pipeline. Documented below. A maximum of 1 are allowed.
 
     Attributes
     ----------
     pipelineParameterList : [CloudwatcheventsAwsUpboundIoV1beta2TargetSpecForProviderSagemakerPipelineTargetPipelineParameterListItems0], default is Undefined, optional
-        List of Parameter names and values for SageMaker AI Model Building Pipeline execution.
+        List of Parameter names and values for SageMaker Model Building Pipeline execution.
     """
 
 
@@ -909,9 +912,9 @@ schema CloudwatcheventsAwsUpboundIoV1beta2TargetSpecForProviderSagemakerPipeline
     Attributes
     ----------
     name : str, default is Undefined, optional
-        Name of parameter to start execution of a SageMaker AI Model Building Pipeline.
+        Name of parameter to start execution of a SageMaker Model Building Pipeline.
     value : str, default is Undefined, optional
-        Value of parameter to start execution of a SageMaker AI Model Building Pipeline.
+        Value of parameter to start execution of a SageMaker Model Building Pipeline.
     """
 
 
@@ -1744,12 +1747,12 @@ schema CloudwatcheventsAwsUpboundIoV1beta2TargetSpecInitProviderRunCommandTarget
 
 schema CloudwatcheventsAwsUpboundIoV1beta2TargetSpecInitProviderSagemakerPipelineTarget:
     r"""
-    Parameters used when you are using the rule to invoke an Amazon SageMaker AI Pipeline. Documented below. A maximum of 1 are allowed.
+    Parameters used when you are using the rule to invoke an Amazon SageMaker Pipeline. Documented below. A maximum of 1 are allowed.
 
     Attributes
     ----------
     pipelineParameterList : [CloudwatcheventsAwsUpboundIoV1beta2TargetSpecInitProviderSagemakerPipelineTargetPipelineParameterListItems0], default is Undefined, optional
-        List of Parameter names and values for SageMaker AI Model Building Pipeline execution.
+        List of Parameter names and values for SageMaker Model Building Pipeline execution.
     """
 
 
@@ -1763,9 +1766,9 @@ schema CloudwatcheventsAwsUpboundIoV1beta2TargetSpecInitProviderSagemakerPipelin
     Attributes
     ----------
     name : str, default is Undefined, optional
-        Name of parameter to start execution of a SageMaker AI Model Building Pipeline.
+        Name of parameter to start execution of a SageMaker Model Building Pipeline.
     value : str, default is Undefined, optional
-        Value of parameter to start execution of a SageMaker AI Model Building Pipeline.
+        Value of parameter to start execution of a SageMaker Model Building Pipeline.
     """
 
 
@@ -1832,12 +1835,112 @@ schema CloudwatcheventsAwsUpboundIoV1beta2TargetSpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
+schema CloudwatcheventsAwsUpboundIoV1beta2TargetSpecPublishConnectionDetailsTo:
+    r"""
+    PublishConnectionDetailsTo specifies the connection secret config which
+    contains a name, metadata and a reference to secret store config to
+    which any connection details for this managed resource should be written.
+    Connection details frequently include the endpoint, username,
+    and password required to connect to the managed resource.
+
+    Attributes
+    ----------
+    configRef : CloudwatcheventsAwsUpboundIoV1beta2TargetSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
+        config ref
+    metadata : CloudwatcheventsAwsUpboundIoV1beta2TargetSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
+        metadata
+    name : str, default is Undefined, required
+        Name is the name of the connection secret.
+    """
+
+
+    configRef?: CloudwatcheventsAwsUpboundIoV1beta2TargetSpecPublishConnectionDetailsToConfigRef
+
+    metadata?: CloudwatcheventsAwsUpboundIoV1beta2TargetSpecPublishConnectionDetailsToMetadata
+
+    name: str
+
+
+schema CloudwatcheventsAwsUpboundIoV1beta2TargetSpecPublishConnectionDetailsToConfigRef:
+    r"""
+    SecretStoreConfigRef specifies which secret store config should be used
+    for this ConnectionSecret.
+
+    Attributes
+    ----------
+    name : str, default is Undefined, required
+        Name of the referenced object.
+    policy : CloudwatcheventsAwsUpboundIoV1beta2TargetSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    name: str
+
+    policy?: CloudwatcheventsAwsUpboundIoV1beta2TargetSpecPublishConnectionDetailsToConfigRefPolicy
+
+
+schema CloudwatcheventsAwsUpboundIoV1beta2TargetSpecPublishConnectionDetailsToConfigRefPolicy:
+    r"""
+    Policies for referencing.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
+schema CloudwatcheventsAwsUpboundIoV1beta2TargetSpecPublishConnectionDetailsToMetadata:
+    r"""
+    Metadata is the metadata for connection secret.
+
+    Attributes
+    ----------
+    annotations : {str:str}, default is Undefined, optional
+        Annotations are the annotations to be added to connection secret.
+        - For Kubernetes secrets, this will be used as "metadata.annotations".
+        - It is up to Secret Store implementation for others store types.
+    labels : {str:str}, default is Undefined, optional
+        Labels are the labels/tags to be added to connection secret.
+        - For Kubernetes secrets, this will be used as "metadata.labels".
+        - It is up to Secret Store implementation for others store types.
+    $type : str, default is Undefined, optional
+        Type is the SecretType for the connection secret.
+        - Only valid for Kubernetes Secret Stores.
+    """
+
+
+    annotations?: {str:str}
+
+    labels?: {str:str}
+
+    $type?: str
+
+
 schema CloudwatcheventsAwsUpboundIoV1beta2TargetSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
+    This field is planned to be replaced in a future release in favor of
+    PublishConnectionDetailsTo. Currently, both could be set independently
+    and connection details would be published to both without affecting
+    each other.
 
     Attributes
     ----------
@@ -1912,9 +2015,6 @@ schema CloudwatcheventsAwsUpboundIoV1beta2TargetStatusAtProvider:
         kinesis target
     redshiftTarget : CloudwatcheventsAwsUpboundIoV1beta2TargetStatusAtProviderRedshiftTarget, default is Undefined, optional
         redshift target
-    region : str, default is Undefined, optional
-        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
-        Region is the region you'd like your resource to be created in.
     retryPolicy : CloudwatcheventsAwsUpboundIoV1beta2TargetStatusAtProviderRetryPolicy, default is Undefined, optional
         retry policy
     roleArn : str, default is Undefined, optional
@@ -1959,8 +2059,6 @@ schema CloudwatcheventsAwsUpboundIoV1beta2TargetStatusAtProvider:
     kinesisTarget?: CloudwatcheventsAwsUpboundIoV1beta2TargetStatusAtProviderKinesisTarget
 
     redshiftTarget?: CloudwatcheventsAwsUpboundIoV1beta2TargetStatusAtProviderRedshiftTarget
-
-    region?: str
 
     retryPolicy?: CloudwatcheventsAwsUpboundIoV1beta2TargetStatusAtProviderRetryPolicy
 
@@ -2299,12 +2397,12 @@ schema CloudwatcheventsAwsUpboundIoV1beta2TargetStatusAtProviderRunCommandTarget
 
 schema CloudwatcheventsAwsUpboundIoV1beta2TargetStatusAtProviderSagemakerPipelineTarget:
     r"""
-    Parameters used when you are using the rule to invoke an Amazon SageMaker AI Pipeline. Documented below. A maximum of 1 are allowed.
+    Parameters used when you are using the rule to invoke an Amazon SageMaker Pipeline. Documented below. A maximum of 1 are allowed.
 
     Attributes
     ----------
     pipelineParameterList : [CloudwatcheventsAwsUpboundIoV1beta2TargetStatusAtProviderSagemakerPipelineTargetPipelineParameterListItems0], default is Undefined, optional
-        List of Parameter names and values for SageMaker AI Model Building Pipeline execution.
+        List of Parameter names and values for SageMaker Model Building Pipeline execution.
     """
 
 
@@ -2318,9 +2416,9 @@ schema CloudwatcheventsAwsUpboundIoV1beta2TargetStatusAtProviderSagemakerPipelin
     Attributes
     ----------
     name : str, default is Undefined, optional
-        Name of parameter to start execution of a SageMaker AI Model Building Pipeline.
+        Name of parameter to start execution of a SageMaker Model Building Pipeline.
     value : str, default is Undefined, optional
-        Value of parameter to start execution of a SageMaker AI Model Building Pipeline.
+        Value of parameter to start execution of a SageMaker Model Building Pipeline.
     """
 
 

@@ -66,6 +66,8 @@ schema DynamodbAwsUpboundIoV1beta1ContributorInsightsSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : DynamodbAwsUpboundIoV1beta1ContributorInsightsSpecProviderConfigRef, default is Undefined, optional
         provider config ref
+    publishConnectionDetailsTo : DynamodbAwsUpboundIoV1beta1ContributorInsightsSpecPublishConnectionDetailsTo, default is Undefined, optional
+        publish connection details to
     writeConnectionSecretToRef : DynamodbAwsUpboundIoV1beta1ContributorInsightsSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -81,6 +83,8 @@ schema DynamodbAwsUpboundIoV1beta1ContributorInsightsSpec:
 
     providerConfigRef?: DynamodbAwsUpboundIoV1beta1ContributorInsightsSpecProviderConfigRef
 
+    publishConnectionDetailsTo?: DynamodbAwsUpboundIoV1beta1ContributorInsightsSpecPublishConnectionDetailsTo
+
     writeConnectionSecretToRef?: DynamodbAwsUpboundIoV1beta1ContributorInsightsSpecWriteConnectionSecretToRef
 
 
@@ -93,7 +97,6 @@ schema DynamodbAwsUpboundIoV1beta1ContributorInsightsSpecForProvider:
     indexName : str, default is Undefined, optional
         The global secondary index name
     region : str, default is Undefined, required
-        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
     tableName : str, default is Undefined, optional
         The name of the table to enable contributor insights
@@ -372,12 +375,112 @@ schema DynamodbAwsUpboundIoV1beta1ContributorInsightsSpecProviderConfigRefPolicy
     resolve?: "Always" | "IfNotPresent"
 
 
+schema DynamodbAwsUpboundIoV1beta1ContributorInsightsSpecPublishConnectionDetailsTo:
+    r"""
+    PublishConnectionDetailsTo specifies the connection secret config which
+    contains a name, metadata and a reference to secret store config to
+    which any connection details for this managed resource should be written.
+    Connection details frequently include the endpoint, username,
+    and password required to connect to the managed resource.
+
+    Attributes
+    ----------
+    configRef : DynamodbAwsUpboundIoV1beta1ContributorInsightsSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
+        config ref
+    metadata : DynamodbAwsUpboundIoV1beta1ContributorInsightsSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
+        metadata
+    name : str, default is Undefined, required
+        Name is the name of the connection secret.
+    """
+
+
+    configRef?: DynamodbAwsUpboundIoV1beta1ContributorInsightsSpecPublishConnectionDetailsToConfigRef
+
+    metadata?: DynamodbAwsUpboundIoV1beta1ContributorInsightsSpecPublishConnectionDetailsToMetadata
+
+    name: str
+
+
+schema DynamodbAwsUpboundIoV1beta1ContributorInsightsSpecPublishConnectionDetailsToConfigRef:
+    r"""
+    SecretStoreConfigRef specifies which secret store config should be used
+    for this ConnectionSecret.
+
+    Attributes
+    ----------
+    name : str, default is Undefined, required
+        Name of the referenced object.
+    policy : DynamodbAwsUpboundIoV1beta1ContributorInsightsSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    name: str
+
+    policy?: DynamodbAwsUpboundIoV1beta1ContributorInsightsSpecPublishConnectionDetailsToConfigRefPolicy
+
+
+schema DynamodbAwsUpboundIoV1beta1ContributorInsightsSpecPublishConnectionDetailsToConfigRefPolicy:
+    r"""
+    Policies for referencing.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
+schema DynamodbAwsUpboundIoV1beta1ContributorInsightsSpecPublishConnectionDetailsToMetadata:
+    r"""
+    Metadata is the metadata for connection secret.
+
+    Attributes
+    ----------
+    annotations : {str:str}, default is Undefined, optional
+        Annotations are the annotations to be added to connection secret.
+        - For Kubernetes secrets, this will be used as "metadata.annotations".
+        - It is up to Secret Store implementation for others store types.
+    labels : {str:str}, default is Undefined, optional
+        Labels are the labels/tags to be added to connection secret.
+        - For Kubernetes secrets, this will be used as "metadata.labels".
+        - It is up to Secret Store implementation for others store types.
+    $type : str, default is Undefined, optional
+        Type is the SecretType for the connection secret.
+        - Only valid for Kubernetes Secret Stores.
+    """
+
+
+    annotations?: {str:str}
+
+    labels?: {str:str}
+
+    $type?: str
+
+
 schema DynamodbAwsUpboundIoV1beta1ContributorInsightsSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
+    This field is planned to be replaced in a future release in favor of
+    PublishConnectionDetailsTo. Currently, both could be set independently
+    and connection details would be published to both without affecting
+    each other.
 
     Attributes
     ----------
@@ -427,9 +530,6 @@ schema DynamodbAwsUpboundIoV1beta1ContributorInsightsStatusAtProvider:
         id
     indexName : str, default is Undefined, optional
         The global secondary index name
-    region : str, default is Undefined, optional
-        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
-        Region is the region you'd like your resource to be created in.
     tableName : str, default is Undefined, optional
         The name of the table to enable contributor insights
     """
@@ -438,8 +538,6 @@ schema DynamodbAwsUpboundIoV1beta1ContributorInsightsStatusAtProvider:
     id?: str
 
     indexName?: str
-
-    region?: str
 
     tableName?: str
 

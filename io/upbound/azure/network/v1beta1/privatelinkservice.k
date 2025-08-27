@@ -66,6 +66,8 @@ schema NetworkAzureUpboundIoV1beta1PrivateLinkServiceSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : NetworkAzureUpboundIoV1beta1PrivateLinkServiceSpecProviderConfigRef, default is Undefined, optional
         provider config ref
+    publishConnectionDetailsTo : NetworkAzureUpboundIoV1beta1PrivateLinkServiceSpecPublishConnectionDetailsTo, default is Undefined, optional
+        publish connection details to
     writeConnectionSecretToRef : NetworkAzureUpboundIoV1beta1PrivateLinkServiceSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -81,6 +83,8 @@ schema NetworkAzureUpboundIoV1beta1PrivateLinkServiceSpec:
 
     providerConfigRef?: NetworkAzureUpboundIoV1beta1PrivateLinkServiceSpecProviderConfigRef
 
+    publishConnectionDetailsTo?: NetworkAzureUpboundIoV1beta1PrivateLinkServiceSpecPublishConnectionDetailsTo
+
     writeConnectionSecretToRef?: NetworkAzureUpboundIoV1beta1PrivateLinkServiceSpecWriteConnectionSecretToRef
 
 
@@ -92,8 +96,6 @@ schema NetworkAzureUpboundIoV1beta1PrivateLinkServiceSpecForProvider:
     ----------
     autoApprovalSubscriptionIds : [str], default is Undefined, optional
         A list of Subscription UUID/GUID's that will be automatically be able to use this Private Link Service.
-    destinationIpAddress : str, default is Undefined, optional
-        The destination IP address of the Private Link Service.
     enableProxyProtocol : bool, default is Undefined, optional
         Should the Private Link Service support the Proxy Protocol?
     fqdns : [str], default is Undefined, optional
@@ -118,8 +120,6 @@ schema NetworkAzureUpboundIoV1beta1PrivateLinkServiceSpecForProvider:
 
 
     autoApprovalSubscriptionIds?: [str]
-
-    destinationIpAddress?: str
 
     enableProxyProtocol?: bool
 
@@ -375,8 +375,6 @@ schema NetworkAzureUpboundIoV1beta1PrivateLinkServiceSpecInitProvider:
     ----------
     autoApprovalSubscriptionIds : [str], default is Undefined, optional
         A list of Subscription UUID/GUID's that will be automatically be able to use this Private Link Service.
-    destinationIpAddress : str, default is Undefined, optional
-        The destination IP address of the Private Link Service.
     enableProxyProtocol : bool, default is Undefined, optional
         Should the Private Link Service support the Proxy Protocol?
     fqdns : [str], default is Undefined, optional
@@ -395,8 +393,6 @@ schema NetworkAzureUpboundIoV1beta1PrivateLinkServiceSpecInitProvider:
 
 
     autoApprovalSubscriptionIds?: [str]
-
-    destinationIpAddress?: str
 
     enableProxyProtocol?: bool
 
@@ -584,12 +580,112 @@ schema NetworkAzureUpboundIoV1beta1PrivateLinkServiceSpecProviderConfigRefPolicy
     resolve?: "Always" | "IfNotPresent"
 
 
+schema NetworkAzureUpboundIoV1beta1PrivateLinkServiceSpecPublishConnectionDetailsTo:
+    r"""
+    PublishConnectionDetailsTo specifies the connection secret config which
+    contains a name, metadata and a reference to secret store config to
+    which any connection details for this managed resource should be written.
+    Connection details frequently include the endpoint, username,
+    and password required to connect to the managed resource.
+
+    Attributes
+    ----------
+    configRef : NetworkAzureUpboundIoV1beta1PrivateLinkServiceSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
+        config ref
+    metadata : NetworkAzureUpboundIoV1beta1PrivateLinkServiceSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
+        metadata
+    name : str, default is Undefined, required
+        Name is the name of the connection secret.
+    """
+
+
+    configRef?: NetworkAzureUpboundIoV1beta1PrivateLinkServiceSpecPublishConnectionDetailsToConfigRef
+
+    metadata?: NetworkAzureUpboundIoV1beta1PrivateLinkServiceSpecPublishConnectionDetailsToMetadata
+
+    name: str
+
+
+schema NetworkAzureUpboundIoV1beta1PrivateLinkServiceSpecPublishConnectionDetailsToConfigRef:
+    r"""
+    SecretStoreConfigRef specifies which secret store config should be used
+    for this ConnectionSecret.
+
+    Attributes
+    ----------
+    name : str, default is Undefined, required
+        Name of the referenced object.
+    policy : NetworkAzureUpboundIoV1beta1PrivateLinkServiceSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    name: str
+
+    policy?: NetworkAzureUpboundIoV1beta1PrivateLinkServiceSpecPublishConnectionDetailsToConfigRefPolicy
+
+
+schema NetworkAzureUpboundIoV1beta1PrivateLinkServiceSpecPublishConnectionDetailsToConfigRefPolicy:
+    r"""
+    Policies for referencing.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
+schema NetworkAzureUpboundIoV1beta1PrivateLinkServiceSpecPublishConnectionDetailsToMetadata:
+    r"""
+    Metadata is the metadata for connection secret.
+
+    Attributes
+    ----------
+    annotations : {str:str}, default is Undefined, optional
+        Annotations are the annotations to be added to connection secret.
+        - For Kubernetes secrets, this will be used as "metadata.annotations".
+        - It is up to Secret Store implementation for others store types.
+    labels : {str:str}, default is Undefined, optional
+        Labels are the labels/tags to be added to connection secret.
+        - For Kubernetes secrets, this will be used as "metadata.labels".
+        - It is up to Secret Store implementation for others store types.
+    $type : str, default is Undefined, optional
+        Type is the SecretType for the connection secret.
+        - Only valid for Kubernetes Secret Stores.
+    """
+
+
+    annotations?: {str:str}
+
+    labels?: {str:str}
+
+    $type?: str
+
+
 schema NetworkAzureUpboundIoV1beta1PrivateLinkServiceSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
+    This field is planned to be replaced in a future release in favor of
+    PublishConnectionDetailsTo. Currently, both could be set independently
+    and connection details would be published to both without affecting
+    each other.
 
     Attributes
     ----------
@@ -639,8 +735,6 @@ schema NetworkAzureUpboundIoV1beta1PrivateLinkServiceStatusAtProvider:
         A globally unique DNS Name for your Private Link Service. You can use this alias to request a connection to your Private Link Service.
     autoApprovalSubscriptionIds : [str], default is Undefined, optional
         A list of Subscription UUID/GUID's that will be automatically be able to use this Private Link Service.
-    destinationIpAddress : str, default is Undefined, optional
-        The destination IP address of the Private Link Service.
     enableProxyProtocol : bool, default is Undefined, optional
         Should the Private Link Service support the Proxy Protocol?
     fqdns : [str], default is Undefined, optional
@@ -665,8 +759,6 @@ schema NetworkAzureUpboundIoV1beta1PrivateLinkServiceStatusAtProvider:
     alias?: str
 
     autoApprovalSubscriptionIds?: [str]
-
-    destinationIpAddress?: str
 
     enableProxyProtocol?: bool
 

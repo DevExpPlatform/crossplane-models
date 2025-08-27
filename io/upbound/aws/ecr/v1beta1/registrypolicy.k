@@ -66,6 +66,8 @@ schema EcrAwsUpboundIoV1beta1RegistryPolicySpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : EcrAwsUpboundIoV1beta1RegistryPolicySpecProviderConfigRef, default is Undefined, optional
         provider config ref
+    publishConnectionDetailsTo : EcrAwsUpboundIoV1beta1RegistryPolicySpecPublishConnectionDetailsTo, default is Undefined, optional
+        publish connection details to
     writeConnectionSecretToRef : EcrAwsUpboundIoV1beta1RegistryPolicySpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -81,6 +83,8 @@ schema EcrAwsUpboundIoV1beta1RegistryPolicySpec:
 
     providerConfigRef?: EcrAwsUpboundIoV1beta1RegistryPolicySpecProviderConfigRef
 
+    publishConnectionDetailsTo?: EcrAwsUpboundIoV1beta1RegistryPolicySpecPublishConnectionDetailsTo
+
     writeConnectionSecretToRef?: EcrAwsUpboundIoV1beta1RegistryPolicySpecWriteConnectionSecretToRef
 
 
@@ -93,7 +97,6 @@ schema EcrAwsUpboundIoV1beta1RegistryPolicySpecForProvider:
     policy : str, default is Undefined, optional
         The policy document. This is a JSON formatted string
     region : str, default is Undefined, required
-        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
     """
 
@@ -170,12 +173,112 @@ schema EcrAwsUpboundIoV1beta1RegistryPolicySpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
+schema EcrAwsUpboundIoV1beta1RegistryPolicySpecPublishConnectionDetailsTo:
+    r"""
+    PublishConnectionDetailsTo specifies the connection secret config which
+    contains a name, metadata and a reference to secret store config to
+    which any connection details for this managed resource should be written.
+    Connection details frequently include the endpoint, username,
+    and password required to connect to the managed resource.
+
+    Attributes
+    ----------
+    configRef : EcrAwsUpboundIoV1beta1RegistryPolicySpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
+        config ref
+    metadata : EcrAwsUpboundIoV1beta1RegistryPolicySpecPublishConnectionDetailsToMetadata, default is Undefined, optional
+        metadata
+    name : str, default is Undefined, required
+        Name is the name of the connection secret.
+    """
+
+
+    configRef?: EcrAwsUpboundIoV1beta1RegistryPolicySpecPublishConnectionDetailsToConfigRef
+
+    metadata?: EcrAwsUpboundIoV1beta1RegistryPolicySpecPublishConnectionDetailsToMetadata
+
+    name: str
+
+
+schema EcrAwsUpboundIoV1beta1RegistryPolicySpecPublishConnectionDetailsToConfigRef:
+    r"""
+    SecretStoreConfigRef specifies which secret store config should be used
+    for this ConnectionSecret.
+
+    Attributes
+    ----------
+    name : str, default is Undefined, required
+        Name of the referenced object.
+    policy : EcrAwsUpboundIoV1beta1RegistryPolicySpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    name: str
+
+    policy?: EcrAwsUpboundIoV1beta1RegistryPolicySpecPublishConnectionDetailsToConfigRefPolicy
+
+
+schema EcrAwsUpboundIoV1beta1RegistryPolicySpecPublishConnectionDetailsToConfigRefPolicy:
+    r"""
+    Policies for referencing.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
+schema EcrAwsUpboundIoV1beta1RegistryPolicySpecPublishConnectionDetailsToMetadata:
+    r"""
+    Metadata is the metadata for connection secret.
+
+    Attributes
+    ----------
+    annotations : {str:str}, default is Undefined, optional
+        Annotations are the annotations to be added to connection secret.
+        - For Kubernetes secrets, this will be used as "metadata.annotations".
+        - It is up to Secret Store implementation for others store types.
+    labels : {str:str}, default is Undefined, optional
+        Labels are the labels/tags to be added to connection secret.
+        - For Kubernetes secrets, this will be used as "metadata.labels".
+        - It is up to Secret Store implementation for others store types.
+    $type : str, default is Undefined, optional
+        Type is the SecretType for the connection secret.
+        - Only valid for Kubernetes Secret Stores.
+    """
+
+
+    annotations?: {str:str}
+
+    labels?: {str:str}
+
+    $type?: str
+
+
 schema EcrAwsUpboundIoV1beta1RegistryPolicySpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
+    This field is planned to be replaced in a future release in favor of
+    PublishConnectionDetailsTo. Currently, both could be set independently
+    and connection details would be published to both without affecting
+    each other.
 
     Attributes
     ----------
@@ -225,9 +328,6 @@ schema EcrAwsUpboundIoV1beta1RegistryPolicyStatusAtProvider:
         id
     policy : str, default is Undefined, optional
         The policy document. This is a JSON formatted string
-    region : str, default is Undefined, optional
-        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
-        Region is the region you'd like your resource to be created in.
     registryId : str, default is Undefined, optional
         The registry ID where the registry was created.
     """
@@ -236,8 +336,6 @@ schema EcrAwsUpboundIoV1beta1RegistryPolicyStatusAtProvider:
     id?: str
 
     policy?: str
-
-    region?: str
 
     registryId?: str
 

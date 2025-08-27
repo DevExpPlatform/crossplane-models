@@ -66,6 +66,8 @@ schema SesAwsUpboundIoV1beta1IdentityNotificationTopicSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : SesAwsUpboundIoV1beta1IdentityNotificationTopicSpecProviderConfigRef, default is Undefined, optional
         provider config ref
+    publishConnectionDetailsTo : SesAwsUpboundIoV1beta1IdentityNotificationTopicSpecPublishConnectionDetailsTo, default is Undefined, optional
+        publish connection details to
     writeConnectionSecretToRef : SesAwsUpboundIoV1beta1IdentityNotificationTopicSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -80,6 +82,8 @@ schema SesAwsUpboundIoV1beta1IdentityNotificationTopicSpec:
     managementPolicies?: [str] = ["*"]
 
     providerConfigRef?: SesAwsUpboundIoV1beta1IdentityNotificationTopicSpecProviderConfigRef
+
+    publishConnectionDetailsTo?: SesAwsUpboundIoV1beta1IdentityNotificationTopicSpecPublishConnectionDetailsTo
 
     writeConnectionSecretToRef?: SesAwsUpboundIoV1beta1IdentityNotificationTopicSpecWriteConnectionSecretToRef
 
@@ -101,7 +105,6 @@ schema SesAwsUpboundIoV1beta1IdentityNotificationTopicSpecForProvider:
     notificationType : str, default is Undefined, optional
         The type of notifications that will be published to the specified Amazon SNS topic. Valid Values: Bounce, Complaint or Delivery.
     region : str, default is Undefined, required
-        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
     topicArn : str, default is Undefined, optional
         The Amazon Resource Name (ARN) of the Amazon SNS topic. Can be set to "" (an empty string) to disable publishing.
@@ -582,12 +585,112 @@ schema SesAwsUpboundIoV1beta1IdentityNotificationTopicSpecProviderConfigRefPolic
     resolve?: "Always" | "IfNotPresent"
 
 
+schema SesAwsUpboundIoV1beta1IdentityNotificationTopicSpecPublishConnectionDetailsTo:
+    r"""
+    PublishConnectionDetailsTo specifies the connection secret config which
+    contains a name, metadata and a reference to secret store config to
+    which any connection details for this managed resource should be written.
+    Connection details frequently include the endpoint, username,
+    and password required to connect to the managed resource.
+
+    Attributes
+    ----------
+    configRef : SesAwsUpboundIoV1beta1IdentityNotificationTopicSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
+        config ref
+    metadata : SesAwsUpboundIoV1beta1IdentityNotificationTopicSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
+        metadata
+    name : str, default is Undefined, required
+        Name is the name of the connection secret.
+    """
+
+
+    configRef?: SesAwsUpboundIoV1beta1IdentityNotificationTopicSpecPublishConnectionDetailsToConfigRef
+
+    metadata?: SesAwsUpboundIoV1beta1IdentityNotificationTopicSpecPublishConnectionDetailsToMetadata
+
+    name: str
+
+
+schema SesAwsUpboundIoV1beta1IdentityNotificationTopicSpecPublishConnectionDetailsToConfigRef:
+    r"""
+    SecretStoreConfigRef specifies which secret store config should be used
+    for this ConnectionSecret.
+
+    Attributes
+    ----------
+    name : str, default is Undefined, required
+        Name of the referenced object.
+    policy : SesAwsUpboundIoV1beta1IdentityNotificationTopicSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    name: str
+
+    policy?: SesAwsUpboundIoV1beta1IdentityNotificationTopicSpecPublishConnectionDetailsToConfigRefPolicy
+
+
+schema SesAwsUpboundIoV1beta1IdentityNotificationTopicSpecPublishConnectionDetailsToConfigRefPolicy:
+    r"""
+    Policies for referencing.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
+schema SesAwsUpboundIoV1beta1IdentityNotificationTopicSpecPublishConnectionDetailsToMetadata:
+    r"""
+    Metadata is the metadata for connection secret.
+
+    Attributes
+    ----------
+    annotations : {str:str}, default is Undefined, optional
+        Annotations are the annotations to be added to connection secret.
+        - For Kubernetes secrets, this will be used as "metadata.annotations".
+        - It is up to Secret Store implementation for others store types.
+    labels : {str:str}, default is Undefined, optional
+        Labels are the labels/tags to be added to connection secret.
+        - For Kubernetes secrets, this will be used as "metadata.labels".
+        - It is up to Secret Store implementation for others store types.
+    $type : str, default is Undefined, optional
+        Type is the SecretType for the connection secret.
+        - Only valid for Kubernetes Secret Stores.
+    """
+
+
+    annotations?: {str:str}
+
+    labels?: {str:str}
+
+    $type?: str
+
+
 schema SesAwsUpboundIoV1beta1IdentityNotificationTopicSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
+    This field is planned to be replaced in a future release in favor of
+    PublishConnectionDetailsTo. Currently, both could be set independently
+    and connection details would be published to both without affecting
+    each other.
 
     Attributes
     ----------
@@ -641,9 +744,6 @@ schema SesAwsUpboundIoV1beta1IdentityNotificationTopicStatusAtProvider:
         Whether SES should include original email headers in SNS notifications of this type. false by default.
     notificationType : str, default is Undefined, optional
         The type of notifications that will be published to the specified Amazon SNS topic. Valid Values: Bounce, Complaint or Delivery.
-    region : str, default is Undefined, optional
-        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
-        Region is the region you'd like your resource to be created in.
     topicArn : str, default is Undefined, optional
         The Amazon Resource Name (ARN) of the Amazon SNS topic. Can be set to "" (an empty string) to disable publishing.
     """
@@ -656,8 +756,6 @@ schema SesAwsUpboundIoV1beta1IdentityNotificationTopicStatusAtProvider:
     includeOriginalHeaders?: bool
 
     notificationType?: str
-
-    region?: str
 
     topicArn?: str
 

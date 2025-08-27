@@ -66,6 +66,8 @@ schema EcrAwsUpboundIoV1beta1LifecyclePolicySpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : EcrAwsUpboundIoV1beta1LifecyclePolicySpecProviderConfigRef, default is Undefined, optional
         provider config ref
+    publishConnectionDetailsTo : EcrAwsUpboundIoV1beta1LifecyclePolicySpecPublishConnectionDetailsTo, default is Undefined, optional
+        publish connection details to
     writeConnectionSecretToRef : EcrAwsUpboundIoV1beta1LifecyclePolicySpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -81,6 +83,8 @@ schema EcrAwsUpboundIoV1beta1LifecyclePolicySpec:
 
     providerConfigRef?: EcrAwsUpboundIoV1beta1LifecyclePolicySpecProviderConfigRef
 
+    publishConnectionDetailsTo?: EcrAwsUpboundIoV1beta1LifecyclePolicySpecPublishConnectionDetailsTo
+
     writeConnectionSecretToRef?: EcrAwsUpboundIoV1beta1LifecyclePolicySpecWriteConnectionSecretToRef
 
 
@@ -93,7 +97,6 @@ schema EcrAwsUpboundIoV1beta1LifecyclePolicySpecForProvider:
     policy : str, default is Undefined, optional
         The policy document. This is a JSON formatted string. See more details about Policy Parameters in the official AWS docs. Consider using the aws_ecr_lifecycle_policy_document data_source to generate/manage the JSON document used for the policy argument.
     region : str, default is Undefined, required
-        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
     repository : str, default is Undefined, optional
         Name of the repository to apply the policy.
@@ -372,12 +375,112 @@ schema EcrAwsUpboundIoV1beta1LifecyclePolicySpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
+schema EcrAwsUpboundIoV1beta1LifecyclePolicySpecPublishConnectionDetailsTo:
+    r"""
+    PublishConnectionDetailsTo specifies the connection secret config which
+    contains a name, metadata and a reference to secret store config to
+    which any connection details for this managed resource should be written.
+    Connection details frequently include the endpoint, username,
+    and password required to connect to the managed resource.
+
+    Attributes
+    ----------
+    configRef : EcrAwsUpboundIoV1beta1LifecyclePolicySpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
+        config ref
+    metadata : EcrAwsUpboundIoV1beta1LifecyclePolicySpecPublishConnectionDetailsToMetadata, default is Undefined, optional
+        metadata
+    name : str, default is Undefined, required
+        Name is the name of the connection secret.
+    """
+
+
+    configRef?: EcrAwsUpboundIoV1beta1LifecyclePolicySpecPublishConnectionDetailsToConfigRef
+
+    metadata?: EcrAwsUpboundIoV1beta1LifecyclePolicySpecPublishConnectionDetailsToMetadata
+
+    name: str
+
+
+schema EcrAwsUpboundIoV1beta1LifecyclePolicySpecPublishConnectionDetailsToConfigRef:
+    r"""
+    SecretStoreConfigRef specifies which secret store config should be used
+    for this ConnectionSecret.
+
+    Attributes
+    ----------
+    name : str, default is Undefined, required
+        Name of the referenced object.
+    policy : EcrAwsUpboundIoV1beta1LifecyclePolicySpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    name: str
+
+    policy?: EcrAwsUpboundIoV1beta1LifecyclePolicySpecPublishConnectionDetailsToConfigRefPolicy
+
+
+schema EcrAwsUpboundIoV1beta1LifecyclePolicySpecPublishConnectionDetailsToConfigRefPolicy:
+    r"""
+    Policies for referencing.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
+schema EcrAwsUpboundIoV1beta1LifecyclePolicySpecPublishConnectionDetailsToMetadata:
+    r"""
+    Metadata is the metadata for connection secret.
+
+    Attributes
+    ----------
+    annotations : {str:str}, default is Undefined, optional
+        Annotations are the annotations to be added to connection secret.
+        - For Kubernetes secrets, this will be used as "metadata.annotations".
+        - It is up to Secret Store implementation for others store types.
+    labels : {str:str}, default is Undefined, optional
+        Labels are the labels/tags to be added to connection secret.
+        - For Kubernetes secrets, this will be used as "metadata.labels".
+        - It is up to Secret Store implementation for others store types.
+    $type : str, default is Undefined, optional
+        Type is the SecretType for the connection secret.
+        - Only valid for Kubernetes Secret Stores.
+    """
+
+
+    annotations?: {str:str}
+
+    labels?: {str:str}
+
+    $type?: str
+
+
 schema EcrAwsUpboundIoV1beta1LifecyclePolicySpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
+    This field is planned to be replaced in a future release in favor of
+    PublishConnectionDetailsTo. Currently, both could be set independently
+    and connection details would be published to both without affecting
+    each other.
 
     Attributes
     ----------
@@ -427,9 +530,6 @@ schema EcrAwsUpboundIoV1beta1LifecyclePolicyStatusAtProvider:
         id
     policy : str, default is Undefined, optional
         The policy document. This is a JSON formatted string. See more details about Policy Parameters in the official AWS docs. Consider using the aws_ecr_lifecycle_policy_document data_source to generate/manage the JSON document used for the policy argument.
-    region : str, default is Undefined, optional
-        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
-        Region is the region you'd like your resource to be created in.
     registryId : str, default is Undefined, optional
         The registry ID where the repository was created.
     repository : str, default is Undefined, optional
@@ -440,8 +540,6 @@ schema EcrAwsUpboundIoV1beta1LifecyclePolicyStatusAtProvider:
     id?: str
 
     policy?: str
-
-    region?: str
 
     registryId?: str
 

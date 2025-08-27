@@ -4,39 +4,73 @@ metadata:
   name: crossplane-models
 spec:
   dependsOn:
-  - function: xpkg.upbound.io/crossplane-contrib/function-auto-ready
+  - apiVersion: pkg.crossplane.io/v1
+    kind: Function
+    package: xpkg.upbound.io/crossplane-contrib/function-auto-ready
     version: '>=v0.5.0'
-  - function: xpkg.upbound.io/crossplane-contrib/function-kcl
+  - apiVersion: pkg.crossplane.io/v1
+    kind: Function
+    package: xpkg.upbound.io/crossplane-contrib/function-kcl
     version: '>=v0.11.4'
-  - provider: xpkg.upbound.io/upbound/provider-aws-dynamodb
-    version: '>=v1'
-  - provider: xpkg.upbound.io/upbound/provider-aws-ec2
-    version: '>=v1'
-  - provider: xpkg.upbound.io/upbound/provider-aws-ses
-    version: '>=v1'
-  - provider: xpkg.upbound.io/upbound/provider-aws-route53
-    version: '>=v1'
-  - provider: xpkg.upbound.io/upbound/provider-azure-network
-    version: '>=v1'
-  - provider: xpkg.upbound.io/upbound/provider-azure-containerservice
-    version: '>=v1'
-  - provider: xpkg.upbound.io/upbound/provider-aws-iam
-    version: '>=v1'
-  - provider: xpkg.upbound.io/upbound/provider-aws-eks
-    version: '>=v1'
-  - provider: xpkg.upbound.io/upbound/provider-helm
+  - apiVersion: pkg.crossplane.io/v1
+    kind: Provider
+    package: xpkg.upbound.io/upbound/provider-aws-dynamodb
+    version: =v1
+  - apiVersion: pkg.crossplane.io/v1
+    kind: Provider
+    package: xpkg.upbound.io/upbound/provider-aws-ec2
+    version: =v1
+  - apiVersion: pkg.crossplane.io/v1
+    kind: Provider
+    package: xpkg.upbound.io/upbound/provider-aws-ses
+    version: =v1
+  - apiVersion: pkg.crossplane.io/v1
+    kind: Provider
+    package: xpkg.upbound.io/upbound/provider-aws-route53
+    version: =v1
+  - apiVersion: pkg.crossplane.io/v1
+    kind: Provider
+    package: xpkg.upbound.io/upbound/provider-azure-network
+    version: =v1
+  - apiVersion: pkg.crossplane.io/v1
+    kind: Provider
+    package: xpkg.upbound.io/upbound/provider-azure-containerservice
+    version: =v1
+  - apiVersion: pkg.crossplane.io/v1
+    kind: Provider
+    package: xpkg.upbound.io/upbound/provider-aws-iam
+    version: =v1
+  - apiVersion: pkg.crossplane.io/v1
+    kind: Provider
+    package: xpkg.upbound.io/upbound/provider-aws-eks
+    version: =v1
+  - apiVersion: pkg.crossplane.io/v1
+    kind: Provider
+    package: xpkg.upbound.io/upbound/provider-helm
     version: '>=v0'
-  - provider: xpkg.upbound.io/upbound/provider-kubernetes
+  - apiVersion: pkg.crossplane.io/v1
+    kind: Provider
+    package: xpkg.upbound.io/upbound/provider-kubernetes
     version: '>=v0'
-  - provider: xpkg.upbound.io/upbound/provider-aws-sqs
-    version: '>=v1'
-  - provider: xpkg.upbound.io/upbound/provider-aws-cloudwatchevents
-    version: '>=v1'
-  - provider: xpkg.upbound.io/upbound/provider-aws-ecr
-    version: '>=v1'
-  - configuration: xpkg.upbound.io/upbound/configuration-aws-eks-pod-identity
+  - apiVersion: pkg.crossplane.io/v1
+    kind: Provider
+    package: xpkg.upbound.io/upbound/provider-aws-sqs
+    version: =v1
+  - apiVersion: pkg.crossplane.io/v1
+    kind: Provider
+    package: xpkg.upbound.io/upbound/provider-aws-cloudwatchevents
+    version: =v1
+  - apiVersion: pkg.crossplane.io/v1
+    kind: Provider
+    package: xpkg.upbound.io/upbound/provider-aws-ecr
+    version: =v1
+  - apiVersion: pkg.crossplane.io/v1
+    kind: Configuration
+    package: xpkg.upbound.io/upbound/configuration-aws-eks-pod-identity
     version: v0.8.1
-  - provider: xpkg.upbound.io/crossplane-contrib/provider-http
+  - apiVersion: pkg.crossplane.io/v1
+    kind: Provider
+    package: xpkg.upbound.io/crossplane-contrib/provider-http
     version: '>=v1.0.10'
   description: Proprietary Crossplane models and utilities for Engineering Ingegneria
     Informatica S.p.A. infrastructure management.
