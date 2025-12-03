@@ -4,24 +4,92 @@ metadata:
   name: crossplane-models
 spec:
   dependsOn:
-  - provider: xpkg.upbound.io/upbound/provider-aws-dynamodb
-    version: '>=v1'
-  - function: xpkg.upbound.io/crossplane-contrib/function-auto-ready
-    version: '>=v0.0.0'
-  - provider: xpkg.upbound.io/upbound/provider-aws-ec2
-    version: '>=v1'
-  - provider: xpkg.upbound.io/upbound/provider-aws-ses
-    version: '>=v1'
-  - provider: xpkg.upbound.io/upbound/provider-aws-route53
-    version: '>=v1'
-  - provider: xpkg.upbound.io/upbound/provider-azure-network
-    version: '>=v1'
-  - provider: xpkg.upbound.io/upbound/provider-azure-containerservice
-    version: '>=v1'
-  description: This is where you can describe your project.
-  license: Apache-2.0
-  maintainer: Upbound User <user@example.com>
+  - apiVersion: pkg.crossplane.io/v1
+    kind: Function
+    package: xpkg.upbound.io/crossplane-contrib/function-auto-ready
+    version: '>=v0.5.0'
+  - apiVersion: pkg.crossplane.io/v1
+    kind: Function
+    package: xpkg.upbound.io/crossplane-contrib/function-kcl
+    version: '>=v0.11.4'
+  - apiVersion: pkg.crossplane.io/v1
+    kind: Provider
+    package: xpkg.upbound.io/upbound/provider-aws-dynamodb
+    version: =v1
+  - apiVersion: pkg.crossplane.io/v1
+    kind: Provider
+    package: xpkg.upbound.io/upbound/provider-aws-ec2
+    version: =v1
+  - apiVersion: pkg.crossplane.io/v1
+    kind: Provider
+    package: xpkg.upbound.io/upbound/provider-aws-ses
+    version: =v1
+  - apiVersion: pkg.crossplane.io/v1
+    kind: Provider
+    package: xpkg.upbound.io/upbound/provider-aws-route53
+    version: =v1
+  - apiVersion: pkg.crossplane.io/v1
+    kind: Provider
+    package: xpkg.upbound.io/upbound/provider-azure-network
+    version: =v1
+  - apiVersion: pkg.crossplane.io/v1
+    kind: Provider
+    package: xpkg.upbound.io/upbound/provider-azure-containerservice
+    version: =v1
+  - apiVersion: pkg.crossplane.io/v1
+    kind: Provider
+    package: xpkg.upbound.io/upbound/provider-aws-iam
+    version: =v1
+  - apiVersion: pkg.crossplane.io/v1
+    kind: Provider
+    package: xpkg.upbound.io/upbound/provider-aws-eks
+    version: =v1
+  - apiVersion: pkg.crossplane.io/v1
+    kind: Provider
+    package: xpkg.upbound.io/upbound/provider-helm
+    version: '>=v0'
+  - apiVersion: pkg.crossplane.io/v1
+    kind: Provider
+    package: xpkg.upbound.io/upbound/provider-kubernetes
+    version: '>=v0'
+  - apiVersion: pkg.crossplane.io/v1
+    kind: Provider
+    package: xpkg.upbound.io/upbound/provider-aws-sqs
+    version: =v1
+  - apiVersion: pkg.crossplane.io/v1
+    kind: Provider
+    package: xpkg.upbound.io/upbound/provider-aws-cloudwatchevents
+    version: =v1
+  - apiVersion: pkg.crossplane.io/v1
+    kind: Provider
+    package: xpkg.upbound.io/upbound/provider-aws-ecr
+    version: =v1
+  - apiVersion: pkg.crossplane.io/v1
+    kind: Configuration
+    package: xpkg.upbound.io/upbound/configuration-aws-eks-pod-identity
+    version: v0.8.1
+  - apiVersion: pkg.crossplane.io/v1
+    kind: Provider
+    package: xpkg.upbound.io/crossplane-contrib/provider-http
+    version: '>=v1.0.10'
+  - apiVersion: pkg.crossplane.io/v1
+    kind: Provider
+    package: xpkg.upbound.io/upbound/provider-aws-s3
+    version: v1
+  description: Proprietary Crossplane models and utilities for Engineering Ingegneria
+    Informatica S.p.A. infrastructure management.
+  license: Proprietary
+  maintainer: Engineering Ingegneria Informatica S.p.A. <devops@eng.it>
   readme: |
-    This is where you can add a readme for your project.
-  repository: xpkg.upbound.io/engit/crossplane-models
+    # Crossplane Models
+
+    Proprietary Crossplane models and utilities for Engineering Ingegneria Informatica S.p.A. infrastructure management.
+
+    **NOTICE: This software is proprietary and confidential.**
+
+    For authorized use only by Engineering Ingegneria Informatica S.p.A. employees and authorized partners.
+    See LICENSE file for full terms and conditions.
+
+    Contact: devops@eng.it for access requests.
+  repository: xpkg.upbound.io/test/crossplane-cluster
   source: github.com/upbound/project-template
