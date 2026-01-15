@@ -66,8 +66,6 @@ schema NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicySpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicySpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicySpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicySpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -82,8 +80,6 @@ schema NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicySpec:
     managementPolicies?: [str] = ["*"]
 
     providerConfigRef?: NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicySpecProviderConfigRef
-
-    publishConnectionDetailsTo?: NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicySpecPublishConnectionDetailsTo
 
     writeConnectionSecretToRef?: NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicySpecWriteConnectionSecretToRef
 
@@ -137,7 +133,7 @@ schema NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicySpecForProviderCu
     Attributes
     ----------
     action : str, default is Undefined, optional
-        Type of action. Possible values are Allow, Block and Log.
+        Type of action. Possible values are Allow, Block, JSChallenge and Log.
     enabled : bool, default is Undefined, optional
         Describes if the policy is in enabled state or disabled state. Defaults to true.
     groupRateLimitBy : str, default is Undefined, optional
@@ -191,7 +187,7 @@ schema NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicySpecForProviderCu
     operator : str, default is Undefined, optional
         Describes operator to be matched. Possible values are Any, IPMatch, GeoMatch, Equal, Contains, LessThan, GreaterThan, LessThanOrEqual, GreaterThanOrEqual, BeginsWith, EndsWith and Regex.
     transforms : [str], default is Undefined, optional
-        A list of transformations to do before the match is attempted. Possible values are HtmlEntityDecode, Lowercase, RemoveNulls, Trim, UrlDecode and UrlEncode.
+        A list of transformations to do before the match is attempted. Possible values are HtmlEntityDecode, Lowercase, RemoveNulls, Trim, Uppercase, UrlDecode and UrlEncode.
     """
 
 
@@ -279,7 +275,7 @@ schema NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicySpecForProviderMa
     $type : str, default is Undefined, optional
         The rule set type. Possible values: Microsoft_BotManagerRuleSet, Microsoft_DefaultRuleSet and OWASP. Defaults to OWASP.
     version : str, default is Undefined, optional
-        The rule set version. Possible values: 0.1, 1.0, 2.1, 2.2.9, 3.0, 3.1 and 3.2.
+        The rule set version. Possible values: 0.1, 1.0, 1.1, 2.1, 2.2.9, 3.0, 3.1 and 3.2.
     """
 
 
@@ -319,7 +315,7 @@ schema NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicySpecForProviderMa
     $type : str, default is Undefined, optional
         The rule set type. Possible values: Microsoft_BotManagerRuleSet, Microsoft_DefaultRuleSet and OWASP. Defaults to OWASP.
     version : str, default is Undefined, optional
-        The rule set version. Possible values: 0.1, 1.0, 2.1, 2.2.9, 3.0, 3.1 and 3.2.
+        The rule set version. Possible values: 0.1, 1.0, 1.1, 2.1, 2.2.9, 3.0, 3.1 and 3.2.
     """
 
 
@@ -336,16 +332,12 @@ schema NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicySpecForProviderMa
 
     Attributes
     ----------
-    disabledRules : [str], default is Undefined, optional
-        disabled rules
     $rule : [NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicySpecForProviderManagedRulesItems0ManagedRuleSetItems0RuleGroupOverrideItems0RuleItems0], default is Undefined, optional
         One or more rule block defined below.
     ruleGroupName : str, default is Undefined, optional
         The name of the Rule Group. Possible values are BadBots, crs_20_protocol_violations, crs_21_protocol_anomalies, crs_23_request_limits, crs_30_http_policy, crs_35_bad_robots, crs_40_generic_attacks, crs_41_sql_injection_attacks, crs_41_xss_attacks, crs_42_tight_security, crs_45_trojans, crs_49_inbound_blocking, General, GoodBots, KnownBadBots, Known-CVEs, REQUEST-911-METHOD-ENFORCEMENT, REQUEST-913-SCANNER-DETECTION, REQUEST-920-PROTOCOL-ENFORCEMENT, REQUEST-921-PROTOCOL-ATTACK, REQUEST-930-APPLICATION-ATTACK-LFI, REQUEST-931-APPLICATION-ATTACK-RFI, REQUEST-932-APPLICATION-ATTACK-RCE, REQUEST-933-APPLICATION-ATTACK-PHP, REQUEST-941-APPLICATION-ATTACK-XSS, REQUEST-942-APPLICATION-ATTACK-SQLI, REQUEST-943-APPLICATION-ATTACK-SESSION-FIXATION, REQUEST-944-APPLICATION-ATTACK-JAVA, UnknownBots, METHOD-ENFORCEMENT, PROTOCOL-ENFORCEMENT, PROTOCOL-ATTACK, LFI, RFI, RCE, PHP, NODEJS, XSS, SQLI, FIX, JAVA, MS-ThreatIntel-WebShells, MS-ThreatIntel-AppSec, MS-ThreatIntel-SQLI and MS-ThreatIntel-CVEsMS-ThreatIntel-WebShells`,.
     """
 
-
-    disabledRules?: [str]
 
     $rule?: [NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicySpecForProviderManagedRulesItems0ManagedRuleSetItems0RuleGroupOverrideItems0RuleItems0]
 
@@ -359,7 +351,7 @@ schema NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicySpecForProviderMa
     Attributes
     ----------
     action : str, default is Undefined, optional
-        Describes the override action to be applied when rule matches. Possible values are Allow, AnomalyScoring, Block and Log.
+        Describes the override action to be applied when rule matches. Possible values are Allow, AnomalyScoring, Block, JSChallenge and Log. JSChallenge is only valid for rulesets of type Microsoft_BotManagerRuleSet.
     enabled : bool, default is Undefined, optional
         Whether this rule is enabled. Defaults to true.
     id : str, default is Undefined, optional
@@ -382,6 +374,8 @@ schema NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicySpecForProviderPo
     ----------
     enabled : bool, default is Undefined, optional
         Describes if the policy is in enabled state or disabled state. Defaults to true.
+    fileUploadEnforcement : bool, default is Undefined, optional
+        - Whether the firewall should block a request with upload size greater then file_upload_limit_in_mb.
     fileUploadLimitInMb : float, default is Undefined, optional
         The File Upload Limit in MB. Accepted values are in the range 1 to 4000. Defaults to 100.
     jsChallengeCookieExpirationInMinutes : float, default is Undefined, optional
@@ -394,12 +388,16 @@ schema NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicySpecForProviderPo
         Describes if it is in detection mode or prevention mode at the policy level. Valid values are Detection and Prevention. Defaults to Prevention.
     requestBodyCheck : bool, default is Undefined, optional
         Is Request Body Inspection enabled? Defaults to true.
+    requestBodyEnforcement : bool, default is Undefined, optional
+        Whether the firewall should block a request with body size greater then max_request_body_size_in_kb. Defaults to true.
     requestBodyInspectLimitInKb : float, default is Undefined, optional
         Specifies the maximum request body inspection limit in KB for the Web Application Firewall. Defaults to 128.
     """
 
 
     enabled?: bool
+
+    fileUploadEnforcement?: bool
 
     fileUploadLimitInMb?: float
 
@@ -412,6 +410,8 @@ schema NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicySpecForProviderPo
     mode?: str
 
     requestBodyCheck?: bool
+
+    requestBodyEnforcement?: bool
 
     requestBodyInspectLimitInKb?: float
 
@@ -596,7 +596,7 @@ schema NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicySpecInitProviderC
     Attributes
     ----------
     action : str, default is Undefined, optional
-        Type of action. Possible values are Allow, Block and Log.
+        Type of action. Possible values are Allow, Block, JSChallenge and Log.
     enabled : bool, default is Undefined, optional
         Describes if the policy is in enabled state or disabled state. Defaults to true.
     groupRateLimitBy : str, default is Undefined, optional
@@ -650,7 +650,7 @@ schema NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicySpecInitProviderC
     operator : str, default is Undefined, optional
         Describes operator to be matched. Possible values are Any, IPMatch, GeoMatch, Equal, Contains, LessThan, GreaterThan, LessThanOrEqual, GreaterThanOrEqual, BeginsWith, EndsWith and Regex.
     transforms : [str], default is Undefined, optional
-        A list of transformations to do before the match is attempted. Possible values are HtmlEntityDecode, Lowercase, RemoveNulls, Trim, UrlDecode and UrlEncode.
+        A list of transformations to do before the match is attempted. Possible values are HtmlEntityDecode, Lowercase, RemoveNulls, Trim, Uppercase, UrlDecode and UrlEncode.
     """
 
 
@@ -738,7 +738,7 @@ schema NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicySpecInitProviderM
     $type : str, default is Undefined, optional
         The rule set type. Possible values: Microsoft_BotManagerRuleSet, Microsoft_DefaultRuleSet and OWASP. Defaults to OWASP.
     version : str, default is Undefined, optional
-        The rule set version. Possible values: 0.1, 1.0, 2.1, 2.2.9, 3.0, 3.1 and 3.2.
+        The rule set version. Possible values: 0.1, 1.0, 1.1, 2.1, 2.2.9, 3.0, 3.1 and 3.2.
     """
 
 
@@ -778,7 +778,7 @@ schema NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicySpecInitProviderM
     $type : str, default is Undefined, optional
         The rule set type. Possible values: Microsoft_BotManagerRuleSet, Microsoft_DefaultRuleSet and OWASP. Defaults to OWASP.
     version : str, default is Undefined, optional
-        The rule set version. Possible values: 0.1, 1.0, 2.1, 2.2.9, 3.0, 3.1 and 3.2.
+        The rule set version. Possible values: 0.1, 1.0, 1.1, 2.1, 2.2.9, 3.0, 3.1 and 3.2.
     """
 
 
@@ -795,16 +795,12 @@ schema NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicySpecInitProviderM
 
     Attributes
     ----------
-    disabledRules : [str], default is Undefined, optional
-        disabled rules
     $rule : [NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicySpecInitProviderManagedRulesItems0ManagedRuleSetItems0RuleGroupOverrideItems0RuleItems0], default is Undefined, optional
         One or more rule block defined below.
     ruleGroupName : str, default is Undefined, optional
         The name of the Rule Group. Possible values are BadBots, crs_20_protocol_violations, crs_21_protocol_anomalies, crs_23_request_limits, crs_30_http_policy, crs_35_bad_robots, crs_40_generic_attacks, crs_41_sql_injection_attacks, crs_41_xss_attacks, crs_42_tight_security, crs_45_trojans, crs_49_inbound_blocking, General, GoodBots, KnownBadBots, Known-CVEs, REQUEST-911-METHOD-ENFORCEMENT, REQUEST-913-SCANNER-DETECTION, REQUEST-920-PROTOCOL-ENFORCEMENT, REQUEST-921-PROTOCOL-ATTACK, REQUEST-930-APPLICATION-ATTACK-LFI, REQUEST-931-APPLICATION-ATTACK-RFI, REQUEST-932-APPLICATION-ATTACK-RCE, REQUEST-933-APPLICATION-ATTACK-PHP, REQUEST-941-APPLICATION-ATTACK-XSS, REQUEST-942-APPLICATION-ATTACK-SQLI, REQUEST-943-APPLICATION-ATTACK-SESSION-FIXATION, REQUEST-944-APPLICATION-ATTACK-JAVA, UnknownBots, METHOD-ENFORCEMENT, PROTOCOL-ENFORCEMENT, PROTOCOL-ATTACK, LFI, RFI, RCE, PHP, NODEJS, XSS, SQLI, FIX, JAVA, MS-ThreatIntel-WebShells, MS-ThreatIntel-AppSec, MS-ThreatIntel-SQLI and MS-ThreatIntel-CVEsMS-ThreatIntel-WebShells`,.
     """
 
-
-    disabledRules?: [str]
 
     $rule?: [NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicySpecInitProviderManagedRulesItems0ManagedRuleSetItems0RuleGroupOverrideItems0RuleItems0]
 
@@ -818,7 +814,7 @@ schema NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicySpecInitProviderM
     Attributes
     ----------
     action : str, default is Undefined, optional
-        Describes the override action to be applied when rule matches. Possible values are Allow, AnomalyScoring, Block and Log.
+        Describes the override action to be applied when rule matches. Possible values are Allow, AnomalyScoring, Block, JSChallenge and Log. JSChallenge is only valid for rulesets of type Microsoft_BotManagerRuleSet.
     enabled : bool, default is Undefined, optional
         Whether this rule is enabled. Defaults to true.
     id : str, default is Undefined, optional
@@ -841,6 +837,8 @@ schema NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicySpecInitProviderP
     ----------
     enabled : bool, default is Undefined, optional
         Describes if the policy is in enabled state or disabled state. Defaults to true.
+    fileUploadEnforcement : bool, default is Undefined, optional
+        - Whether the firewall should block a request with upload size greater then file_upload_limit_in_mb.
     fileUploadLimitInMb : float, default is Undefined, optional
         The File Upload Limit in MB. Accepted values are in the range 1 to 4000. Defaults to 100.
     jsChallengeCookieExpirationInMinutes : float, default is Undefined, optional
@@ -853,12 +851,16 @@ schema NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicySpecInitProviderP
         Describes if it is in detection mode or prevention mode at the policy level. Valid values are Detection and Prevention. Defaults to Prevention.
     requestBodyCheck : bool, default is Undefined, optional
         Is Request Body Inspection enabled? Defaults to true.
+    requestBodyEnforcement : bool, default is Undefined, optional
+        Whether the firewall should block a request with body size greater then max_request_body_size_in_kb. Defaults to true.
     requestBodyInspectLimitInKb : float, default is Undefined, optional
         Specifies the maximum request body inspection limit in KB for the Web Application Firewall. Defaults to 128.
     """
 
 
     enabled?: bool
+
+    fileUploadEnforcement?: bool
 
     fileUploadLimitInMb?: float
 
@@ -871,6 +873,8 @@ schema NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicySpecInitProviderP
     mode?: str
 
     requestBodyCheck?: bool
+
+    requestBodyEnforcement?: bool
 
     requestBodyInspectLimitInKb?: float
 
@@ -964,112 +968,12 @@ schema NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicySpecProviderConfi
     resolve?: "Always" | "IfNotPresent"
 
 
-schema NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicySpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicySpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicySpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicySpecPublishConnectionDetailsToConfigRef
-
-    metadata?: NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicySpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicySpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicySpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicySpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicySpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicySpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicySpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------
@@ -1162,7 +1066,7 @@ schema NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicyStatusAtProviderC
     Attributes
     ----------
     action : str, default is Undefined, optional
-        Type of action. Possible values are Allow, Block and Log.
+        Type of action. Possible values are Allow, Block, JSChallenge and Log.
     enabled : bool, default is Undefined, optional
         Describes if the policy is in enabled state or disabled state. Defaults to true.
     groupRateLimitBy : str, default is Undefined, optional
@@ -1216,7 +1120,7 @@ schema NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicyStatusAtProviderC
     operator : str, default is Undefined, optional
         Describes operator to be matched. Possible values are Any, IPMatch, GeoMatch, Equal, Contains, LessThan, GreaterThan, LessThanOrEqual, GreaterThanOrEqual, BeginsWith, EndsWith and Regex.
     transforms : [str], default is Undefined, optional
-        A list of transformations to do before the match is attempted. Possible values are HtmlEntityDecode, Lowercase, RemoveNulls, Trim, UrlDecode and UrlEncode.
+        A list of transformations to do before the match is attempted. Possible values are HtmlEntityDecode, Lowercase, RemoveNulls, Trim, Uppercase, UrlDecode and UrlEncode.
     """
 
 
@@ -1304,7 +1208,7 @@ schema NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicyStatusAtProviderM
     $type : str, default is Undefined, optional
         The rule set type. Possible values: Microsoft_BotManagerRuleSet, Microsoft_DefaultRuleSet and OWASP. Defaults to OWASP.
     version : str, default is Undefined, optional
-        The rule set version. Possible values: 0.1, 1.0, 2.1, 2.2.9, 3.0, 3.1 and 3.2.
+        The rule set version. Possible values: 0.1, 1.0, 1.1, 2.1, 2.2.9, 3.0, 3.1 and 3.2.
     """
 
 
@@ -1344,7 +1248,7 @@ schema NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicyStatusAtProviderM
     $type : str, default is Undefined, optional
         The rule set type. Possible values: Microsoft_BotManagerRuleSet, Microsoft_DefaultRuleSet and OWASP. Defaults to OWASP.
     version : str, default is Undefined, optional
-        The rule set version. Possible values: 0.1, 1.0, 2.1, 2.2.9, 3.0, 3.1 and 3.2.
+        The rule set version. Possible values: 0.1, 1.0, 1.1, 2.1, 2.2.9, 3.0, 3.1 and 3.2.
     """
 
 
@@ -1361,16 +1265,12 @@ schema NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicyStatusAtProviderM
 
     Attributes
     ----------
-    disabledRules : [str], default is Undefined, optional
-        disabled rules
     $rule : [NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicyStatusAtProviderManagedRulesItems0ManagedRuleSetItems0RuleGroupOverrideItems0RuleItems0], default is Undefined, optional
         One or more rule block defined below.
     ruleGroupName : str, default is Undefined, optional
         The name of the Rule Group. Possible values are BadBots, crs_20_protocol_violations, crs_21_protocol_anomalies, crs_23_request_limits, crs_30_http_policy, crs_35_bad_robots, crs_40_generic_attacks, crs_41_sql_injection_attacks, crs_41_xss_attacks, crs_42_tight_security, crs_45_trojans, crs_49_inbound_blocking, General, GoodBots, KnownBadBots, Known-CVEs, REQUEST-911-METHOD-ENFORCEMENT, REQUEST-913-SCANNER-DETECTION, REQUEST-920-PROTOCOL-ENFORCEMENT, REQUEST-921-PROTOCOL-ATTACK, REQUEST-930-APPLICATION-ATTACK-LFI, REQUEST-931-APPLICATION-ATTACK-RFI, REQUEST-932-APPLICATION-ATTACK-RCE, REQUEST-933-APPLICATION-ATTACK-PHP, REQUEST-941-APPLICATION-ATTACK-XSS, REQUEST-942-APPLICATION-ATTACK-SQLI, REQUEST-943-APPLICATION-ATTACK-SESSION-FIXATION, REQUEST-944-APPLICATION-ATTACK-JAVA, UnknownBots, METHOD-ENFORCEMENT, PROTOCOL-ENFORCEMENT, PROTOCOL-ATTACK, LFI, RFI, RCE, PHP, NODEJS, XSS, SQLI, FIX, JAVA, MS-ThreatIntel-WebShells, MS-ThreatIntel-AppSec, MS-ThreatIntel-SQLI and MS-ThreatIntel-CVEsMS-ThreatIntel-WebShells`,.
     """
 
-
-    disabledRules?: [str]
 
     $rule?: [NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicyStatusAtProviderManagedRulesItems0ManagedRuleSetItems0RuleGroupOverrideItems0RuleItems0]
 
@@ -1384,7 +1284,7 @@ schema NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicyStatusAtProviderM
     Attributes
     ----------
     action : str, default is Undefined, optional
-        Describes the override action to be applied when rule matches. Possible values are Allow, AnomalyScoring, Block and Log.
+        Describes the override action to be applied when rule matches. Possible values are Allow, AnomalyScoring, Block, JSChallenge and Log. JSChallenge is only valid for rulesets of type Microsoft_BotManagerRuleSet.
     enabled : bool, default is Undefined, optional
         Whether this rule is enabled. Defaults to true.
     id : str, default is Undefined, optional
@@ -1407,6 +1307,8 @@ schema NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicyStatusAtProviderP
     ----------
     enabled : bool, default is Undefined, optional
         Describes if the policy is in enabled state or disabled state. Defaults to true.
+    fileUploadEnforcement : bool, default is Undefined, optional
+        - Whether the firewall should block a request with upload size greater then file_upload_limit_in_mb.
     fileUploadLimitInMb : float, default is Undefined, optional
         The File Upload Limit in MB. Accepted values are in the range 1 to 4000. Defaults to 100.
     jsChallengeCookieExpirationInMinutes : float, default is Undefined, optional
@@ -1419,12 +1321,16 @@ schema NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicyStatusAtProviderP
         Describes if it is in detection mode or prevention mode at the policy level. Valid values are Detection and Prevention. Defaults to Prevention.
     requestBodyCheck : bool, default is Undefined, optional
         Is Request Body Inspection enabled? Defaults to true.
+    requestBodyEnforcement : bool, default is Undefined, optional
+        Whether the firewall should block a request with body size greater then max_request_body_size_in_kb. Defaults to true.
     requestBodyInspectLimitInKb : float, default is Undefined, optional
         Specifies the maximum request body inspection limit in KB for the Web Application Firewall. Defaults to 128.
     """
 
 
     enabled?: bool
+
+    fileUploadEnforcement?: bool
 
     fileUploadLimitInMb?: float
 
@@ -1437,6 +1343,8 @@ schema NetworkAzureUpboundIoV1beta1WebApplicationFirewallPolicyStatusAtProviderP
     mode?: str
 
     requestBodyCheck?: bool
+
+    requestBodyEnforcement?: bool
 
     requestBodyInspectLimitInKb?: float
 

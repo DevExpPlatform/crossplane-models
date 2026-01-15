@@ -66,8 +66,6 @@ schema NetworkAzureUpboundIoV1beta1SecurityRuleSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : NetworkAzureUpboundIoV1beta1SecurityRuleSpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : NetworkAzureUpboundIoV1beta1SecurityRuleSpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : NetworkAzureUpboundIoV1beta1SecurityRuleSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -83,8 +81,6 @@ schema NetworkAzureUpboundIoV1beta1SecurityRuleSpec:
 
     providerConfigRef?: NetworkAzureUpboundIoV1beta1SecurityRuleSpecProviderConfigRef
 
-    publishConnectionDetailsTo?: NetworkAzureUpboundIoV1beta1SecurityRuleSpecPublishConnectionDetailsTo
-
     writeConnectionSecretToRef?: NetworkAzureUpboundIoV1beta1SecurityRuleSpecWriteConnectionSecretToRef
 
 
@@ -99,9 +95,9 @@ schema NetworkAzureUpboundIoV1beta1SecurityRuleSpecForProvider:
     description : str, default is Undefined, optional
         A description for this rule. Restricted to 140 characters.
     destinationAddressPrefix : str, default is Undefined, optional
-        CIDR or destination IP range or * to match any IP. Tags such as VirtualNetwork, AzureLoadBalancer and Internet can also be used. Besides, it also supports all available Service Tags like ‘Sql.WestEurope‘, ‘Storage.EastUS‘, etc. You can list the available service tags with the CLI: shell az network list-service-tags --location westcentralus. For further information please see Azure CLI - az network list-service-tags. This is required if destination_address_prefixes is not specified.
+        CIDR or destination IP range or * to match any IP. Tags such as VirtualNetwork, AzureLoadBalancer and Internet can also be used. Besides, it also supports all available Service Tags like ‘Sql.WestEurope‘, ‘Storage.EastUS‘, etc. You can list the available service tags with the CLI: shell az network list-service-tags --location westcentralus. For further information please see Azure CLI - az network list-service-tags.
     destinationAddressPrefixes : [str], default is Undefined, optional
-        List of destination address prefixes. Tags may not be used. This is required if destination_address_prefix is not specified.
+        List of destination address prefixes. Tags may not be used.
     destinationApplicationSecurityGroupIds : [str], default is Undefined, optional
         A List of destination Application Security Group IDs
     destinationPortRange : str, default is Undefined, optional
@@ -127,9 +123,9 @@ schema NetworkAzureUpboundIoV1beta1SecurityRuleSpecForProvider:
     resourceGroupNameSelector : NetworkAzureUpboundIoV1beta1SecurityRuleSpecForProviderResourceGroupNameSelector, default is Undefined, optional
         resource group name selector
     sourceAddressPrefix : str, default is Undefined, optional
-        CIDR or source IP range or * to match any IP. Tags such as VirtualNetwork, AzureLoadBalancer and Internet can also be used. This is required if source_address_prefixes is not specified.
+        CIDR or source IP range or * to match any IP. Tags such as VirtualNetwork, AzureLoadBalancer and Internet can also be used.
     sourceAddressPrefixes : [str], default is Undefined, optional
-        List of source address prefixes. Tags may not be used. This is required if source_address_prefix is not specified.
+        List of source address prefixes. Tags may not be used.
     sourceApplicationSecurityGroupIds : [str], default is Undefined, optional
         A List of source Application Security Group IDs
     sourcePortRange : str, default is Undefined, optional
@@ -380,9 +376,9 @@ schema NetworkAzureUpboundIoV1beta1SecurityRuleSpecInitProvider:
     description : str, default is Undefined, optional
         A description for this rule. Restricted to 140 characters.
     destinationAddressPrefix : str, default is Undefined, optional
-        CIDR or destination IP range or * to match any IP. Tags such as VirtualNetwork, AzureLoadBalancer and Internet can also be used. Besides, it also supports all available Service Tags like ‘Sql.WestEurope‘, ‘Storage.EastUS‘, etc. You can list the available service tags with the CLI: shell az network list-service-tags --location westcentralus. For further information please see Azure CLI - az network list-service-tags. This is required if destination_address_prefixes is not specified.
+        CIDR or destination IP range or * to match any IP. Tags such as VirtualNetwork, AzureLoadBalancer and Internet can also be used. Besides, it also supports all available Service Tags like ‘Sql.WestEurope‘, ‘Storage.EastUS‘, etc. You can list the available service tags with the CLI: shell az network list-service-tags --location westcentralus. For further information please see Azure CLI - az network list-service-tags.
     destinationAddressPrefixes : [str], default is Undefined, optional
-        List of destination address prefixes. Tags may not be used. This is required if destination_address_prefix is not specified.
+        List of destination address prefixes. Tags may not be used.
     destinationApplicationSecurityGroupIds : [str], default is Undefined, optional
         A List of destination Application Security Group IDs
     destinationPortRange : str, default is Undefined, optional
@@ -396,9 +392,9 @@ schema NetworkAzureUpboundIoV1beta1SecurityRuleSpecInitProvider:
     $protocol : str, default is Undefined, optional
         Network protocol this rule applies to. Possible values include Tcp, Udp, Icmp, Esp, Ah or * (which matches all).
     sourceAddressPrefix : str, default is Undefined, optional
-        CIDR or source IP range or * to match any IP. Tags such as VirtualNetwork, AzureLoadBalancer and Internet can also be used. This is required if source_address_prefixes is not specified.
+        CIDR or source IP range or * to match any IP. Tags such as VirtualNetwork, AzureLoadBalancer and Internet can also be used.
     sourceAddressPrefixes : [str], default is Undefined, optional
-        List of source address prefixes. Tags may not be used. This is required if source_address_prefix is not specified.
+        List of source address prefixes. Tags may not be used.
     sourceApplicationSecurityGroupIds : [str], default is Undefined, optional
         A List of source Application Security Group IDs
     sourcePortRange : str, default is Undefined, optional
@@ -483,112 +479,12 @@ schema NetworkAzureUpboundIoV1beta1SecurityRuleSpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
-schema NetworkAzureUpboundIoV1beta1SecurityRuleSpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : NetworkAzureUpboundIoV1beta1SecurityRuleSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : NetworkAzureUpboundIoV1beta1SecurityRuleSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: NetworkAzureUpboundIoV1beta1SecurityRuleSpecPublishConnectionDetailsToConfigRef
-
-    metadata?: NetworkAzureUpboundIoV1beta1SecurityRuleSpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema NetworkAzureUpboundIoV1beta1SecurityRuleSpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : NetworkAzureUpboundIoV1beta1SecurityRuleSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: NetworkAzureUpboundIoV1beta1SecurityRuleSpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema NetworkAzureUpboundIoV1beta1SecurityRuleSpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema NetworkAzureUpboundIoV1beta1SecurityRuleSpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema NetworkAzureUpboundIoV1beta1SecurityRuleSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------
@@ -639,9 +535,9 @@ schema NetworkAzureUpboundIoV1beta1SecurityRuleStatusAtProvider:
     description : str, default is Undefined, optional
         A description for this rule. Restricted to 140 characters.
     destinationAddressPrefix : str, default is Undefined, optional
-        CIDR or destination IP range or * to match any IP. Tags such as VirtualNetwork, AzureLoadBalancer and Internet can also be used. Besides, it also supports all available Service Tags like ‘Sql.WestEurope‘, ‘Storage.EastUS‘, etc. You can list the available service tags with the CLI: shell az network list-service-tags --location westcentralus. For further information please see Azure CLI - az network list-service-tags. This is required if destination_address_prefixes is not specified.
+        CIDR or destination IP range or * to match any IP. Tags such as VirtualNetwork, AzureLoadBalancer and Internet can also be used. Besides, it also supports all available Service Tags like ‘Sql.WestEurope‘, ‘Storage.EastUS‘, etc. You can list the available service tags with the CLI: shell az network list-service-tags --location westcentralus. For further information please see Azure CLI - az network list-service-tags.
     destinationAddressPrefixes : [str], default is Undefined, optional
-        List of destination address prefixes. Tags may not be used. This is required if destination_address_prefix is not specified.
+        List of destination address prefixes. Tags may not be used.
     destinationApplicationSecurityGroupIds : [str], default is Undefined, optional
         A List of destination Application Security Group IDs
     destinationPortRange : str, default is Undefined, optional
@@ -661,9 +557,9 @@ schema NetworkAzureUpboundIoV1beta1SecurityRuleStatusAtProvider:
     resourceGroupName : str, default is Undefined, optional
         The name of the resource group in which to create the Network Security Rule. Changing this forces a new resource to be created.
     sourceAddressPrefix : str, default is Undefined, optional
-        CIDR or source IP range or * to match any IP. Tags such as VirtualNetwork, AzureLoadBalancer and Internet can also be used. This is required if source_address_prefixes is not specified.
+        CIDR or source IP range or * to match any IP. Tags such as VirtualNetwork, AzureLoadBalancer and Internet can also be used.
     sourceAddressPrefixes : [str], default is Undefined, optional
-        List of source address prefixes. Tags may not be used. This is required if source_address_prefix is not specified.
+        List of source address prefixes. Tags may not be used.
     sourceApplicationSecurityGroupIds : [str], default is Undefined, optional
         A List of source Application Security Group IDs
     sourcePortRange : str, default is Undefined, optional

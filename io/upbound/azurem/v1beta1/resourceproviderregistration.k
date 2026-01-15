@@ -221,7 +221,7 @@ schema AzuremUpboundIoV1beta1ResourceProviderRegistrationStatusAtProvider:
     feature : [AzuremUpboundIoV1beta1ResourceProviderRegistrationStatusAtProviderFeatureItems0], default is Undefined, optional
         A list of feature blocks as defined below.
     id : str, default is Undefined, optional
-        id
+        The ID of the Resource Provider.
     name : str, default is Undefined, optional
         The namespace of the Resource Provider which should be registered. Changing this forces a new resource to be created.
     """

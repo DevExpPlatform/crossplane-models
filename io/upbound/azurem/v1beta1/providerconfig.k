@@ -57,6 +57,10 @@ schema AzuremUpboundIoV1beta1ProviderConfigSpec:
     oidcTokenFilePath : str, default is Undefined, optional
         OIDCTokenFilePath is the optional path to a token file
         that allows to access a managed identity.
+    storageUseAzureAD : bool, default is Undefined, optional
+        StorageUseAzureAD configures Provider to use AzureAD
+        to connect to the Storage Blob & Queue APIs,
+        rather than the SharedKey from the Storage Account.
     subscriptionID : str, default is Undefined, optional
         SubscriptionID is the Azure subscription ID to be used.
         If unset, subscription ID from Credentials will be used.
@@ -77,6 +81,8 @@ schema AzuremUpboundIoV1beta1ProviderConfigSpec:
     msiEndpoint?: str
 
     oidcTokenFilePath?: str
+
+    storageUseAzureAD?: bool
 
     subscriptionID?: str
 
