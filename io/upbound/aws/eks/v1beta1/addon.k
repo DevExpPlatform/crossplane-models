@@ -66,8 +66,6 @@ schema EksAwsUpboundIoV1beta1AddonSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : EksAwsUpboundIoV1beta1AddonSpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : EksAwsUpboundIoV1beta1AddonSpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : EksAwsUpboundIoV1beta1AddonSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -83,8 +81,6 @@ schema EksAwsUpboundIoV1beta1AddonSpec:
 
     providerConfigRef?: EksAwsUpboundIoV1beta1AddonSpecProviderConfigRef
 
-    publishConnectionDetailsTo?: EksAwsUpboundIoV1beta1AddonSpecPublishConnectionDetailsTo
-
     writeConnectionSecretToRef?: EksAwsUpboundIoV1beta1AddonSpecWriteConnectionSecretToRef
 
 
@@ -95,13 +91,13 @@ schema EksAwsUpboundIoV1beta1AddonSpecForProvider:
     Attributes
     ----------
     addonName : str, default is Undefined, optional
-        on. The name must match one of
+        Name of the EKS add-on. The name must match one of
         the names returned by describe-addon-versions.
     addonVersion : str, default is Undefined, optional
-        on. The version must
+        The version of the EKS add-on. The version must
         match one of the versions returned by describe-addon-versions.
     clusterName : str, default is Undefined, optional
-        –  Name of the EKS Cluster.
+        Name of the EKS Cluster.
     clusterNameRef : EksAwsUpboundIoV1beta1AddonSpecForProviderClusterNameRef, default is Undefined, optional
         cluster name ref
     clusterNameSelector : EksAwsUpboundIoV1beta1AddonSpecForProviderClusterNameSelector, default is Undefined, optional
@@ -113,13 +109,12 @@ schema EksAwsUpboundIoV1beta1AddonSpecForProvider:
     preserve : bool, default is Undefined, optional
         Indicates if you want to preserve the created resources when deleting the EKS add-on.
     region : str, default is Undefined, required
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
-    resolveConflicts : str, default is Undefined, optional
-        (Deprecated use the resolve_conflicts_on_create and resolve_conflicts_on_update attributes instead) Define how to resolve parameter value conflicts when migrating an existing add-on to an Amazon EKS add-on or when applying version updates to the add-on. Valid values are NONE, OVERWRITE and PRESERVE. Note that PRESERVE is only valid on addon update, not for initial addon creation. If you need to set this to PRESERVE, use the resolve_conflicts_on_create and resolve_conflicts_on_update attributes instead. For more details check UpdateAddon API Docs.
     resolveConflictsOnCreate : str, default is Undefined, optional
-        How to resolve field value conflicts when migrating a self-managed add-on to an Amazon EKS add-on. Valid values are NONE and OVERWRITE. For more details see the CreateAddon API Docs.
+        How to resolve field value conflicts when migrating a self-managed add-on to an Amazon EKS add-on. Valid values are NONE and OVERWRITE. For more details see the CreateAddon API Documentation.
     resolveConflictsOnUpdate : str, default is Undefined, optional
-        How to resolve field value conflicts for an Amazon EKS add-on if you've changed a value from the Amazon EKS default value. Valid values are NONE, OVERWRITE, and PRESERVE. For more details see the UpdateAddon API Docs.
+        How to resolve field value conflicts for an Amazon EKS add-on if you've changed a value from the Amazon EKS default value. Valid values are NONE, OVERWRITE, and PRESERVE. For more details see the UpdateAddon API Documentation.
     serviceAccountRoleArn : str, default is Undefined, optional
         The Amazon Resource Name (ARN) of an
         existing IAM role to bind to the add-on's service account. The role must be
@@ -153,8 +148,6 @@ schema EksAwsUpboundIoV1beta1AddonSpecForProvider:
     preserve?: bool
 
     region: str
-
-    resolveConflicts?: str
 
     resolveConflictsOnCreate?: str
 
@@ -381,13 +374,13 @@ schema EksAwsUpboundIoV1beta1AddonSpecInitProvider:
     Attributes
     ----------
     addonName : str, default is Undefined, optional
-        on. The name must match one of
+        Name of the EKS add-on. The name must match one of
         the names returned by describe-addon-versions.
     addonVersion : str, default is Undefined, optional
-        on. The version must
+        The version of the EKS add-on. The version must
         match one of the versions returned by describe-addon-versions.
     clusterName : str, default is Undefined, optional
-        –  Name of the EKS Cluster.
+        Name of the EKS Cluster.
     clusterNameRef : EksAwsUpboundIoV1beta1AddonSpecInitProviderClusterNameRef, default is Undefined, optional
         cluster name ref
     clusterNameSelector : EksAwsUpboundIoV1beta1AddonSpecInitProviderClusterNameSelector, default is Undefined, optional
@@ -398,12 +391,10 @@ schema EksAwsUpboundIoV1beta1AddonSpecInitProvider:
         Configuration block with EKS Pod Identity association settings. See pod_identity_association below for details.
     preserve : bool, default is Undefined, optional
         Indicates if you want to preserve the created resources when deleting the EKS add-on.
-    resolveConflicts : str, default is Undefined, optional
-        (Deprecated use the resolve_conflicts_on_create and resolve_conflicts_on_update attributes instead) Define how to resolve parameter value conflicts when migrating an existing add-on to an Amazon EKS add-on or when applying version updates to the add-on. Valid values are NONE, OVERWRITE and PRESERVE. Note that PRESERVE is only valid on addon update, not for initial addon creation. If you need to set this to PRESERVE, use the resolve_conflicts_on_create and resolve_conflicts_on_update attributes instead. For more details check UpdateAddon API Docs.
     resolveConflictsOnCreate : str, default is Undefined, optional
-        How to resolve field value conflicts when migrating a self-managed add-on to an Amazon EKS add-on. Valid values are NONE and OVERWRITE. For more details see the CreateAddon API Docs.
+        How to resolve field value conflicts when migrating a self-managed add-on to an Amazon EKS add-on. Valid values are NONE and OVERWRITE. For more details see the CreateAddon API Documentation.
     resolveConflictsOnUpdate : str, default is Undefined, optional
-        How to resolve field value conflicts for an Amazon EKS add-on if you've changed a value from the Amazon EKS default value. Valid values are NONE, OVERWRITE, and PRESERVE. For more details see the UpdateAddon API Docs.
+        How to resolve field value conflicts for an Amazon EKS add-on if you've changed a value from the Amazon EKS default value. Valid values are NONE, OVERWRITE, and PRESERVE. For more details see the UpdateAddon API Documentation.
     serviceAccountRoleArn : str, default is Undefined, optional
         The Amazon Resource Name (ARN) of an
         existing IAM role to bind to the add-on's service account. The role must be
@@ -435,8 +426,6 @@ schema EksAwsUpboundIoV1beta1AddonSpecInitProvider:
     podIdentityAssociation?: [EksAwsUpboundIoV1beta1AddonSpecInitProviderPodIdentityAssociationItems0]
 
     preserve?: bool
-
-    resolveConflicts?: str
 
     resolveConflictsOnCreate?: str
 
@@ -691,112 +680,12 @@ schema EksAwsUpboundIoV1beta1AddonSpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
-schema EksAwsUpboundIoV1beta1AddonSpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : EksAwsUpboundIoV1beta1AddonSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : EksAwsUpboundIoV1beta1AddonSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: EksAwsUpboundIoV1beta1AddonSpecPublishConnectionDetailsToConfigRef
-
-    metadata?: EksAwsUpboundIoV1beta1AddonSpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema EksAwsUpboundIoV1beta1AddonSpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : EksAwsUpboundIoV1beta1AddonSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: EksAwsUpboundIoV1beta1AddonSpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema EksAwsUpboundIoV1beta1AddonSpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema EksAwsUpboundIoV1beta1AddonSpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema EksAwsUpboundIoV1beta1AddonSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------
@@ -843,15 +732,15 @@ schema EksAwsUpboundIoV1beta1AddonStatusAtProvider:
     Attributes
     ----------
     addonName : str, default is Undefined, optional
-        on. The name must match one of
+        Name of the EKS add-on. The name must match one of
         the names returned by describe-addon-versions.
     addonVersion : str, default is Undefined, optional
-        on. The version must
+        The version of the EKS add-on. The version must
         match one of the versions returned by describe-addon-versions.
     arn : str, default is Undefined, optional
         Amazon Resource Name (ARN) of the EKS add-on.
     clusterName : str, default is Undefined, optional
-        –  Name of the EKS Cluster.
+        Name of the EKS Cluster.
     configurationValues : str, default is Undefined, optional
         custom configuration values for addons with single JSON string. This JSON string value must match the JSON schema derived from describe-addon-configuration.
     createdAt : str, default is Undefined, optional
@@ -864,12 +753,13 @@ schema EksAwsUpboundIoV1beta1AddonStatusAtProvider:
         Configuration block with EKS Pod Identity association settings. See pod_identity_association below for details.
     preserve : bool, default is Undefined, optional
         Indicates if you want to preserve the created resources when deleting the EKS add-on.
-    resolveConflicts : str, default is Undefined, optional
-        (Deprecated use the resolve_conflicts_on_create and resolve_conflicts_on_update attributes instead) Define how to resolve parameter value conflicts when migrating an existing add-on to an Amazon EKS add-on or when applying version updates to the add-on. Valid values are NONE, OVERWRITE and PRESERVE. Note that PRESERVE is only valid on addon update, not for initial addon creation. If you need to set this to PRESERVE, use the resolve_conflicts_on_create and resolve_conflicts_on_update attributes instead. For more details check UpdateAddon API Docs.
+    region : str, default is Undefined, optional
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
+        Region is the region you'd like your resource to be created in.
     resolveConflictsOnCreate : str, default is Undefined, optional
-        How to resolve field value conflicts when migrating a self-managed add-on to an Amazon EKS add-on. Valid values are NONE and OVERWRITE. For more details see the CreateAddon API Docs.
+        How to resolve field value conflicts when migrating a self-managed add-on to an Amazon EKS add-on. Valid values are NONE and OVERWRITE. For more details see the CreateAddon API Documentation.
     resolveConflictsOnUpdate : str, default is Undefined, optional
-        How to resolve field value conflicts for an Amazon EKS add-on if you've changed a value from the Amazon EKS default value. Valid values are NONE, OVERWRITE, and PRESERVE. For more details see the UpdateAddon API Docs.
+        How to resolve field value conflicts for an Amazon EKS add-on if you've changed a value from the Amazon EKS default value. Valid values are NONE, OVERWRITE, and PRESERVE. For more details see the UpdateAddon API Documentation.
     serviceAccountRoleArn : str, default is Undefined, optional
         The Amazon Resource Name (ARN) of an
         existing IAM role to bind to the add-on's service account. The role must be
@@ -904,7 +794,7 @@ schema EksAwsUpboundIoV1beta1AddonStatusAtProvider:
 
     preserve?: bool
 
-    resolveConflicts?: str
+    region?: str
 
     resolveConflictsOnCreate?: str
 

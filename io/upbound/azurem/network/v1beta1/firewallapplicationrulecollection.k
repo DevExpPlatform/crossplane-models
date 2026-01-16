@@ -525,7 +525,7 @@ schema NetworkAzuremUpboundIoV1beta1FirewallApplicationRuleCollectionStatusAtPro
     azureFirewallName : str, default is Undefined, optional
         Specifies the name of the Firewall in which the Application Rule Collection should be created. Changing this forces a new resource to be created.
     id : str, default is Undefined, optional
-        The ID of the Firewall Application Rule Collection.
+        id
     priority : float, default is Undefined, optional
         Specifies the priority of the rule collection. Possible values are between 100 - 65000.
     resourceGroupName : str, default is Undefined, optional

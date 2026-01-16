@@ -66,8 +66,6 @@ schema EksAwsUpboundIoV1beta1AccessEntrySpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : EksAwsUpboundIoV1beta1AccessEntrySpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : EksAwsUpboundIoV1beta1AccessEntrySpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : EksAwsUpboundIoV1beta1AccessEntrySpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -83,8 +81,6 @@ schema EksAwsUpboundIoV1beta1AccessEntrySpec:
 
     providerConfigRef?: EksAwsUpboundIoV1beta1AccessEntrySpecProviderConfigRef
 
-    publishConnectionDetailsTo?: EksAwsUpboundIoV1beta1AccessEntrySpecPublishConnectionDetailsTo
-
     writeConnectionSecretToRef?: EksAwsUpboundIoV1beta1AccessEntrySpecWriteConnectionSecretToRef
 
 
@@ -95,20 +91,21 @@ schema EksAwsUpboundIoV1beta1AccessEntrySpecForProvider:
     Attributes
     ----------
     clusterName : str, default is Undefined, optional
-        –  Name of the EKS Cluster.
+        Name of the EKS Cluster.
     clusterNameRef : EksAwsUpboundIoV1beta1AccessEntrySpecForProviderClusterNameRef, default is Undefined, optional
         cluster name ref
     clusterNameSelector : EksAwsUpboundIoV1beta1AccessEntrySpecForProviderClusterNameSelector, default is Undefined, optional
         cluster name selector
     kubernetesGroups : [str], default is Undefined, optional
-        –  List of string which can optionally specify the Kubernetes groups the user would belong to when creating an access entry.
+        List of string which can optionally specify the Kubernetes groups the user would belong to when creating an access entry.
     principalArn : str, default is Undefined, optional
-        –  The IAM Principal ARN which requires Authentication access to the EKS cluster.
+        The IAM Principal ARN which requires Authentication access to the EKS cluster.
     principalArnFromRoleRef : EksAwsUpboundIoV1beta1AccessEntrySpecForProviderPrincipalArnFromRoleRef, default is Undefined, optional
         principal arn from role ref
     principalArnFromRoleSelector : EksAwsUpboundIoV1beta1AccessEntrySpecForProviderPrincipalArnFromRoleSelector, default is Undefined, optional
         principal arn from role selector
     region : str, default is Undefined, required
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
     tags : {str:str}, default is Undefined, optional
         Key-value map of resource tags.
@@ -336,7 +333,7 @@ schema EksAwsUpboundIoV1beta1AccessEntrySpecInitProvider:
     Attributes
     ----------
     kubernetesGroups : [str], default is Undefined, optional
-        –  List of string which can optionally specify the Kubernetes groups the user would belong to when creating an access entry.
+        List of string which can optionally specify the Kubernetes groups the user would belong to when creating an access entry.
     tags : {str:str}, default is Undefined, optional
         Key-value map of resource tags.
     $type : str, default is Undefined, optional
@@ -399,112 +396,12 @@ schema EksAwsUpboundIoV1beta1AccessEntrySpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
-schema EksAwsUpboundIoV1beta1AccessEntrySpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : EksAwsUpboundIoV1beta1AccessEntrySpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : EksAwsUpboundIoV1beta1AccessEntrySpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: EksAwsUpboundIoV1beta1AccessEntrySpecPublishConnectionDetailsToConfigRef
-
-    metadata?: EksAwsUpboundIoV1beta1AccessEntrySpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema EksAwsUpboundIoV1beta1AccessEntrySpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : EksAwsUpboundIoV1beta1AccessEntrySpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: EksAwsUpboundIoV1beta1AccessEntrySpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema EksAwsUpboundIoV1beta1AccessEntrySpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema EksAwsUpboundIoV1beta1AccessEntrySpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema EksAwsUpboundIoV1beta1AccessEntrySpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------
@@ -553,17 +450,20 @@ schema EksAwsUpboundIoV1beta1AccessEntryStatusAtProvider:
     accessEntryArn : str, default is Undefined, optional
         Amazon Resource Name (ARN) of the Access Entry.
     clusterName : str, default is Undefined, optional
-        –  Name of the EKS Cluster.
+        Name of the EKS Cluster.
     createdAt : str, default is Undefined, optional
         Date and time in RFC3339 format that the EKS add-on was created.
     id : str, default is Undefined, optional
         id
     kubernetesGroups : [str], default is Undefined, optional
-        –  List of string which can optionally specify the Kubernetes groups the user would belong to when creating an access entry.
+        List of string which can optionally specify the Kubernetes groups the user would belong to when creating an access entry.
     modifiedAt : str, default is Undefined, optional
         Date and time in RFC3339 format that the EKS add-on was updated.
     principalArn : str, default is Undefined, optional
-        –  The IAM Principal ARN which requires Authentication access to the EKS cluster.
+        The IAM Principal ARN which requires Authentication access to the EKS cluster.
+    region : str, default is Undefined, optional
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
+        Region is the region you'd like your resource to be created in.
     tags : {str:str}, default is Undefined, optional
         Key-value map of resource tags.
     tagsAll : {str:str}, default is Undefined, optional
@@ -588,6 +488,8 @@ schema EksAwsUpboundIoV1beta1AccessEntryStatusAtProvider:
     modifiedAt?: str
 
     principalArn?: str
+
+    region?: str
 
     tags?: {str:str}
 

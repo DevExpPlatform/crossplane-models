@@ -66,8 +66,6 @@ schema S3AwsUpboundIoV1beta2BucketLoggingSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : S3AwsUpboundIoV1beta2BucketLoggingSpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : S3AwsUpboundIoV1beta2BucketLoggingSpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : S3AwsUpboundIoV1beta2BucketLoggingSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -82,8 +80,6 @@ schema S3AwsUpboundIoV1beta2BucketLoggingSpec:
     managementPolicies?: [str] = ["*"]
 
     providerConfigRef?: S3AwsUpboundIoV1beta2BucketLoggingSpecProviderConfigRef
-
-    publishConnectionDetailsTo?: S3AwsUpboundIoV1beta2BucketLoggingSpecPublishConnectionDetailsTo
 
     writeConnectionSecretToRef?: S3AwsUpboundIoV1beta2BucketLoggingSpecWriteConnectionSecretToRef
 
@@ -103,6 +99,7 @@ schema S3AwsUpboundIoV1beta2BucketLoggingSpecForProvider:
     expectedBucketOwner : str, default is Undefined, optional
         Account ID of the expected bucket owner.
     region : str, default is Undefined, required
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
     targetBucket : str, default is Undefined, optional
         Name of the bucket where you want Amazon S3 to store server access logs.
@@ -373,7 +370,7 @@ schema S3AwsUpboundIoV1beta2BucketLoggingSpecForProviderTargetObjectKeyFormat:
     partitionedPrefix : S3AwsUpboundIoV1beta2BucketLoggingSpecForProviderTargetObjectKeyFormatPartitionedPrefix, default is Undefined, optional
         partitioned prefix
     simplePrefix : any, default is Undefined, optional
-        Use the simple format for S3 keys for log objects. To use, set simple_prefix {}.
+        Use the simple format for S3 keys for log objects, in the form [target_prefix][YYYY]-[MM]-[DD]-[hh]-[mm]-[ss]-[UniqueString]. To use, set simple_prefix {}. Conflicts with partitioned_prefix.
     """
 
 
@@ -384,7 +381,7 @@ schema S3AwsUpboundIoV1beta2BucketLoggingSpecForProviderTargetObjectKeyFormat:
 
 schema S3AwsUpboundIoV1beta2BucketLoggingSpecForProviderTargetObjectKeyFormatPartitionedPrefix:
     r"""
-    Partitioned S3 key for log objects. See below.
+    Partitioned S3 key for log objects, in the form [target_prefix][SourceAccountId]/[SourceRegion]/[SourceBucket]/[YYYY]/[MM]/[DD]/[YYYY]-[MM]-[DD]-[hh]-[mm]-[ss]-[UniqueString]. Conflicts with simple_prefix. See below.
 
     Attributes
     ----------
@@ -686,7 +683,7 @@ schema S3AwsUpboundIoV1beta2BucketLoggingSpecInitProviderTargetObjectKeyFormat:
     partitionedPrefix : S3AwsUpboundIoV1beta2BucketLoggingSpecInitProviderTargetObjectKeyFormatPartitionedPrefix, default is Undefined, optional
         partitioned prefix
     simplePrefix : any, default is Undefined, optional
-        Use the simple format for S3 keys for log objects. To use, set simple_prefix {}.
+        Use the simple format for S3 keys for log objects, in the form [target_prefix][YYYY]-[MM]-[DD]-[hh]-[mm]-[ss]-[UniqueString]. To use, set simple_prefix {}. Conflicts with partitioned_prefix.
     """
 
 
@@ -697,7 +694,7 @@ schema S3AwsUpboundIoV1beta2BucketLoggingSpecInitProviderTargetObjectKeyFormat:
 
 schema S3AwsUpboundIoV1beta2BucketLoggingSpecInitProviderTargetObjectKeyFormatPartitionedPrefix:
     r"""
-    Partitioned S3 key for log objects. See below.
+    Partitioned S3 key for log objects, in the form [target_prefix][SourceAccountId]/[SourceRegion]/[SourceBucket]/[YYYY]/[MM]/[DD]/[YYYY]-[MM]-[DD]-[hh]-[mm]-[ss]-[UniqueString]. Conflicts with simple_prefix. See below.
 
     Attributes
     ----------
@@ -753,112 +750,12 @@ schema S3AwsUpboundIoV1beta2BucketLoggingSpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
-schema S3AwsUpboundIoV1beta2BucketLoggingSpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : S3AwsUpboundIoV1beta2BucketLoggingSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : S3AwsUpboundIoV1beta2BucketLoggingSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: S3AwsUpboundIoV1beta2BucketLoggingSpecPublishConnectionDetailsToConfigRef
-
-    metadata?: S3AwsUpboundIoV1beta2BucketLoggingSpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema S3AwsUpboundIoV1beta2BucketLoggingSpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : S3AwsUpboundIoV1beta2BucketLoggingSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: S3AwsUpboundIoV1beta2BucketLoggingSpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema S3AwsUpboundIoV1beta2BucketLoggingSpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema S3AwsUpboundIoV1beta2BucketLoggingSpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema S3AwsUpboundIoV1beta2BucketLoggingSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------
@@ -910,6 +807,9 @@ schema S3AwsUpboundIoV1beta2BucketLoggingStatusAtProvider:
         Account ID of the expected bucket owner.
     id : str, default is Undefined, optional
         The bucket or bucket and expected_bucket_owner separated by a comma (,) if the latter is provided.
+    region : str, default is Undefined, optional
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
+        Region is the region you'd like your resource to be created in.
     targetBucket : str, default is Undefined, optional
         Name of the bucket where you want Amazon S3 to store server access logs.
     targetGrant : [S3AwsUpboundIoV1beta2BucketLoggingStatusAtProviderTargetGrantItems0], default is Undefined, optional
@@ -926,6 +826,8 @@ schema S3AwsUpboundIoV1beta2BucketLoggingStatusAtProvider:
     expectedBucketOwner?: str
 
     id?: str
+
+    region?: str
 
     targetBucket?: str
 
@@ -993,7 +895,7 @@ schema S3AwsUpboundIoV1beta2BucketLoggingStatusAtProviderTargetObjectKeyFormat:
     partitionedPrefix : S3AwsUpboundIoV1beta2BucketLoggingStatusAtProviderTargetObjectKeyFormatPartitionedPrefix, default is Undefined, optional
         partitioned prefix
     simplePrefix : any, default is Undefined, optional
-        Use the simple format for S3 keys for log objects. To use, set simple_prefix {}.
+        Use the simple format for S3 keys for log objects, in the form [target_prefix][YYYY]-[MM]-[DD]-[hh]-[mm]-[ss]-[UniqueString]. To use, set simple_prefix {}. Conflicts with partitioned_prefix.
     """
 
 
@@ -1004,7 +906,7 @@ schema S3AwsUpboundIoV1beta2BucketLoggingStatusAtProviderTargetObjectKeyFormat:
 
 schema S3AwsUpboundIoV1beta2BucketLoggingStatusAtProviderTargetObjectKeyFormatPartitionedPrefix:
     r"""
-    Partitioned S3 key for log objects. See below.
+    Partitioned S3 key for log objects, in the form [target_prefix][SourceAccountId]/[SourceRegion]/[SourceBucket]/[YYYY]/[MM]/[DD]/[YYYY]-[MM]-[DD]-[hh]-[mm]-[ss]-[UniqueString]. Conflicts with simple_prefix. See below.
 
     Attributes
     ----------

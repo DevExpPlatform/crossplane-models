@@ -66,8 +66,6 @@ schema S3AwsUpboundIoV1beta1DirectoryBucketSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : S3AwsUpboundIoV1beta1DirectoryBucketSpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : S3AwsUpboundIoV1beta1DirectoryBucketSpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : S3AwsUpboundIoV1beta1DirectoryBucketSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -83,8 +81,6 @@ schema S3AwsUpboundIoV1beta1DirectoryBucketSpec:
 
     providerConfigRef?: S3AwsUpboundIoV1beta1DirectoryBucketSpecProviderConfigRef
 
-    publishConnectionDetailsTo?: S3AwsUpboundIoV1beta1DirectoryBucketSpecPublishConnectionDetailsTo
-
     writeConnectionSecretToRef?: S3AwsUpboundIoV1beta1DirectoryBucketSpecWriteConnectionSecretToRef
 
 
@@ -95,13 +91,16 @@ schema S3AwsUpboundIoV1beta1DirectoryBucketSpecForProvider:
     Attributes
     ----------
     dataRedundancy : str, default is Undefined, optional
-        Data redundancy. Valid values: SingleAvailabilityZone.
+        Data redundancy. Valid values: SingleAvailabilityZone, SingleLocalZone. The default value depends on the value of the location.type attribute.
     forceDestroy : bool, default is Undefined, optional
         Boolean that indicates all objects should be deleted from the bucket when the bucket is destroyed so that the bucket can be destroyed without error. These objects are not recoverable. This only deletes objects when the bucket is destroyed, not when setting this parameter to true. If setting this field in the same operation that would require replacing the bucket or destroying the bucket, this flag will not work.
     location : [S3AwsUpboundIoV1beta1DirectoryBucketSpecForProviderLocationItems0], default is Undefined, optional
         Bucket location. See Location below for more details.
     region : str, default is Undefined, required
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
+    tags : {str:str}, default is Undefined, optional
+        Key-value map of resource tags.
     $type : str, default is Undefined, optional
         Bucket type. Valid values: Directory.
     """
@@ -114,6 +113,8 @@ schema S3AwsUpboundIoV1beta1DirectoryBucketSpecForProvider:
     location?: [S3AwsUpboundIoV1beta1DirectoryBucketSpecForProviderLocationItems0]
 
     region: str
+
+    tags?: {str:str}
 
     $type?: str
 
@@ -152,11 +153,13 @@ schema S3AwsUpboundIoV1beta1DirectoryBucketSpecInitProvider:
     Attributes
     ----------
     dataRedundancy : str, default is Undefined, optional
-        Data redundancy. Valid values: SingleAvailabilityZone.
+        Data redundancy. Valid values: SingleAvailabilityZone, SingleLocalZone. The default value depends on the value of the location.type attribute.
     forceDestroy : bool, default is Undefined, optional
         Boolean that indicates all objects should be deleted from the bucket when the bucket is destroyed so that the bucket can be destroyed without error. These objects are not recoverable. This only deletes objects when the bucket is destroyed, not when setting this parameter to true. If setting this field in the same operation that would require replacing the bucket or destroying the bucket, this flag will not work.
     location : [S3AwsUpboundIoV1beta1DirectoryBucketSpecInitProviderLocationItems0], default is Undefined, optional
         Bucket location. See Location below for more details.
+    tags : {str:str}, default is Undefined, optional
+        Key-value map of resource tags.
     $type : str, default is Undefined, optional
         Bucket type. Valid values: Directory.
     """
@@ -167,6 +170,8 @@ schema S3AwsUpboundIoV1beta1DirectoryBucketSpecInitProvider:
     forceDestroy?: bool
 
     location?: [S3AwsUpboundIoV1beta1DirectoryBucketSpecInitProviderLocationItems0]
+
+    tags?: {str:str}
 
     $type?: str
 
@@ -233,112 +238,12 @@ schema S3AwsUpboundIoV1beta1DirectoryBucketSpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
-schema S3AwsUpboundIoV1beta1DirectoryBucketSpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : S3AwsUpboundIoV1beta1DirectoryBucketSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : S3AwsUpboundIoV1beta1DirectoryBucketSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: S3AwsUpboundIoV1beta1DirectoryBucketSpecPublishConnectionDetailsToConfigRef
-
-    metadata?: S3AwsUpboundIoV1beta1DirectoryBucketSpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema S3AwsUpboundIoV1beta1DirectoryBucketSpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : S3AwsUpboundIoV1beta1DirectoryBucketSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: S3AwsUpboundIoV1beta1DirectoryBucketSpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema S3AwsUpboundIoV1beta1DirectoryBucketSpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema S3AwsUpboundIoV1beta1DirectoryBucketSpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema S3AwsUpboundIoV1beta1DirectoryBucketSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------
@@ -387,13 +292,20 @@ schema S3AwsUpboundIoV1beta1DirectoryBucketStatusAtProvider:
     arn : str, default is Undefined, optional
         ARN of the bucket.
     dataRedundancy : str, default is Undefined, optional
-        Data redundancy. Valid values: SingleAvailabilityZone.
+        Data redundancy. Valid values: SingleAvailabilityZone, SingleLocalZone. The default value depends on the value of the location.type attribute.
     forceDestroy : bool, default is Undefined, optional
         Boolean that indicates all objects should be deleted from the bucket when the bucket is destroyed so that the bucket can be destroyed without error. These objects are not recoverable. This only deletes objects when the bucket is destroyed, not when setting this parameter to true. If setting this field in the same operation that would require replacing the bucket or destroying the bucket, this flag will not work.
     id : str, default is Undefined, optional
-        Name of the bucket.
+        (Deprecated, use bucket instead) Name of the bucket.
     location : [S3AwsUpboundIoV1beta1DirectoryBucketStatusAtProviderLocationItems0], default is Undefined, optional
         Bucket location. See Location below for more details.
+    region : str, default is Undefined, optional
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
+        Region is the region you'd like your resource to be created in.
+    tags : {str:str}, default is Undefined, optional
+        Key-value map of resource tags.
+    tagsAll : {str:str}, default is Undefined, optional
+        Map of tags assigned to the resource, including those inherited from the provider default_tags configuration block.
     $type : str, default is Undefined, optional
         Bucket type. Valid values: Directory.
     """
@@ -408,6 +320,12 @@ schema S3AwsUpboundIoV1beta1DirectoryBucketStatusAtProvider:
     id?: str
 
     location?: [S3AwsUpboundIoV1beta1DirectoryBucketStatusAtProviderLocationItems0]
+
+    region?: str
+
+    tags?: {str:str}
+
+    tagsAll?: {str:str}
 
     $type?: str
 

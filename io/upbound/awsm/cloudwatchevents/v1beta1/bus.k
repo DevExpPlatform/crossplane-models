@@ -84,6 +84,8 @@ schema CloudwatcheventsAwsmUpboundIoV1beta1BusSpecForProvider:
         Partner event source that the new event bus will be matched with. Must match name.
     kmsKeyIdentifier : str, default is Undefined, optional
         Identifier of the AWS KMS customer managed key for EventBridge to use, if you choose to use a customer managed key to encrypt events on this event bus. The identifier can be the key Amazon Resource Name (ARN), KeyId, key alias, or key alias ARN.
+    logConfig : CloudwatcheventsAwsmUpboundIoV1beta1BusSpecForProviderLogConfig, default is Undefined, optional
+        log config
     region : str, default is Undefined, required
         Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         The following arguments are required:
@@ -100,6 +102,8 @@ schema CloudwatcheventsAwsmUpboundIoV1beta1BusSpecForProvider:
     eventSourceName?: str
 
     kmsKeyIdentifier?: str
+
+    logConfig?: CloudwatcheventsAwsmUpboundIoV1beta1BusSpecForProviderLogConfig
 
     region: str
 
@@ -118,6 +122,24 @@ schema CloudwatcheventsAwsmUpboundIoV1beta1BusSpecForProviderDeadLetterConfig:
 
 
     arn?: str
+
+
+schema CloudwatcheventsAwsmUpboundIoV1beta1BusSpecForProviderLogConfig:
+    r"""
+    configured
+
+    Attributes
+    ----------
+    includeDetail : str, default is Undefined, optional
+        Whether EventBridge include detailed event information in the records it generates. Valid values are NONE and FULL.
+    level : str, default is Undefined, optional
+        Level of logging detail to include. Valid values are OFF, ERROR, INFO, and TRACE.
+    """
+
+
+    includeDetail?: str
+
+    level?: str
 
 
 schema CloudwatcheventsAwsmUpboundIoV1beta1BusSpecInitProvider:
@@ -143,6 +165,8 @@ schema CloudwatcheventsAwsmUpboundIoV1beta1BusSpecInitProvider:
         Partner event source that the new event bus will be matched with. Must match name.
     kmsKeyIdentifier : str, default is Undefined, optional
         Identifier of the AWS KMS customer managed key for EventBridge to use, if you choose to use a customer managed key to encrypt events on this event bus. The identifier can be the key Amazon Resource Name (ARN), KeyId, key alias, or key alias ARN.
+    logConfig : CloudwatcheventsAwsmUpboundIoV1beta1BusSpecInitProviderLogConfig, default is Undefined, optional
+        log config
     tags : {str:str}, default is Undefined, optional
         Key-value map of resource tags.
     """
@@ -155,6 +179,8 @@ schema CloudwatcheventsAwsmUpboundIoV1beta1BusSpecInitProvider:
     eventSourceName?: str
 
     kmsKeyIdentifier?: str
+
+    logConfig?: CloudwatcheventsAwsmUpboundIoV1beta1BusSpecInitProviderLogConfig
 
     tags?: {str:str}
 
@@ -171,6 +197,24 @@ schema CloudwatcheventsAwsmUpboundIoV1beta1BusSpecInitProviderDeadLetterConfig:
 
 
     arn?: str
+
+
+schema CloudwatcheventsAwsmUpboundIoV1beta1BusSpecInitProviderLogConfig:
+    r"""
+    configured
+
+    Attributes
+    ----------
+    includeDetail : str, default is Undefined, optional
+        Whether EventBridge include detailed event information in the records it generates. Valid values are NONE and FULL.
+    level : str, default is Undefined, optional
+        Level of logging detail to include. Valid values are OFF, ERROR, INFO, and TRACE.
+    """
+
+
+    includeDetail?: str
+
+    level?: str
 
 
 schema CloudwatcheventsAwsmUpboundIoV1beta1BusSpecProviderConfigRef:
@@ -252,6 +296,8 @@ schema CloudwatcheventsAwsmUpboundIoV1beta1BusStatusAtProvider:
         Name of the event bus.
     kmsKeyIdentifier : str, default is Undefined, optional
         Identifier of the AWS KMS customer managed key for EventBridge to use, if you choose to use a customer managed key to encrypt events on this event bus. The identifier can be the key Amazon Resource Name (ARN), KeyId, key alias, or key alias ARN.
+    logConfig : CloudwatcheventsAwsmUpboundIoV1beta1BusStatusAtProviderLogConfig, default is Undefined, optional
+        log config
     region : str, default is Undefined, optional
         Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         The following arguments are required:
@@ -275,6 +321,8 @@ schema CloudwatcheventsAwsmUpboundIoV1beta1BusStatusAtProvider:
 
     kmsKeyIdentifier?: str
 
+    logConfig?: CloudwatcheventsAwsmUpboundIoV1beta1BusStatusAtProviderLogConfig
+
     region?: str
 
     tags?: {str:str}
@@ -294,6 +342,24 @@ schema CloudwatcheventsAwsmUpboundIoV1beta1BusStatusAtProviderDeadLetterConfig:
 
 
     arn?: str
+
+
+schema CloudwatcheventsAwsmUpboundIoV1beta1BusStatusAtProviderLogConfig:
+    r"""
+    configured
+
+    Attributes
+    ----------
+    includeDetail : str, default is Undefined, optional
+        Whether EventBridge include detailed event information in the records it generates. Valid values are NONE and FULL.
+    level : str, default is Undefined, optional
+        Level of logging detail to include. Valid values are OFF, ERROR, INFO, and TRACE.
+    """
+
+
+    includeDetail?: str
+
+    level?: str
 
 
 schema CloudwatcheventsAwsmUpboundIoV1beta1BusStatusConditionsItems0:

@@ -66,8 +66,6 @@ schema S3AwsUpboundIoV1beta1BucketObjectLockConfigurationSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : S3AwsUpboundIoV1beta1BucketObjectLockConfigurationSpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : S3AwsUpboundIoV1beta1BucketObjectLockConfigurationSpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : S3AwsUpboundIoV1beta1BucketObjectLockConfigurationSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -82,8 +80,6 @@ schema S3AwsUpboundIoV1beta1BucketObjectLockConfigurationSpec:
     managementPolicies?: [str] = ["*"]
 
     providerConfigRef?: S3AwsUpboundIoV1beta1BucketObjectLockConfigurationSpecProviderConfigRef
-
-    publishConnectionDetailsTo?: S3AwsUpboundIoV1beta1BucketObjectLockConfigurationSpecPublishConnectionDetailsTo
 
     writeConnectionSecretToRef?: S3AwsUpboundIoV1beta1BucketObjectLockConfigurationSpecWriteConnectionSecretToRef
 
@@ -105,6 +101,7 @@ schema S3AwsUpboundIoV1beta1BucketObjectLockConfigurationSpecForProvider:
     objectLockEnabled : str, default is Undefined, optional
         Indicates whether this bucket has an Object Lock configuration enabled. Defaults to Enabled. Valid values: Enabled.
     region : str, default is Undefined, required
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
     $rule : [S3AwsUpboundIoV1beta1BucketObjectLockConfigurationSpecForProviderRuleItems0], default is Undefined, optional
         Configuration block for specifying the Object Lock rule for the specified object. See below.
@@ -257,8 +254,8 @@ schema S3AwsUpboundIoV1beta1BucketObjectLockConfigurationSpecForProviderRuleItem
 
 schema S3AwsUpboundIoV1beta1BucketObjectLockConfigurationSpecForProviderTokenSecretRef:
     r"""
-    Token to allow Object Lock to be enabled for an existing bucket. You must contact AWS support for the bucket's "Object Lock token".
-    The token is generated in the back-end when versioning is enabled on a bucket. For more details on versioning, see the aws_s3_bucket_versioning resource.
+    This argument is deprecated and no longer needed to enable Object Lock.
+    To enable Object Lock for an existing bucket, you must first enable versioning on the bucket and then enable Object Lock. For more details on versioning, see the aws_s3_bucket_versioning resource.
 
     Attributes
     ----------
@@ -452,8 +449,8 @@ schema S3AwsUpboundIoV1beta1BucketObjectLockConfigurationSpecInitProviderRuleIte
 
 schema S3AwsUpboundIoV1beta1BucketObjectLockConfigurationSpecInitProviderTokenSecretRef:
     r"""
-    Token to allow Object Lock to be enabled for an existing bucket. You must contact AWS support for the bucket's "Object Lock token".
-    The token is generated in the back-end when versioning is enabled on a bucket. For more details on versioning, see the aws_s3_bucket_versioning resource.
+    This argument is deprecated and no longer needed to enable Object Lock.
+    To enable Object Lock for an existing bucket, you must first enable versioning on the bucket and then enable Object Lock. For more details on versioning, see the aws_s3_bucket_versioning resource.
 
     Attributes
     ----------
@@ -517,112 +514,12 @@ schema S3AwsUpboundIoV1beta1BucketObjectLockConfigurationSpecProviderConfigRefPo
     resolve?: "Always" | "IfNotPresent"
 
 
-schema S3AwsUpboundIoV1beta1BucketObjectLockConfigurationSpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : S3AwsUpboundIoV1beta1BucketObjectLockConfigurationSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : S3AwsUpboundIoV1beta1BucketObjectLockConfigurationSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: S3AwsUpboundIoV1beta1BucketObjectLockConfigurationSpecPublishConnectionDetailsToConfigRef
-
-    metadata?: S3AwsUpboundIoV1beta1BucketObjectLockConfigurationSpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema S3AwsUpboundIoV1beta1BucketObjectLockConfigurationSpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : S3AwsUpboundIoV1beta1BucketObjectLockConfigurationSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: S3AwsUpboundIoV1beta1BucketObjectLockConfigurationSpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema S3AwsUpboundIoV1beta1BucketObjectLockConfigurationSpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema S3AwsUpboundIoV1beta1BucketObjectLockConfigurationSpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema S3AwsUpboundIoV1beta1BucketObjectLockConfigurationSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------
@@ -676,6 +573,9 @@ schema S3AwsUpboundIoV1beta1BucketObjectLockConfigurationStatusAtProvider:
         The bucket or bucket and expected_bucket_owner separated by a comma (,) if the latter is provided.
     objectLockEnabled : str, default is Undefined, optional
         Indicates whether this bucket has an Object Lock configuration enabled. Defaults to Enabled. Valid values: Enabled.
+    region : str, default is Undefined, optional
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
+        Region is the region you'd like your resource to be created in.
     $rule : [S3AwsUpboundIoV1beta1BucketObjectLockConfigurationStatusAtProviderRuleItems0], default is Undefined, optional
         Configuration block for specifying the Object Lock rule for the specified object. See below.
     """
@@ -688,6 +588,8 @@ schema S3AwsUpboundIoV1beta1BucketObjectLockConfigurationStatusAtProvider:
     id?: str
 
     objectLockEnabled?: str
+
+    region?: str
 
     $rule?: [S3AwsUpboundIoV1beta1BucketObjectLockConfigurationStatusAtProviderRuleItems0]
 

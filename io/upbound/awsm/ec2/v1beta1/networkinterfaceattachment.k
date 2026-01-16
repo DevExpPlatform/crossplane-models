@@ -84,6 +84,8 @@ schema Ec2AwsmUpboundIoV1beta1NetworkInterfaceAttachmentSpecForProvider:
         instance Id ref
     instanceIdSelector : Ec2AwsmUpboundIoV1beta1NetworkInterfaceAttachmentSpecForProviderInstanceIDSelector, default is Undefined, optional
         instance Id selector
+    networkCardIndex : float, default is Undefined, optional
+        Index of the network card. Specify a value greater than 0 when using multiple network cards, which are supported by some instance types. The default is 0.
     networkInterfaceId : str, default is Undefined, optional
         ENI ID to attach.
     networkInterfaceIdRef : Ec2AwsmUpboundIoV1beta1NetworkInterfaceAttachmentSpecForProviderNetworkInterfaceIDRef, default is Undefined, optional
@@ -103,6 +105,8 @@ schema Ec2AwsmUpboundIoV1beta1NetworkInterfaceAttachmentSpecForProvider:
     instanceIdRef?: Ec2AwsmUpboundIoV1beta1NetworkInterfaceAttachmentSpecForProviderInstanceIDRef
 
     instanceIdSelector?: Ec2AwsmUpboundIoV1beta1NetworkInterfaceAttachmentSpecForProviderInstanceIDSelector
+
+    networkCardIndex?: float
 
     networkInterfaceId?: str
 
@@ -330,6 +334,8 @@ schema Ec2AwsmUpboundIoV1beta1NetworkInterfaceAttachmentSpecInitProvider:
         instance Id ref
     instanceIdSelector : Ec2AwsmUpboundIoV1beta1NetworkInterfaceAttachmentSpecInitProviderInstanceIDSelector, default is Undefined, optional
         instance Id selector
+    networkCardIndex : float, default is Undefined, optional
+        Index of the network card. Specify a value greater than 0 when using multiple network cards, which are supported by some instance types. The default is 0.
     networkInterfaceId : str, default is Undefined, optional
         ENI ID to attach.
     networkInterfaceIdRef : Ec2AwsmUpboundIoV1beta1NetworkInterfaceAttachmentSpecInitProviderNetworkInterfaceIDRef, default is Undefined, optional
@@ -346,6 +352,8 @@ schema Ec2AwsmUpboundIoV1beta1NetworkInterfaceAttachmentSpecInitProvider:
     instanceIdRef?: Ec2AwsmUpboundIoV1beta1NetworkInterfaceAttachmentSpecInitProviderInstanceIDRef
 
     instanceIdSelector?: Ec2AwsmUpboundIoV1beta1NetworkInterfaceAttachmentSpecInitProviderInstanceIDSelector
+
+    networkCardIndex?: float
 
     networkInterfaceId?: str
 
@@ -623,6 +631,8 @@ schema Ec2AwsmUpboundIoV1beta1NetworkInterfaceAttachmentStatusAtProvider:
         id
     instanceId : str, default is Undefined, optional
         Instance ID to attach.
+    networkCardIndex : float, default is Undefined, optional
+        Index of the network card. Specify a value greater than 0 when using multiple network cards, which are supported by some instance types. The default is 0.
     networkInterfaceId : str, default is Undefined, optional
         ENI ID to attach.
     region : str, default is Undefined, optional
@@ -640,6 +650,8 @@ schema Ec2AwsmUpboundIoV1beta1NetworkInterfaceAttachmentStatusAtProvider:
     id?: str
 
     instanceId?: str
+
+    networkCardIndex?: float
 
     networkInterfaceId?: str
 

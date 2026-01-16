@@ -77,13 +77,17 @@ schema Ec2AwsmUpboundIoV1beta1FlowLogSpecForProvider:
     Attributes
     ----------
     deliverCrossAccountRole : str, default is Undefined, optional
-        ARN of the IAM role that allows Amazon EC2 to publish flow logs across accounts.
+        ARN of the IAM role in the destination account used for cross-account delivery of flow logs.
+    deliverCrossAccountRoleRef : Ec2AwsmUpboundIoV1beta1FlowLogSpecForProviderDeliverCrossAccountRoleRef, default is Undefined, optional
+        deliver cross account role ref
+    deliverCrossAccountRoleSelector : Ec2AwsmUpboundIoV1beta1FlowLogSpecForProviderDeliverCrossAccountRoleSelector, default is Undefined, optional
+        deliver cross account role selector
     destinationOptions : Ec2AwsmUpboundIoV1beta1FlowLogSpecForProviderDestinationOptions, default is Undefined, optional
         destination options
     eniId : str, default is Undefined, optional
         Elastic Network Interface ID to attach to.
     iamRoleArn : str, default is Undefined, optional
-        ARN of the IAM role that's used to post flow logs to a CloudWatch Logs log group.
+        ARN of the IAM role used to post flow logs. Corresponds to DeliverLogsPermissionArn in the AWS API.
     iamRoleArnRef : Ec2AwsmUpboundIoV1beta1FlowLogSpecForProviderIamRoleArnRef, default is Undefined, optional
         iam role arn ref
     iamRoleArnSelector : Ec2AwsmUpboundIoV1beta1FlowLogSpecForProviderIamRoleArnSelector, default is Undefined, optional
@@ -130,6 +134,10 @@ schema Ec2AwsmUpboundIoV1beta1FlowLogSpecForProvider:
 
     deliverCrossAccountRole?: str
 
+    deliverCrossAccountRoleRef?: Ec2AwsmUpboundIoV1beta1FlowLogSpecForProviderDeliverCrossAccountRoleRef
+
+    deliverCrossAccountRoleSelector?: Ec2AwsmUpboundIoV1beta1FlowLogSpecForProviderDeliverCrossAccountRoleSelector
+
     destinationOptions?: Ec2AwsmUpboundIoV1beta1FlowLogSpecForProviderDestinationOptions
 
     eniId?: str
@@ -173,6 +181,103 @@ schema Ec2AwsmUpboundIoV1beta1FlowLogSpecForProvider:
     vpcIdRef?: Ec2AwsmUpboundIoV1beta1FlowLogSpecForProviderVpcIDRef
 
     vpcIdSelector?: Ec2AwsmUpboundIoV1beta1FlowLogSpecForProviderVpcIDSelector
+
+
+schema Ec2AwsmUpboundIoV1beta1FlowLogSpecForProviderDeliverCrossAccountRoleRef:
+    r"""
+    Reference to a Role in iam to populate deliverCrossAccountRole.
+
+    Attributes
+    ----------
+    name : str, default is Undefined, required
+        Name of the referenced object.
+    namespace : str, default is Undefined, optional
+        Namespace of the referenced object
+    policy : Ec2AwsmUpboundIoV1beta1FlowLogSpecForProviderDeliverCrossAccountRoleRefPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    name: str
+
+    namespace?: str
+
+    policy?: Ec2AwsmUpboundIoV1beta1FlowLogSpecForProviderDeliverCrossAccountRoleRefPolicy
+
+
+schema Ec2AwsmUpboundIoV1beta1FlowLogSpecForProviderDeliverCrossAccountRoleRefPolicy:
+    r"""
+    Policies for referencing.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
+schema Ec2AwsmUpboundIoV1beta1FlowLogSpecForProviderDeliverCrossAccountRoleSelector:
+    r"""
+    Selector for a Role in iam to populate deliverCrossAccountRole.
+
+    Attributes
+    ----------
+    matchControllerRef : bool, default is Undefined, optional
+        MatchControllerRef ensures an object with the same controller reference
+        as the selecting object is selected.
+    matchLabels : {str:str}, default is Undefined, optional
+        MatchLabels ensures an object with matching labels is selected.
+    namespace : str, default is Undefined, optional
+        Namespace for the selector
+    policy : Ec2AwsmUpboundIoV1beta1FlowLogSpecForProviderDeliverCrossAccountRoleSelectorPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    matchControllerRef?: bool
+
+    matchLabels?: {str:str}
+
+    namespace?: str
+
+    policy?: Ec2AwsmUpboundIoV1beta1FlowLogSpecForProviderDeliverCrossAccountRoleSelectorPolicy
+
+
+schema Ec2AwsmUpboundIoV1beta1FlowLogSpecForProviderDeliverCrossAccountRoleSelectorPolicy:
+    r"""
+    Policies for selection.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
 
 
 schema Ec2AwsmUpboundIoV1beta1FlowLogSpecForProviderDestinationOptions:
@@ -601,13 +706,17 @@ schema Ec2AwsmUpboundIoV1beta1FlowLogSpecInitProvider:
     Attributes
     ----------
     deliverCrossAccountRole : str, default is Undefined, optional
-        ARN of the IAM role that allows Amazon EC2 to publish flow logs across accounts.
+        ARN of the IAM role in the destination account used for cross-account delivery of flow logs.
+    deliverCrossAccountRoleRef : Ec2AwsmUpboundIoV1beta1FlowLogSpecInitProviderDeliverCrossAccountRoleRef, default is Undefined, optional
+        deliver cross account role ref
+    deliverCrossAccountRoleSelector : Ec2AwsmUpboundIoV1beta1FlowLogSpecInitProviderDeliverCrossAccountRoleSelector, default is Undefined, optional
+        deliver cross account role selector
     destinationOptions : Ec2AwsmUpboundIoV1beta1FlowLogSpecInitProviderDestinationOptions, default is Undefined, optional
         destination options
     eniId : str, default is Undefined, optional
         Elastic Network Interface ID to attach to.
     iamRoleArn : str, default is Undefined, optional
-        ARN of the IAM role that's used to post flow logs to a CloudWatch Logs log group.
+        ARN of the IAM role used to post flow logs. Corresponds to DeliverLogsPermissionArn in the AWS API.
     iamRoleArnRef : Ec2AwsmUpboundIoV1beta1FlowLogSpecInitProviderIamRoleArnRef, default is Undefined, optional
         iam role arn ref
     iamRoleArnSelector : Ec2AwsmUpboundIoV1beta1FlowLogSpecInitProviderIamRoleArnSelector, default is Undefined, optional
@@ -651,6 +760,10 @@ schema Ec2AwsmUpboundIoV1beta1FlowLogSpecInitProvider:
 
     deliverCrossAccountRole?: str
 
+    deliverCrossAccountRoleRef?: Ec2AwsmUpboundIoV1beta1FlowLogSpecInitProviderDeliverCrossAccountRoleRef
+
+    deliverCrossAccountRoleSelector?: Ec2AwsmUpboundIoV1beta1FlowLogSpecInitProviderDeliverCrossAccountRoleSelector
+
     destinationOptions?: Ec2AwsmUpboundIoV1beta1FlowLogSpecInitProviderDestinationOptions
 
     eniId?: str
@@ -692,6 +805,103 @@ schema Ec2AwsmUpboundIoV1beta1FlowLogSpecInitProvider:
     vpcIdRef?: Ec2AwsmUpboundIoV1beta1FlowLogSpecInitProviderVpcIDRef
 
     vpcIdSelector?: Ec2AwsmUpboundIoV1beta1FlowLogSpecInitProviderVpcIDSelector
+
+
+schema Ec2AwsmUpboundIoV1beta1FlowLogSpecInitProviderDeliverCrossAccountRoleRef:
+    r"""
+    Reference to a Role in iam to populate deliverCrossAccountRole.
+
+    Attributes
+    ----------
+    name : str, default is Undefined, required
+        Name of the referenced object.
+    namespace : str, default is Undefined, optional
+        Namespace of the referenced object
+    policy : Ec2AwsmUpboundIoV1beta1FlowLogSpecInitProviderDeliverCrossAccountRoleRefPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    name: str
+
+    namespace?: str
+
+    policy?: Ec2AwsmUpboundIoV1beta1FlowLogSpecInitProviderDeliverCrossAccountRoleRefPolicy
+
+
+schema Ec2AwsmUpboundIoV1beta1FlowLogSpecInitProviderDeliverCrossAccountRoleRefPolicy:
+    r"""
+    Policies for referencing.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
+schema Ec2AwsmUpboundIoV1beta1FlowLogSpecInitProviderDeliverCrossAccountRoleSelector:
+    r"""
+    Selector for a Role in iam to populate deliverCrossAccountRole.
+
+    Attributes
+    ----------
+    matchControllerRef : bool, default is Undefined, optional
+        MatchControllerRef ensures an object with the same controller reference
+        as the selecting object is selected.
+    matchLabels : {str:str}, default is Undefined, optional
+        MatchLabels ensures an object with matching labels is selected.
+    namespace : str, default is Undefined, optional
+        Namespace for the selector
+    policy : Ec2AwsmUpboundIoV1beta1FlowLogSpecInitProviderDeliverCrossAccountRoleSelectorPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    matchControllerRef?: bool
+
+    matchLabels?: {str:str}
+
+    namespace?: str
+
+    policy?: Ec2AwsmUpboundIoV1beta1FlowLogSpecInitProviderDeliverCrossAccountRoleSelectorPolicy
+
+
+schema Ec2AwsmUpboundIoV1beta1FlowLogSpecInitProviderDeliverCrossAccountRoleSelectorPolicy:
+    r"""
+    Policies for selection.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
 
 
 schema Ec2AwsmUpboundIoV1beta1FlowLogSpecInitProviderDestinationOptions:
@@ -1174,13 +1384,13 @@ schema Ec2AwsmUpboundIoV1beta1FlowLogStatusAtProvider:
     arn : str, default is Undefined, optional
         ARN of the Flow Log.
     deliverCrossAccountRole : str, default is Undefined, optional
-        ARN of the IAM role that allows Amazon EC2 to publish flow logs across accounts.
+        ARN of the IAM role in the destination account used for cross-account delivery of flow logs.
     destinationOptions : Ec2AwsmUpboundIoV1beta1FlowLogStatusAtProviderDestinationOptions, default is Undefined, optional
         destination options
     eniId : str, default is Undefined, optional
         Elastic Network Interface ID to attach to.
     iamRoleArn : str, default is Undefined, optional
-        ARN of the IAM role that's used to post flow logs to a CloudWatch Logs log group.
+        ARN of the IAM role used to post flow logs. Corresponds to DeliverLogsPermissionArn in the AWS API.
     id : str, default is Undefined, optional
         Flow Log ID.
     logDestination : str, default is Undefined, optional

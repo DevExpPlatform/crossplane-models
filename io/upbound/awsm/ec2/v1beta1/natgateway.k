@@ -90,7 +90,7 @@ schema Ec2AwsmUpboundIoV1beta1NATGatewaySpecForProvider:
         Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
     secondaryAllocationIds : [str], default is Undefined, optional
-        A list of secondary allocation EIP IDs for this NAT Gateway.
+        A list of secondary allocation EIP IDs for this NAT Gateway. To remove all secondary allocations an empty list should be specified.
     secondaryAllocationIdsRefs : [Ec2AwsmUpboundIoV1beta1NATGatewaySpecForProviderSecondaryAllocationIdsRefsItems0], default is Undefined, optional
         References to EIP in ec2 to populate secondaryAllocationIds.
     secondaryAllocationIdsSelector : Ec2AwsmUpboundIoV1beta1NATGatewaySpecForProviderSecondaryAllocationIdsSelector, default is Undefined, optional
@@ -98,7 +98,7 @@ schema Ec2AwsmUpboundIoV1beta1NATGatewaySpecForProvider:
     secondaryPrivateIpAddressCount : float, default is Undefined, optional
         [Private NAT Gateway only] The number of secondary private IPv4 addresses you want to assign to the NAT Gateway.
     secondaryPrivateIpAddresses : [str], default is Undefined, optional
-        A list of secondary private IPv4 addresses to assign to the NAT Gateway.
+        A list of secondary private IPv4 addresses to assign to the NAT Gateway. To remove all secondary private addresses an empty list should be specified.
     subnetId : str, default is Undefined, optional
         The Subnet ID of the subnet in which to place the NAT Gateway.
     subnetIdRef : Ec2AwsmUpboundIoV1beta1NATGatewaySpecForProviderSubnetIDRef, default is Undefined, optional
@@ -458,7 +458,7 @@ schema Ec2AwsmUpboundIoV1beta1NATGatewaySpecInitProvider:
     privateIp : str, default is Undefined, optional
         The private IPv4 address to assign to the NAT Gateway. If you don't provide an address, a private IPv4 address will be automatically assigned.
     secondaryAllocationIds : [str], default is Undefined, optional
-        A list of secondary allocation EIP IDs for this NAT Gateway.
+        A list of secondary allocation EIP IDs for this NAT Gateway. To remove all secondary allocations an empty list should be specified.
     secondaryAllocationIdsRefs : [Ec2AwsmUpboundIoV1beta1NATGatewaySpecInitProviderSecondaryAllocationIdsRefsItems0], default is Undefined, optional
         References to EIP in ec2 to populate secondaryAllocationIds.
     secondaryAllocationIdsSelector : Ec2AwsmUpboundIoV1beta1NATGatewaySpecInitProviderSecondaryAllocationIdsSelector, default is Undefined, optional
@@ -466,7 +466,7 @@ schema Ec2AwsmUpboundIoV1beta1NATGatewaySpecInitProvider:
     secondaryPrivateIpAddressCount : float, default is Undefined, optional
         [Private NAT Gateway only] The number of secondary private IPv4 addresses you want to assign to the NAT Gateway.
     secondaryPrivateIpAddresses : [str], default is Undefined, optional
-        A list of secondary private IPv4 addresses to assign to the NAT Gateway.
+        A list of secondary private IPv4 addresses to assign to the NAT Gateway. To remove all secondary private addresses an empty list should be specified.
     subnetId : str, default is Undefined, optional
         The Subnet ID of the subnet in which to place the NAT Gateway.
     subnetIdRef : Ec2AwsmUpboundIoV1beta1NATGatewaySpecInitProviderSubnetIDRef, default is Undefined, optional
@@ -883,11 +883,11 @@ schema Ec2AwsmUpboundIoV1beta1NATGatewayStatusAtProvider:
         Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
     secondaryAllocationIds : [str], default is Undefined, optional
-        A list of secondary allocation EIP IDs for this NAT Gateway.
+        A list of secondary allocation EIP IDs for this NAT Gateway. To remove all secondary allocations an empty list should be specified.
     secondaryPrivateIpAddressCount : float, default is Undefined, optional
         [Private NAT Gateway only] The number of secondary private IPv4 addresses you want to assign to the NAT Gateway.
     secondaryPrivateIpAddresses : [str], default is Undefined, optional
-        A list of secondary private IPv4 addresses to assign to the NAT Gateway.
+        A list of secondary private IPv4 addresses to assign to the NAT Gateway. To remove all secondary private addresses an empty list should be specified.
     subnetId : str, default is Undefined, optional
         The Subnet ID of the subnet in which to place the NAT Gateway.
     tags : {str:str}, default is Undefined, optional

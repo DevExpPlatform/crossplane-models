@@ -66,6 +66,8 @@ schema NetworkAzureUpboundIoV1beta1LoadBalancerSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : NetworkAzureUpboundIoV1beta1LoadBalancerSpecProviderConfigRef, default is Undefined, optional
         provider config ref
+    publishConnectionDetailsTo : NetworkAzureUpboundIoV1beta1LoadBalancerSpecPublishConnectionDetailsTo, default is Undefined, optional
+        publish connection details to
     writeConnectionSecretToRef : NetworkAzureUpboundIoV1beta1LoadBalancerSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -80,6 +82,8 @@ schema NetworkAzureUpboundIoV1beta1LoadBalancerSpec:
     managementPolicies?: [str] = ["*"]
 
     providerConfigRef?: NetworkAzureUpboundIoV1beta1LoadBalancerSpecProviderConfigRef
+
+    publishConnectionDetailsTo?: NetworkAzureUpboundIoV1beta1LoadBalancerSpecPublishConnectionDetailsTo
 
     writeConnectionSecretToRef?: NetworkAzureUpboundIoV1beta1LoadBalancerSpecWriteConnectionSecretToRef
 
@@ -96,8 +100,6 @@ schema NetworkAzureUpboundIoV1beta1LoadBalancerSpecForProvider:
         One or more frontend_ip_configuration blocks as documented below.
     location : str, default is Undefined, optional
         Specifies the supported Azure Region where the Load Balancer should be created. Changing this forces a new resource to be created.
-    publicIpAddressId : str, default is Undefined, optional
-        The ID of a Public IP Address which should be associated with the Load Balancer.
     resourceGroupName : str, default is Undefined, optional
         The name of the Resource Group in which to create the Load Balancer. Changing this forces a new resource to be created.
     resourceGroupNameRef : NetworkAzureUpboundIoV1beta1LoadBalancerSpecForProviderResourceGroupNameRef, default is Undefined, optional
@@ -105,15 +107,9 @@ schema NetworkAzureUpboundIoV1beta1LoadBalancerSpecForProvider:
     resourceGroupNameSelector : NetworkAzureUpboundIoV1beta1LoadBalancerSpecForProviderResourceGroupNameSelector, default is Undefined, optional
         resource group name selector
     sku : str, default is Undefined, optional
-        The SKU of the Azure Load Balancer. Accepted values are Basic, Standard and Gateway. Defaults to Standard. Changing this forces a new resource to be created.
+        The SKU of the Azure Load Balancer. Accepted values are Basic, Standard and Gateway. Defaults to Basic. Changing this forces a new resource to be created.
     skuTier : str, default is Undefined, optional
         sku_tier -  The SKU tier of this Load Balancer. Possible values are Global and Regional. Defaults to Regional. Changing this forces a new resource to be created.
-    subnetId : str, default is Undefined, optional
-        The ID of the Subnet which should be associated with the IP Configuration.
-    subnetIdRef : NetworkAzureUpboundIoV1beta1LoadBalancerSpecForProviderSubnetIDRef, default is Undefined, optional
-        subnet Id ref
-    subnetIdSelector : NetworkAzureUpboundIoV1beta1LoadBalancerSpecForProviderSubnetIDSelector, default is Undefined, optional
-        subnet Id selector
     tags : {str:str}, default is Undefined, optional
         A mapping of tags to assign to the resource.
     """
@@ -125,8 +121,6 @@ schema NetworkAzureUpboundIoV1beta1LoadBalancerSpecForProvider:
 
     location?: str
 
-    publicIpAddressId?: str
-
     resourceGroupName?: str
 
     resourceGroupNameRef?: NetworkAzureUpboundIoV1beta1LoadBalancerSpecForProviderResourceGroupNameRef
@@ -136,12 +130,6 @@ schema NetworkAzureUpboundIoV1beta1LoadBalancerSpecForProvider:
     sku?: str
 
     skuTier?: str
-
-    subnetId?: str
-
-    subnetIdRef?: NetworkAzureUpboundIoV1beta1LoadBalancerSpecForProviderSubnetIDRef
-
-    subnetIdSelector?: NetworkAzureUpboundIoV1beta1LoadBalancerSpecForProviderSubnetIDSelector
 
     tags?: {str:str}
 
@@ -475,95 +463,6 @@ schema NetworkAzureUpboundIoV1beta1LoadBalancerSpecForProviderResourceGroupNameS
     resolve?: "Always" | "IfNotPresent"
 
 
-schema NetworkAzureUpboundIoV1beta1LoadBalancerSpecForProviderSubnetIDRef:
-    r"""
-    Reference to a Subnet in network to populate subnetId.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : NetworkAzureUpboundIoV1beta1LoadBalancerSpecForProviderSubnetIDRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: NetworkAzureUpboundIoV1beta1LoadBalancerSpecForProviderSubnetIDRefPolicy
-
-
-schema NetworkAzureUpboundIoV1beta1LoadBalancerSpecForProviderSubnetIDRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema NetworkAzureUpboundIoV1beta1LoadBalancerSpecForProviderSubnetIDSelector:
-    r"""
-    Selector for a Subnet in network to populate subnetId.
-
-    Attributes
-    ----------
-    matchControllerRef : bool, default is Undefined, optional
-        MatchControllerRef ensures an object with the same controller reference
-        as the selecting object is selected.
-    matchLabels : {str:str}, default is Undefined, optional
-        MatchLabels ensures an object with matching labels is selected.
-    policy : NetworkAzureUpboundIoV1beta1LoadBalancerSpecForProviderSubnetIDSelectorPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    matchControllerRef?: bool
-
-    matchLabels?: {str:str}
-
-    policy?: NetworkAzureUpboundIoV1beta1LoadBalancerSpecForProviderSubnetIDSelectorPolicy
-
-
-schema NetworkAzureUpboundIoV1beta1LoadBalancerSpecForProviderSubnetIDSelectorPolicy:
-    r"""
-    Policies for selection.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
 schema NetworkAzureUpboundIoV1beta1LoadBalancerSpecInitProvider:
     r"""
     THIS IS A BETA FIELD. It will be honored
@@ -585,18 +484,10 @@ schema NetworkAzureUpboundIoV1beta1LoadBalancerSpecInitProvider:
         One or more frontend_ip_configuration blocks as documented below.
     location : str, default is Undefined, optional
         Specifies the supported Azure Region where the Load Balancer should be created. Changing this forces a new resource to be created.
-    publicIpAddressId : str, default is Undefined, optional
-        The ID of a Public IP Address which should be associated with the Load Balancer.
     sku : str, default is Undefined, optional
-        The SKU of the Azure Load Balancer. Accepted values are Basic, Standard and Gateway. Defaults to Standard. Changing this forces a new resource to be created.
+        The SKU of the Azure Load Balancer. Accepted values are Basic, Standard and Gateway. Defaults to Basic. Changing this forces a new resource to be created.
     skuTier : str, default is Undefined, optional
         sku_tier -  The SKU tier of this Load Balancer. Possible values are Global and Regional. Defaults to Regional. Changing this forces a new resource to be created.
-    subnetId : str, default is Undefined, optional
-        The ID of the Subnet which should be associated with the IP Configuration.
-    subnetIdRef : NetworkAzureUpboundIoV1beta1LoadBalancerSpecInitProviderSubnetIDRef, default is Undefined, optional
-        subnet Id ref
-    subnetIdSelector : NetworkAzureUpboundIoV1beta1LoadBalancerSpecInitProviderSubnetIDSelector, default is Undefined, optional
-        subnet Id selector
     tags : {str:str}, default is Undefined, optional
         A mapping of tags to assign to the resource.
     """
@@ -608,17 +499,9 @@ schema NetworkAzureUpboundIoV1beta1LoadBalancerSpecInitProvider:
 
     location?: str
 
-    publicIpAddressId?: str
-
     sku?: str
 
     skuTier?: str
-
-    subnetId?: str
-
-    subnetIdRef?: NetworkAzureUpboundIoV1beta1LoadBalancerSpecInitProviderSubnetIDRef
-
-    subnetIdSelector?: NetworkAzureUpboundIoV1beta1LoadBalancerSpecInitProviderSubnetIDSelector
 
     tags?: {str:str}
 
@@ -863,95 +746,6 @@ schema NetworkAzureUpboundIoV1beta1LoadBalancerSpecInitProviderFrontendIPConfigu
     resolve?: "Always" | "IfNotPresent"
 
 
-schema NetworkAzureUpboundIoV1beta1LoadBalancerSpecInitProviderSubnetIDRef:
-    r"""
-    Reference to a Subnet in network to populate subnetId.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : NetworkAzureUpboundIoV1beta1LoadBalancerSpecInitProviderSubnetIDRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: NetworkAzureUpboundIoV1beta1LoadBalancerSpecInitProviderSubnetIDRefPolicy
-
-
-schema NetworkAzureUpboundIoV1beta1LoadBalancerSpecInitProviderSubnetIDRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema NetworkAzureUpboundIoV1beta1LoadBalancerSpecInitProviderSubnetIDSelector:
-    r"""
-    Selector for a Subnet in network to populate subnetId.
-
-    Attributes
-    ----------
-    matchControllerRef : bool, default is Undefined, optional
-        MatchControllerRef ensures an object with the same controller reference
-        as the selecting object is selected.
-    matchLabels : {str:str}, default is Undefined, optional
-        MatchLabels ensures an object with matching labels is selected.
-    policy : NetworkAzureUpboundIoV1beta1LoadBalancerSpecInitProviderSubnetIDSelectorPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    matchControllerRef?: bool
-
-    matchLabels?: {str:str}
-
-    policy?: NetworkAzureUpboundIoV1beta1LoadBalancerSpecInitProviderSubnetIDSelectorPolicy
-
-
-schema NetworkAzureUpboundIoV1beta1LoadBalancerSpecInitProviderSubnetIDSelectorPolicy:
-    r"""
-    Policies for selection.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
 schema NetworkAzureUpboundIoV1beta1LoadBalancerSpecProviderConfigRef:
     r"""
     ProviderConfigReference specifies how the provider that will be used to
@@ -996,12 +790,112 @@ schema NetworkAzureUpboundIoV1beta1LoadBalancerSpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
+schema NetworkAzureUpboundIoV1beta1LoadBalancerSpecPublishConnectionDetailsTo:
+    r"""
+    PublishConnectionDetailsTo specifies the connection secret config which
+    contains a name, metadata and a reference to secret store config to
+    which any connection details for this managed resource should be written.
+    Connection details frequently include the endpoint, username,
+    and password required to connect to the managed resource.
+
+    Attributes
+    ----------
+    configRef : NetworkAzureUpboundIoV1beta1LoadBalancerSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
+        config ref
+    metadata : NetworkAzureUpboundIoV1beta1LoadBalancerSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
+        metadata
+    name : str, default is Undefined, required
+        Name is the name of the connection secret.
+    """
+
+
+    configRef?: NetworkAzureUpboundIoV1beta1LoadBalancerSpecPublishConnectionDetailsToConfigRef
+
+    metadata?: NetworkAzureUpboundIoV1beta1LoadBalancerSpecPublishConnectionDetailsToMetadata
+
+    name: str
+
+
+schema NetworkAzureUpboundIoV1beta1LoadBalancerSpecPublishConnectionDetailsToConfigRef:
+    r"""
+    SecretStoreConfigRef specifies which secret store config should be used
+    for this ConnectionSecret.
+
+    Attributes
+    ----------
+    name : str, default is Undefined, required
+        Name of the referenced object.
+    policy : NetworkAzureUpboundIoV1beta1LoadBalancerSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    name: str
+
+    policy?: NetworkAzureUpboundIoV1beta1LoadBalancerSpecPublishConnectionDetailsToConfigRefPolicy
+
+
+schema NetworkAzureUpboundIoV1beta1LoadBalancerSpecPublishConnectionDetailsToConfigRefPolicy:
+    r"""
+    Policies for referencing.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
+schema NetworkAzureUpboundIoV1beta1LoadBalancerSpecPublishConnectionDetailsToMetadata:
+    r"""
+    Metadata is the metadata for connection secret.
+
+    Attributes
+    ----------
+    annotations : {str:str}, default is Undefined, optional
+        Annotations are the annotations to be added to connection secret.
+        - For Kubernetes secrets, this will be used as "metadata.annotations".
+        - It is up to Secret Store implementation for others store types.
+    labels : {str:str}, default is Undefined, optional
+        Labels are the labels/tags to be added to connection secret.
+        - For Kubernetes secrets, this will be used as "metadata.labels".
+        - It is up to Secret Store implementation for others store types.
+    $type : str, default is Undefined, optional
+        Type is the SecretType for the connection secret.
+        - Only valid for Kubernetes Secret Stores.
+    """
+
+
+    annotations?: {str:str}
+
+    labels?: {str:str}
+
+    $type?: str
+
+
 schema NetworkAzureUpboundIoV1beta1LoadBalancerSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
+    This field is planned to be replaced in a future release in favor of
+    PublishConnectionDetailsTo. Currently, both could be set independently
+    and connection details would be published to both without affecting
+    each other.
 
     Attributes
     ----------
@@ -1059,16 +953,12 @@ schema NetworkAzureUpboundIoV1beta1LoadBalancerStatusAtProvider:
         The first private IP address assigned to the load balancer in frontend_ip_configuration blocks, if any.
     privateIpAddresses : [str], default is Undefined, optional
         The list of private IP address assigned to the load balancer in frontend_ip_configuration blocks, if any.
-    publicIpAddressId : str, default is Undefined, optional
-        The ID of a Public IP Address which should be associated with the Load Balancer.
     resourceGroupName : str, default is Undefined, optional
         The name of the Resource Group in which to create the Load Balancer. Changing this forces a new resource to be created.
     sku : str, default is Undefined, optional
-        The SKU of the Azure Load Balancer. Accepted values are Basic, Standard and Gateway. Defaults to Standard. Changing this forces a new resource to be created.
+        The SKU of the Azure Load Balancer. Accepted values are Basic, Standard and Gateway. Defaults to Basic. Changing this forces a new resource to be created.
     skuTier : str, default is Undefined, optional
         sku_tier -  The SKU tier of this Load Balancer. Possible values are Global and Regional. Defaults to Regional. Changing this forces a new resource to be created.
-    subnetId : str, default is Undefined, optional
-        The ID of the Subnet which should be associated with the IP Configuration.
     tags : {str:str}, default is Undefined, optional
         A mapping of tags to assign to the resource.
     """
@@ -1086,15 +976,11 @@ schema NetworkAzureUpboundIoV1beta1LoadBalancerStatusAtProvider:
 
     privateIpAddresses?: [str]
 
-    publicIpAddressId?: str
-
     resourceGroupName?: str
 
     sku?: str
 
     skuTier?: str
-
-    subnetId?: str
 
     tags?: {str:str}
 

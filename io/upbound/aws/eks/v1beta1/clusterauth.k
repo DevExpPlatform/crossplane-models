@@ -64,8 +64,6 @@ schema EksAwsUpboundIoV1beta1ClusterAuthSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : EksAwsUpboundIoV1beta1ClusterAuthSpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : EksAwsUpboundIoV1beta1ClusterAuthSpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : EksAwsUpboundIoV1beta1ClusterAuthSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -78,8 +76,6 @@ schema EksAwsUpboundIoV1beta1ClusterAuthSpec:
     managementPolicies?: [str] = ["*"]
 
     providerConfigRef?: EksAwsUpboundIoV1beta1ClusterAuthSpecProviderConfigRef
-
-    publishConnectionDetailsTo?: EksAwsUpboundIoV1beta1ClusterAuthSpecPublishConnectionDetailsTo
 
     writeConnectionSecretToRef?: EksAwsUpboundIoV1beta1ClusterAuthSpecWriteConnectionSecretToRef
 
@@ -252,112 +248,12 @@ schema EksAwsUpboundIoV1beta1ClusterAuthSpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
-schema EksAwsUpboundIoV1beta1ClusterAuthSpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : EksAwsUpboundIoV1beta1ClusterAuthSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : EksAwsUpboundIoV1beta1ClusterAuthSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: EksAwsUpboundIoV1beta1ClusterAuthSpecPublishConnectionDetailsToConfigRef
-
-    metadata?: EksAwsUpboundIoV1beta1ClusterAuthSpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema EksAwsUpboundIoV1beta1ClusterAuthSpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : EksAwsUpboundIoV1beta1ClusterAuthSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: EksAwsUpboundIoV1beta1ClusterAuthSpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema EksAwsUpboundIoV1beta1ClusterAuthSpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema EksAwsUpboundIoV1beta1ClusterAuthSpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema EksAwsUpboundIoV1beta1ClusterAuthSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------

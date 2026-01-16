@@ -390,8 +390,6 @@ schema NetworkAzuremUpboundIoV1beta1VPNGatewayConnectionSpecForProviderVpnLinkIt
         The connection mode of this VPN Link. Possible values are Default, InitiatorOnly and ResponderOnly. Defaults to Default.
     customBgpAddress : [NetworkAzuremUpboundIoV1beta1VPNGatewayConnectionSpecForProviderVpnLinkItems0CustomBgpAddressItems0], default is Undefined, optional
         One or more custom_bgp_address blocks as defined below.
-    dpdTimeoutSeconds : float, default is Undefined, optional
-        The dead peer detection timeout of this connection in seconds. Possible values are between 9 and 3600.
     egressNatRuleIds : [str], default is Undefined, optional
         A list of the egress NAT Rule Ids.
     ingressNatRuleIds : [str], default is Undefined, optional
@@ -424,8 +422,6 @@ schema NetworkAzuremUpboundIoV1beta1VPNGatewayConnectionSpecForProviderVpnLinkIt
     connectionMode?: str
 
     customBgpAddress?: [NetworkAzuremUpboundIoV1beta1VPNGatewayConnectionSpecForProviderVpnLinkItems0CustomBgpAddressItems0]
-
-    dpdTimeoutSeconds?: float
 
     egressNatRuleIds?: [str]
 
@@ -730,8 +726,6 @@ schema NetworkAzuremUpboundIoV1beta1VPNGatewayConnectionSpecInitProviderVpnLinkI
         The connection mode of this VPN Link. Possible values are Default, InitiatorOnly and ResponderOnly. Defaults to Default.
     customBgpAddress : [NetworkAzuremUpboundIoV1beta1VPNGatewayConnectionSpecInitProviderVpnLinkItems0CustomBgpAddressItems0], default is Undefined, optional
         One or more custom_bgp_address blocks as defined below.
-    dpdTimeoutSeconds : float, default is Undefined, optional
-        The dead peer detection timeout of this connection in seconds. Possible values are between 9 and 3600.
     egressNatRuleIds : [str], default is Undefined, optional
         A list of the egress NAT Rule Ids.
     ingressNatRuleIds : [str], default is Undefined, optional
@@ -764,8 +758,6 @@ schema NetworkAzuremUpboundIoV1beta1VPNGatewayConnectionSpecInitProviderVpnLinkI
     connectionMode?: str
 
     customBgpAddress?: [NetworkAzuremUpboundIoV1beta1VPNGatewayConnectionSpecInitProviderVpnLinkItems0CustomBgpAddressItems0]
-
-    dpdTimeoutSeconds?: float
 
     egressNatRuleIds?: [str]
 
@@ -1025,8 +1017,6 @@ schema NetworkAzuremUpboundIoV1beta1VPNGatewayConnectionStatusAtProviderVpnLinkI
         The connection mode of this VPN Link. Possible values are Default, InitiatorOnly and ResponderOnly. Defaults to Default.
     customBgpAddress : [NetworkAzuremUpboundIoV1beta1VPNGatewayConnectionStatusAtProviderVpnLinkItems0CustomBgpAddressItems0], default is Undefined, optional
         One or more custom_bgp_address blocks as defined below.
-    dpdTimeoutSeconds : float, default is Undefined, optional
-        The dead peer detection timeout of this connection in seconds. Possible values are between 9 and 3600.
     egressNatRuleIds : [str], default is Undefined, optional
         A list of the egress NAT Rule Ids.
     ingressNatRuleIds : [str], default is Undefined, optional
@@ -1059,8 +1049,6 @@ schema NetworkAzuremUpboundIoV1beta1VPNGatewayConnectionStatusAtProviderVpnLinkI
     connectionMode?: str
 
     customBgpAddress?: [NetworkAzuremUpboundIoV1beta1VPNGatewayConnectionStatusAtProviderVpnLinkItems0CustomBgpAddressItems0]
-
-    dpdTimeoutSeconds?: float
 
     egressNatRuleIds?: [str]
 

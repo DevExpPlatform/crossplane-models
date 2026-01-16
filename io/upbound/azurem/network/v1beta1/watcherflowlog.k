@@ -109,7 +109,7 @@ schema NetworkAzuremUpboundIoV1beta1WatcherFlowLogSpecForProvider:
     tags : {str:str}, default is Undefined, optional
         A mapping of tags which should be assigned to the Network Watcher Flow Log.
     targetResourceId : str, default is Undefined, optional
-        The ID of the Resource for which to enable flow logs for.
+        The ID of the Resource for which to enable flow logs for. Changing this forces a new resource to be created.
     targetResourceIdRef : NetworkAzuremUpboundIoV1beta1WatcherFlowLogSpecForProviderTargetResourceIDRef, default is Undefined, optional
         target resource Id ref
     targetResourceIdSelector : NetworkAzuremUpboundIoV1beta1WatcherFlowLogSpecForProviderTargetResourceIDSelector, default is Undefined, optional
@@ -943,7 +943,7 @@ schema NetworkAzuremUpboundIoV1beta1WatcherFlowLogSpecInitProvider:
     tags : {str:str}, default is Undefined, optional
         A mapping of tags which should be assigned to the Network Watcher Flow Log.
     targetResourceId : str, default is Undefined, optional
-        The ID of the Resource for which to enable flow logs for.
+        The ID of the Resource for which to enable flow logs for. Changing this forces a new resource to be created.
     targetResourceIdRef : NetworkAzuremUpboundIoV1beta1WatcherFlowLogSpecInitProviderTargetResourceIDRef, default is Undefined, optional
         target resource Id ref
     targetResourceIdSelector : NetworkAzuremUpboundIoV1beta1WatcherFlowLogSpecInitProviderTargetResourceIDSelector, default is Undefined, optional
@@ -1621,7 +1621,7 @@ schema NetworkAzuremUpboundIoV1beta1WatcherFlowLogStatusAtProvider:
     tags : {str:str}, default is Undefined, optional
         A mapping of tags which should be assigned to the Network Watcher Flow Log.
     targetResourceId : str, default is Undefined, optional
-        The ID of the Resource for which to enable flow logs for.
+        The ID of the Resource for which to enable flow logs for. Changing this forces a new resource to be created.
     trafficAnalytics : NetworkAzuremUpboundIoV1beta1WatcherFlowLogStatusAtProviderTrafficAnalytics, default is Undefined, optional
         traffic analytics
     version : float, default is Undefined, optional

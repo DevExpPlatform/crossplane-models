@@ -84,8 +84,6 @@ schema NetworkAzuremUpboundIoV1beta1PrivateDNSZoneVirtualNetworkLinkSpecForProvi
         private Dns zone name selector
     registrationEnabled : bool, default is Undefined, optional
         Is auto-registration of virtual machine records in the virtual network in the Private DNS zone enabled? Defaults to false.
-    resolutionPolicy : str, default is Undefined, optional
-        Specifies the resolution policy of the Private DNS Zone Virtual Network Link. Possible values are Default and NxDomainRedirect.
     resourceGroupName : str, default is Undefined, optional
         Specifies the resource group where the Private DNS Zone exists. Changing this forces a new resource to be created.
     resourceGroupNameRef : NetworkAzuremUpboundIoV1beta1PrivateDNSZoneVirtualNetworkLinkSpecForProviderResourceGroupNameRef, default is Undefined, optional
@@ -110,8 +108,6 @@ schema NetworkAzuremUpboundIoV1beta1PrivateDNSZoneVirtualNetworkLinkSpecForProvi
     privateDnsZoneNameSelector?: NetworkAzuremUpboundIoV1beta1PrivateDNSZoneVirtualNetworkLinkSpecForProviderPrivateDNSZoneNameSelector
 
     registrationEnabled?: bool
-
-    resolutionPolicy?: str
 
     resourceGroupName?: str
 
@@ -436,8 +432,6 @@ schema NetworkAzuremUpboundIoV1beta1PrivateDNSZoneVirtualNetworkLinkSpecInitProv
     ----------
     registrationEnabled : bool, default is Undefined, optional
         Is auto-registration of virtual machine records in the virtual network in the Private DNS zone enabled? Defaults to false.
-    resolutionPolicy : str, default is Undefined, optional
-        Specifies the resolution policy of the Private DNS Zone Virtual Network Link. Possible values are Default and NxDomainRedirect.
     tags : {str:str}, default is Undefined, optional
         A mapping of tags to assign to the resource.
     virtualNetworkId : str, default is Undefined, optional
@@ -450,8 +444,6 @@ schema NetworkAzuremUpboundIoV1beta1PrivateDNSZoneVirtualNetworkLinkSpecInitProv
 
 
     registrationEnabled?: bool
-
-    resolutionPolicy?: str
 
     tags?: {str:str}
 
@@ -632,8 +624,6 @@ schema NetworkAzuremUpboundIoV1beta1PrivateDNSZoneVirtualNetworkLinkStatusAtProv
         The name of the Private DNS zone (without a terminating dot). Changing this forces a new resource to be created.
     registrationEnabled : bool, default is Undefined, optional
         Is auto-registration of virtual machine records in the virtual network in the Private DNS zone enabled? Defaults to false.
-    resolutionPolicy : str, default is Undefined, optional
-        Specifies the resolution policy of the Private DNS Zone Virtual Network Link. Possible values are Default and NxDomainRedirect.
     resourceGroupName : str, default is Undefined, optional
         Specifies the resource group where the Private DNS Zone exists. Changing this forces a new resource to be created.
     tags : {str:str}, default is Undefined, optional
@@ -648,8 +638,6 @@ schema NetworkAzuremUpboundIoV1beta1PrivateDNSZoneVirtualNetworkLinkStatusAtProv
     privateDnsZoneName?: str
 
     registrationEnabled?: bool
-
-    resolutionPolicy?: str
 
     resourceGroupName?: str
 

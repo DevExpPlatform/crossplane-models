@@ -66,8 +66,6 @@ schema EksAwsUpboundIoV1beta2ClusterSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : EksAwsUpboundIoV1beta2ClusterSpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : EksAwsUpboundIoV1beta2ClusterSpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : EksAwsUpboundIoV1beta2ClusterSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -82,8 +80,6 @@ schema EksAwsUpboundIoV1beta2ClusterSpec:
     managementPolicies?: [str] = ["*"]
 
     providerConfigRef?: EksAwsUpboundIoV1beta2ClusterSpecProviderConfigRef
-
-    publishConnectionDetailsTo?: EksAwsUpboundIoV1beta2ClusterSpecPublishConnectionDetailsTo
 
     writeConnectionSecretToRef?: EksAwsUpboundIoV1beta2ClusterSpecWriteConnectionSecretToRef
 
@@ -100,15 +96,20 @@ schema EksAwsUpboundIoV1beta2ClusterSpecForProvider:
         Install default unmanaged add-ons, such as aws-cni, kube-proxy, and CoreDNS during cluster creation. If false, you must manually install desired add-ons. Changing this value will force a new cluster to be created. Defaults to true.
     computeConfig : EksAwsUpboundIoV1beta2ClusterSpecForProviderComputeConfig, default is Undefined, optional
         compute config
+    deletionProtection : bool, default is Undefined, optional
+        Whether to enable deletion protection for the cluster. When enabled, the cluster cannot be deleted unless deletion protection is first disabled. Default: false.
     enabledClusterLogTypes : [str], default is Undefined, optional
         List of the desired control plane logging to enable. For more information, see Amazon EKS Control Plane Logging.
     encryptionConfig : EksAwsUpboundIoV1beta2ClusterSpecForProviderEncryptionConfig, default is Undefined, optional
         encryption config
+    forceUpdateVersion : bool, default is Undefined, optional
+        Force version update by overriding upgrade-blocking readiness checks when updating a cluster.
     kubernetesNetworkConfig : EksAwsUpboundIoV1beta2ClusterSpecForProviderKubernetesNetworkConfig, default is Undefined, optional
         kubernetes network config
     outpostConfig : EksAwsUpboundIoV1beta2ClusterSpecForProviderOutpostConfig, default is Undefined, optional
         outpost config
     region : str, default is Undefined, required
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
     remoteNetworkConfig : EksAwsUpboundIoV1beta2ClusterSpecForProviderRemoteNetworkConfig, default is Undefined, optional
         remote network config
@@ -125,7 +126,7 @@ schema EksAwsUpboundIoV1beta2ClusterSpecForProvider:
     upgradePolicy : EksAwsUpboundIoV1beta2ClusterSpecForProviderUpgradePolicy, default is Undefined, optional
         upgrade policy
     version : str, default is Undefined, optional
-        –  Desired Kubernetes master version. If you do not specify a value, the latest available version at resource creation is used and no upgrades will occur except those automatically triggered by EKS. The value must be configured and increased to upgrade the version when desired. Downgrades are not supported by EKS.
+        Desired Kubernetes master version. If you do not specify a value, the latest available version at resource creation is used and no upgrades will occur except those automatically triggered by EKS. The value must be configured and increased to upgrade the version when desired. Downgrades are not supported by EKS.
     vpcConfig : EksAwsUpboundIoV1beta2ClusterSpecForProviderVpcConfig, default is Undefined, optional
         vpc config
     zonalShiftConfig : EksAwsUpboundIoV1beta2ClusterSpecForProviderZonalShiftConfig, default is Undefined, optional
@@ -139,9 +140,13 @@ schema EksAwsUpboundIoV1beta2ClusterSpecForProvider:
 
     computeConfig?: EksAwsUpboundIoV1beta2ClusterSpecForProviderComputeConfig
 
+    deletionProtection?: bool
+
     enabledClusterLogTypes?: [str]
 
     encryptionConfig?: EksAwsUpboundIoV1beta2ClusterSpecForProviderEncryptionConfig
+
+    forceUpdateVersion?: bool
 
     kubernetesNetworkConfig?: EksAwsUpboundIoV1beta2ClusterSpecForProviderKubernetesNetworkConfig
 
@@ -172,14 +177,14 @@ schema EksAwsUpboundIoV1beta2ClusterSpecForProvider:
 
 schema EksAwsUpboundIoV1beta2ClusterSpecForProviderAccessConfig:
     r"""
-    Configuration block for the access config associated with your cluster, see Amazon EKS Access Entries.
+    Configuration block for the access config associated with your cluster, see Amazon EKS Access Entries. Detailed below.
 
     Attributes
     ----------
     authenticationMode : str, default is Undefined, optional
         The authentication mode for the cluster. Valid values are CONFIG_MAP, API or API_AND_CONFIG_MAP
     bootstrapClusterCreatorAdminPermissions : bool, default is Undefined, optional
-        Whether or not to bootstrap the access config values to the cluster. Default is false.
+        Whether or not to bootstrap the access config values to the cluster. Default is true.
     """
 
 
@@ -466,12 +471,12 @@ schema EksAwsUpboundIoV1beta2ClusterSpecForProviderStorageConfig:
 
 schema EksAwsUpboundIoV1beta2ClusterSpecForProviderStorageConfigBlockStorage:
     r"""
-    eks aws upbound io v1beta2 cluster spec for provider storage config block storage
+    Configuration block with block storage configuration for the cluster. Detailed below.
 
     Attributes
     ----------
     enabled : bool, default is Undefined, optional
-        Whether zonal shift is enabled for the cluster.
+        Indicates if the block storage capability is enabled on your EKS Auto Mode cluster. If the block storage capability is enabled, EKS Auto Mode will create and delete block storage volumes in your Amazon Web Services account.
     """
 
 
@@ -509,13 +514,13 @@ schema EksAwsUpboundIoV1beta2ClusterSpecForProviderVpcConfig:
     securityGroupIdSelector : EksAwsUpboundIoV1beta2ClusterSpecForProviderVpcConfigSecurityGroupIDSelector, default is Undefined, optional
         security group Id selector
     securityGroupIds : [str], default is Undefined, optional
-        account elastic network interfaces that Amazon EKS creates to use to allow communication between your worker nodes and the Kubernetes control plane.
+        List of security group IDs for the cross-account elastic network interfaces that Amazon EKS creates to use to allow communication between your worker nodes and the Kubernetes control plane.
     subnetIdRefs : [EksAwsUpboundIoV1beta2ClusterSpecForProviderVpcConfigSubnetIDRefsItems0], default is Undefined, optional
         References to Subnet in ec2 to populate subnetIds.
     subnetIdSelector : EksAwsUpboundIoV1beta2ClusterSpecForProviderVpcConfigSubnetIDSelector, default is Undefined, optional
         subnet Id selector
     subnetIds : [str], default is Undefined, optional
-        account elastic network interfaces in these subnets to allow communication between your worker nodes and the Kubernetes control plane.
+        List of subnet IDs. Must be in at least two different availability zones. Amazon EKS creates cross-account elastic network interfaces in these subnets to allow communication between your worker nodes and the Kubernetes control plane.
     """
 
 
@@ -751,10 +756,14 @@ schema EksAwsUpboundIoV1beta2ClusterSpecInitProvider:
         Install default unmanaged add-ons, such as aws-cni, kube-proxy, and CoreDNS during cluster creation. If false, you must manually install desired add-ons. Changing this value will force a new cluster to be created. Defaults to true.
     computeConfig : EksAwsUpboundIoV1beta2ClusterSpecInitProviderComputeConfig, default is Undefined, optional
         compute config
+    deletionProtection : bool, default is Undefined, optional
+        Whether to enable deletion protection for the cluster. When enabled, the cluster cannot be deleted unless deletion protection is first disabled. Default: false.
     enabledClusterLogTypes : [str], default is Undefined, optional
         List of the desired control plane logging to enable. For more information, see Amazon EKS Control Plane Logging.
     encryptionConfig : EksAwsUpboundIoV1beta2ClusterSpecInitProviderEncryptionConfig, default is Undefined, optional
         encryption config
+    forceUpdateVersion : bool, default is Undefined, optional
+        Force version update by overriding upgrade-blocking readiness checks when updating a cluster.
     kubernetesNetworkConfig : EksAwsUpboundIoV1beta2ClusterSpecInitProviderKubernetesNetworkConfig, default is Undefined, optional
         kubernetes network config
     outpostConfig : EksAwsUpboundIoV1beta2ClusterSpecInitProviderOutpostConfig, default is Undefined, optional
@@ -774,7 +783,7 @@ schema EksAwsUpboundIoV1beta2ClusterSpecInitProvider:
     upgradePolicy : EksAwsUpboundIoV1beta2ClusterSpecInitProviderUpgradePolicy, default is Undefined, optional
         upgrade policy
     version : str, default is Undefined, optional
-        –  Desired Kubernetes master version. If you do not specify a value, the latest available version at resource creation is used and no upgrades will occur except those automatically triggered by EKS. The value must be configured and increased to upgrade the version when desired. Downgrades are not supported by EKS.
+        Desired Kubernetes master version. If you do not specify a value, the latest available version at resource creation is used and no upgrades will occur except those automatically triggered by EKS. The value must be configured and increased to upgrade the version when desired. Downgrades are not supported by EKS.
     vpcConfig : EksAwsUpboundIoV1beta2ClusterSpecInitProviderVpcConfig, default is Undefined, optional
         vpc config
     zonalShiftConfig : EksAwsUpboundIoV1beta2ClusterSpecInitProviderZonalShiftConfig, default is Undefined, optional
@@ -788,9 +797,13 @@ schema EksAwsUpboundIoV1beta2ClusterSpecInitProvider:
 
     computeConfig?: EksAwsUpboundIoV1beta2ClusterSpecInitProviderComputeConfig
 
+    deletionProtection?: bool
+
     enabledClusterLogTypes?: [str]
 
     encryptionConfig?: EksAwsUpboundIoV1beta2ClusterSpecInitProviderEncryptionConfig
+
+    forceUpdateVersion?: bool
 
     kubernetesNetworkConfig?: EksAwsUpboundIoV1beta2ClusterSpecInitProviderKubernetesNetworkConfig
 
@@ -819,14 +832,14 @@ schema EksAwsUpboundIoV1beta2ClusterSpecInitProvider:
 
 schema EksAwsUpboundIoV1beta2ClusterSpecInitProviderAccessConfig:
     r"""
-    Configuration block for the access config associated with your cluster, see Amazon EKS Access Entries.
+    Configuration block for the access config associated with your cluster, see Amazon EKS Access Entries. Detailed below.
 
     Attributes
     ----------
     authenticationMode : str, default is Undefined, optional
         The authentication mode for the cluster. Valid values are CONFIG_MAP, API or API_AND_CONFIG_MAP
     bootstrapClusterCreatorAdminPermissions : bool, default is Undefined, optional
-        Whether or not to bootstrap the access config values to the cluster. Default is false.
+        Whether or not to bootstrap the access config values to the cluster. Default is true.
     """
 
 
@@ -1113,12 +1126,12 @@ schema EksAwsUpboundIoV1beta2ClusterSpecInitProviderStorageConfig:
 
 schema EksAwsUpboundIoV1beta2ClusterSpecInitProviderStorageConfigBlockStorage:
     r"""
-    eks aws upbound io v1beta2 cluster spec init provider storage config block storage
+    Configuration block with block storage configuration for the cluster. Detailed below.
 
     Attributes
     ----------
     enabled : bool, default is Undefined, optional
-        Whether zonal shift is enabled for the cluster.
+        Indicates if the block storage capability is enabled on your EKS Auto Mode cluster. If the block storage capability is enabled, EKS Auto Mode will create and delete block storage volumes in your Amazon Web Services account.
     """
 
 
@@ -1156,13 +1169,13 @@ schema EksAwsUpboundIoV1beta2ClusterSpecInitProviderVpcConfig:
     securityGroupIdSelector : EksAwsUpboundIoV1beta2ClusterSpecInitProviderVpcConfigSecurityGroupIDSelector, default is Undefined, optional
         security group Id selector
     securityGroupIds : [str], default is Undefined, optional
-        account elastic network interfaces that Amazon EKS creates to use to allow communication between your worker nodes and the Kubernetes control plane.
+        List of security group IDs for the cross-account elastic network interfaces that Amazon EKS creates to use to allow communication between your worker nodes and the Kubernetes control plane.
     subnetIdRefs : [EksAwsUpboundIoV1beta2ClusterSpecInitProviderVpcConfigSubnetIDRefsItems0], default is Undefined, optional
         References to Subnet in ec2 to populate subnetIds.
     subnetIdSelector : EksAwsUpboundIoV1beta2ClusterSpecInitProviderVpcConfigSubnetIDSelector, default is Undefined, optional
         subnet Id selector
     subnetIds : [str], default is Undefined, optional
-        account elastic network interfaces in these subnets to allow communication between your worker nodes and the Kubernetes control plane.
+        List of subnet IDs. Must be in at least two different availability zones. Amazon EKS creates cross-account elastic network interfaces in these subnets to allow communication between your worker nodes and the Kubernetes control plane.
     """
 
 
@@ -1421,112 +1434,12 @@ schema EksAwsUpboundIoV1beta2ClusterSpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
-schema EksAwsUpboundIoV1beta2ClusterSpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : EksAwsUpboundIoV1beta2ClusterSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : EksAwsUpboundIoV1beta2ClusterSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: EksAwsUpboundIoV1beta2ClusterSpecPublishConnectionDetailsToConfigRef
-
-    metadata?: EksAwsUpboundIoV1beta2ClusterSpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema EksAwsUpboundIoV1beta2ClusterSpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : EksAwsUpboundIoV1beta2ClusterSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: EksAwsUpboundIoV1beta2ClusterSpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema EksAwsUpboundIoV1beta2ClusterSpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema EksAwsUpboundIoV1beta2ClusterSpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema EksAwsUpboundIoV1beta2ClusterSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------
@@ -1586,12 +1499,16 @@ schema EksAwsUpboundIoV1beta2ClusterStatusAtProvider:
         compute config
     createdAt : str, default is Undefined, optional
         Unix epoch timestamp in seconds for when the cluster was created.
+    deletionProtection : bool, default is Undefined, optional
+        Whether to enable deletion protection for the cluster. When enabled, the cluster cannot be deleted unless deletion protection is first disabled. Default: false.
     enabledClusterLogTypes : [str], default is Undefined, optional
         List of the desired control plane logging to enable. For more information, see Amazon EKS Control Plane Logging.
     encryptionConfig : EksAwsUpboundIoV1beta2ClusterStatusAtProviderEncryptionConfig, default is Undefined, optional
         encryption config
     endpoint : str, default is Undefined, optional
         Endpoint for your Kubernetes API server.
+    forceUpdateVersion : bool, default is Undefined, optional
+        Force version update by overriding upgrade-blocking readiness checks when updating a cluster.
     id : str, default is Undefined, optional
         Name of the cluster.
     identity : [EksAwsUpboundIoV1beta2ClusterStatusAtProviderIdentityItems0], default is Undefined, optional
@@ -1602,6 +1519,9 @@ schema EksAwsUpboundIoV1beta2ClusterStatusAtProvider:
         outpost config
     platformVersion : str, default is Undefined, optional
         Platform version for the cluster.
+    region : str, default is Undefined, optional
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
+        Region is the region you'd like your resource to be created in.
     remoteNetworkConfig : EksAwsUpboundIoV1beta2ClusterStatusAtProviderRemoteNetworkConfig, default is Undefined, optional
         remote network config
     roleArn : str, default is Undefined, optional
@@ -1617,7 +1537,7 @@ schema EksAwsUpboundIoV1beta2ClusterStatusAtProvider:
     upgradePolicy : EksAwsUpboundIoV1beta2ClusterStatusAtProviderUpgradePolicy, default is Undefined, optional
         upgrade policy
     version : str, default is Undefined, optional
-        –  Desired Kubernetes master version. If you do not specify a value, the latest available version at resource creation is used and no upgrades will occur except those automatically triggered by EKS. The value must be configured and increased to upgrade the version when desired. Downgrades are not supported by EKS.
+        Desired Kubernetes master version. If you do not specify a value, the latest available version at resource creation is used and no upgrades will occur except those automatically triggered by EKS. The value must be configured and increased to upgrade the version when desired. Downgrades are not supported by EKS.
     vpcConfig : EksAwsUpboundIoV1beta2ClusterStatusAtProviderVpcConfig, default is Undefined, optional
         vpc config
     zonalShiftConfig : EksAwsUpboundIoV1beta2ClusterStatusAtProviderZonalShiftConfig, default is Undefined, optional
@@ -1639,11 +1559,15 @@ schema EksAwsUpboundIoV1beta2ClusterStatusAtProvider:
 
     createdAt?: str
 
+    deletionProtection?: bool
+
     enabledClusterLogTypes?: [str]
 
     encryptionConfig?: EksAwsUpboundIoV1beta2ClusterStatusAtProviderEncryptionConfig
 
     endpoint?: str
+
+    forceUpdateVersion?: bool
 
     id?: str
 
@@ -1654,6 +1578,8 @@ schema EksAwsUpboundIoV1beta2ClusterStatusAtProvider:
     outpostConfig?: EksAwsUpboundIoV1beta2ClusterStatusAtProviderOutpostConfig
 
     platformVersion?: str
+
+    region?: str
 
     remoteNetworkConfig?: EksAwsUpboundIoV1beta2ClusterStatusAtProviderRemoteNetworkConfig
 
@@ -1678,14 +1604,14 @@ schema EksAwsUpboundIoV1beta2ClusterStatusAtProvider:
 
 schema EksAwsUpboundIoV1beta2ClusterStatusAtProviderAccessConfig:
     r"""
-    Configuration block for the access config associated with your cluster, see Amazon EKS Access Entries.
+    Configuration block for the access config associated with your cluster, see Amazon EKS Access Entries. Detailed below.
 
     Attributes
     ----------
     authenticationMode : str, default is Undefined, optional
         The authentication mode for the cluster. Valid values are CONFIG_MAP, API or API_AND_CONFIG_MAP
     bootstrapClusterCreatorAdminPermissions : bool, default is Undefined, optional
-        Whether or not to bootstrap the access config values to the cluster. Default is false.
+        Whether or not to bootstrap the access config values to the cluster. Default is true.
     """
 
 
@@ -1803,7 +1729,7 @@ schema EksAwsUpboundIoV1beta2ClusterStatusAtProviderKubernetesNetworkConfig:
     serviceIpv4Cidr : str, default is Undefined, optional
         The CIDR block to assign Kubernetes pod and service IP addresses from. If you don't specify a block, Kubernetes assigns addresses from either the 10.100.0.0/16 or 172.20.0.0/16 CIDR blocks. We recommend that you specify a block that does not overlap with resources in other networks that are peered or connected to your VPC. You can only specify a custom CIDR block when you create a cluster, changing this value will force a new cluster to be created. The block must meet the following requirements:
     serviceIpv6Cidr : str, default is Undefined, optional
-        The CIDR block that Kubernetes pod and service IP addresses are assigned from if you specified ipv6 for ip_family when you created the cluster. Kubernetes assigns service addresses from the unique local address range (fc00::/7) because you can't specify a custom IPv6 CIDR block when you create the cluster.
+        (Computed) The CIDR block that Kubernetes pod and service IP addresses are assigned from if you specify ipv6 for ip_family when you create the cluster. Kubernetes assigns service addresses from the unique local address range (fc00::/7) because you can't specify a custom IPv6 CIDR block when you create the cluster.
     """
 
 
@@ -1929,12 +1855,12 @@ schema EksAwsUpboundIoV1beta2ClusterStatusAtProviderStorageConfig:
 
 schema EksAwsUpboundIoV1beta2ClusterStatusAtProviderStorageConfigBlockStorage:
     r"""
-    eks aws upbound io v1beta2 cluster status at provider storage config block storage
+    Configuration block with block storage configuration for the cluster. Detailed below.
 
     Attributes
     ----------
     enabled : bool, default is Undefined, optional
-        Whether zonal shift is enabled for the cluster.
+        Indicates if the block storage capability is enabled on your EKS Auto Mode cluster. If the block storage capability is enabled, EKS Auto Mode will create and delete block storage volumes in your Amazon Web Services account.
     """
 
 
@@ -1962,7 +1888,7 @@ schema EksAwsUpboundIoV1beta2ClusterStatusAtProviderVpcConfig:
     Attributes
     ----------
     clusterSecurityGroupId : str, default is Undefined, optional
-        Cluster security group that was created by Amazon EKS for the cluster. Managed node groups use this security group for control-plane-to-data-plane communication.
+        (Computed) Cluster security group that is created by Amazon EKS for the cluster. Managed node groups use this security group for control-plane-to-data-plane communication.
     endpointPrivateAccess : bool, default is Undefined, optional
         Whether the Amazon EKS private API server endpoint is enabled. Default is false.
     endpointPublicAccess : bool, default is Undefined, optional
@@ -1970,11 +1896,11 @@ schema EksAwsUpboundIoV1beta2ClusterStatusAtProviderVpcConfig:
     publicAccessCidrs : [str], default is Undefined, optional
         List of CIDR blocks. Indicates which CIDR blocks can access the Amazon EKS public API server endpoint when enabled. EKS defaults this to a list with 0.0.0.0/0.
     securityGroupIds : [str], default is Undefined, optional
-        account elastic network interfaces that Amazon EKS creates to use to allow communication between your worker nodes and the Kubernetes control plane.
+        List of security group IDs for the cross-account elastic network interfaces that Amazon EKS creates to use to allow communication between your worker nodes and the Kubernetes control plane.
     subnetIds : [str], default is Undefined, optional
-        account elastic network interfaces in these subnets to allow communication between your worker nodes and the Kubernetes control plane.
+        List of subnet IDs. Must be in at least two different availability zones. Amazon EKS creates cross-account elastic network interfaces in these subnets to allow communication between your worker nodes and the Kubernetes control plane.
     vpcId : str, default is Undefined, optional
-        ID of the VPC associated with your cluster.
+        (Computed) ID of the VPC associated with your cluster.
     """
 
 

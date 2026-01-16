@@ -83,11 +83,9 @@ schema NetworkAzuremUpboundIoV1beta1LoadBalancerRuleSpecForProvider:
     disableOutboundSnat : bool, default is Undefined, optional
         Is snat enabled for this Load Balancer Rule? Default false.
     enableFloatingIp : bool, default is Undefined, optional
-        enable floating Ip
+        Are the Floating IPs enabled for this Load Balancer Rule? A "floating” IP is reassigned to a secondary server in case the primary server fails. Required to configure a SQL AlwaysOn Availability Group. Defaults to false.
     enableTcpReset : bool, default is Undefined, optional
-        enable Tcp reset
-    floatingIpEnabled : bool, default is Undefined, optional
-        Are the Floating IPs enabled for this Load Balancer Rule? A "floating" IP is reassigned to a secondary server in case the primary server fails. Required to configure a SQL AlwaysOn Availability Group. Defaults to false.
+        Is TCP Reset enabled for this Load Balancer Rule?
     frontendIpConfigurationName : str, default is Undefined, optional
         The name of the frontend IP configuration to which the rule is associated.
     frontendPort : float, default is Undefined, optional
@@ -106,8 +104,6 @@ schema NetworkAzuremUpboundIoV1beta1LoadBalancerRuleSpecForProvider:
         A reference to a Probe used by this Load Balancing Rule.
     $protocol : str, default is Undefined, optional
         The transport protocol for the external endpoint. Possible values are Tcp, Udp or All.
-    tcpResetEnabled : bool, default is Undefined, optional
-        Is TCP Reset enabled for this Load Balancer Rule?
     """
 
 
@@ -120,8 +116,6 @@ schema NetworkAzuremUpboundIoV1beta1LoadBalancerRuleSpecForProvider:
     enableFloatingIp?: bool
 
     enableTcpReset?: bool
-
-    floatingIpEnabled?: bool
 
     frontendIpConfigurationName?: str
 
@@ -140,8 +134,6 @@ schema NetworkAzuremUpboundIoV1beta1LoadBalancerRuleSpecForProvider:
     probeId?: str
 
     $protocol?: str
-
-    tcpResetEnabled?: bool
 
 
 schema NetworkAzuremUpboundIoV1beta1LoadBalancerRuleSpecForProviderLoadbalancerIDRef:
@@ -263,11 +255,9 @@ schema NetworkAzuremUpboundIoV1beta1LoadBalancerRuleSpecInitProvider:
     disableOutboundSnat : bool, default is Undefined, optional
         Is snat enabled for this Load Balancer Rule? Default false.
     enableFloatingIp : bool, default is Undefined, optional
-        enable floating Ip
+        Are the Floating IPs enabled for this Load Balancer Rule? A "floating” IP is reassigned to a secondary server in case the primary server fails. Required to configure a SQL AlwaysOn Availability Group. Defaults to false.
     enableTcpReset : bool, default is Undefined, optional
-        enable Tcp reset
-    floatingIpEnabled : bool, default is Undefined, optional
-        Are the Floating IPs enabled for this Load Balancer Rule? A "floating" IP is reassigned to a secondary server in case the primary server fails. Required to configure a SQL AlwaysOn Availability Group. Defaults to false.
+        Is TCP Reset enabled for this Load Balancer Rule?
     frontendIpConfigurationName : str, default is Undefined, optional
         The name of the frontend IP configuration to which the rule is associated.
     frontendPort : float, default is Undefined, optional
@@ -280,8 +270,6 @@ schema NetworkAzuremUpboundIoV1beta1LoadBalancerRuleSpecInitProvider:
         A reference to a Probe used by this Load Balancing Rule.
     $protocol : str, default is Undefined, optional
         The transport protocol for the external endpoint. Possible values are Tcp, Udp or All.
-    tcpResetEnabled : bool, default is Undefined, optional
-        Is TCP Reset enabled for this Load Balancer Rule?
     """
 
 
@@ -295,8 +283,6 @@ schema NetworkAzuremUpboundIoV1beta1LoadBalancerRuleSpecInitProvider:
 
     enableTcpReset?: bool
 
-    floatingIpEnabled?: bool
-
     frontendIpConfigurationName?: str
 
     frontendPort?: float
@@ -308,8 +294,6 @@ schema NetworkAzuremUpboundIoV1beta1LoadBalancerRuleSpecInitProvider:
     probeId?: str
 
     $protocol?: str
-
-    tcpResetEnabled?: bool
 
 
 schema NetworkAzuremUpboundIoV1beta1LoadBalancerRuleSpecProviderConfigRef:
@@ -386,11 +370,9 @@ schema NetworkAzuremUpboundIoV1beta1LoadBalancerRuleStatusAtProvider:
     disableOutboundSnat : bool, default is Undefined, optional
         Is snat enabled for this Load Balancer Rule? Default false.
     enableFloatingIp : bool, default is Undefined, optional
-        enable floating Ip
+        Are the Floating IPs enabled for this Load Balancer Rule? A "floating” IP is reassigned to a secondary server in case the primary server fails. Required to configure a SQL AlwaysOn Availability Group. Defaults to false.
     enableTcpReset : bool, default is Undefined, optional
-        enable Tcp reset
-    floatingIpEnabled : bool, default is Undefined, optional
-        Are the Floating IPs enabled for this Load Balancer Rule? A "floating" IP is reassigned to a secondary server in case the primary server fails. Required to configure a SQL AlwaysOn Availability Group. Defaults to false.
+        Is TCP Reset enabled for this Load Balancer Rule?
     frontendIpConfigurationId : str, default is Undefined, optional
         The ID of the Load Balancer Rule.
     frontendIpConfigurationName : str, default is Undefined, optional
@@ -409,8 +391,6 @@ schema NetworkAzuremUpboundIoV1beta1LoadBalancerRuleStatusAtProvider:
         A reference to a Probe used by this Load Balancing Rule.
     $protocol : str, default is Undefined, optional
         The transport protocol for the external endpoint. Possible values are Tcp, Udp or All.
-    tcpResetEnabled : bool, default is Undefined, optional
-        Is TCP Reset enabled for this Load Balancer Rule?
     """
 
 
@@ -423,8 +403,6 @@ schema NetworkAzuremUpboundIoV1beta1LoadBalancerRuleStatusAtProvider:
     enableFloatingIp?: bool
 
     enableTcpReset?: bool
-
-    floatingIpEnabled?: bool
 
     frontendIpConfigurationId?: str
 
@@ -443,8 +421,6 @@ schema NetworkAzuremUpboundIoV1beta1LoadBalancerRuleStatusAtProvider:
     probeId?: str
 
     $protocol?: str
-
-    tcpResetEnabled?: bool
 
 
 schema NetworkAzuremUpboundIoV1beta1LoadBalancerRuleStatusConditionsItems0:

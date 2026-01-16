@@ -66,8 +66,6 @@ schema DynamodbAwsUpboundIoV1beta1ResourcePolicySpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : DynamodbAwsUpboundIoV1beta1ResourcePolicySpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : DynamodbAwsUpboundIoV1beta1ResourcePolicySpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : DynamodbAwsUpboundIoV1beta1ResourcePolicySpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -83,8 +81,6 @@ schema DynamodbAwsUpboundIoV1beta1ResourcePolicySpec:
 
     providerConfigRef?: DynamodbAwsUpboundIoV1beta1ResourcePolicySpecProviderConfigRef
 
-    publishConnectionDetailsTo?: DynamodbAwsUpboundIoV1beta1ResourcePolicySpecPublishConnectionDetailsTo
-
     writeConnectionSecretToRef?: DynamodbAwsUpboundIoV1beta1ResourcePolicySpecWriteConnectionSecretToRef
 
 
@@ -99,6 +95,7 @@ schema DynamodbAwsUpboundIoV1beta1ResourcePolicySpecForProvider:
     policy : str, default is Undefined, optional
         n Amazon Web Services resource-based policy document in JSON format. The maximum size supported for a resource-based policy document is 20 KB. DynamoDB counts whitespaces when calculating the size of a policy against this limit. For a full list of all considerations that you should keep in mind while attaching a resource-based policy, see Resource-based policy considerations.
     region : str, default is Undefined, required
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
     resourceArn : str, default is Undefined, optional
         The Amazon Resource Name (ARN) of the DynamoDB resource to which the policy will be attached. The resources you can specify include tables and streams. You can control index permissions using the base table's policy. To specify the same permission level for your table and its indexes, you can provide both the table and index Amazon Resource Name (ARN)s in the Resource field of a given Statement in your policy document. Alternatively, to specify different permissions for your table, indexes, or both, you can define multiple Statement fields in your policy document.
@@ -282,112 +279,12 @@ schema DynamodbAwsUpboundIoV1beta1ResourcePolicySpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
-schema DynamodbAwsUpboundIoV1beta1ResourcePolicySpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : DynamodbAwsUpboundIoV1beta1ResourcePolicySpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : DynamodbAwsUpboundIoV1beta1ResourcePolicySpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: DynamodbAwsUpboundIoV1beta1ResourcePolicySpecPublishConnectionDetailsToConfigRef
-
-    metadata?: DynamodbAwsUpboundIoV1beta1ResourcePolicySpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema DynamodbAwsUpboundIoV1beta1ResourcePolicySpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : DynamodbAwsUpboundIoV1beta1ResourcePolicySpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: DynamodbAwsUpboundIoV1beta1ResourcePolicySpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema DynamodbAwsUpboundIoV1beta1ResourcePolicySpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema DynamodbAwsUpboundIoV1beta1ResourcePolicySpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema DynamodbAwsUpboundIoV1beta1ResourcePolicySpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------
@@ -439,6 +336,9 @@ schema DynamodbAwsUpboundIoV1beta1ResourcePolicyStatusAtProvider:
         id
     policy : str, default is Undefined, optional
         n Amazon Web Services resource-based policy document in JSON format. The maximum size supported for a resource-based policy document is 20 KB. DynamoDB counts whitespaces when calculating the size of a policy against this limit. For a full list of all considerations that you should keep in mind while attaching a resource-based policy, see Resource-based policy considerations.
+    region : str, default is Undefined, optional
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
+        Region is the region you'd like your resource to be created in.
     resourceArn : str, default is Undefined, optional
         The Amazon Resource Name (ARN) of the DynamoDB resource to which the policy will be attached. The resources you can specify include tables and streams. You can control index permissions using the base table's policy. To specify the same permission level for your table and its indexes, you can provide both the table and index Amazon Resource Name (ARN)s in the Resource field of a given Statement in your policy document. Alternatively, to specify different permissions for your table, indexes, or both, you can define multiple Statement fields in your policy document.
     revisionId : str, default is Undefined, optional
@@ -451,6 +351,8 @@ schema DynamodbAwsUpboundIoV1beta1ResourcePolicyStatusAtProvider:
     id?: str
 
     policy?: str
+
+    region?: str
 
     resourceArn?: str
 

@@ -66,8 +66,6 @@ schema EksAwsUpboundIoV1beta1FargateProfileSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : EksAwsUpboundIoV1beta1FargateProfileSpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : EksAwsUpboundIoV1beta1FargateProfileSpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : EksAwsUpboundIoV1beta1FargateProfileSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -83,8 +81,6 @@ schema EksAwsUpboundIoV1beta1FargateProfileSpec:
 
     providerConfigRef?: EksAwsUpboundIoV1beta1FargateProfileSpecProviderConfigRef
 
-    publishConnectionDetailsTo?: EksAwsUpboundIoV1beta1FargateProfileSpecPublishConnectionDetailsTo
-
     writeConnectionSecretToRef?: EksAwsUpboundIoV1beta1FargateProfileSpecWriteConnectionSecretToRef
 
 
@@ -95,18 +91,19 @@ schema EksAwsUpboundIoV1beta1FargateProfileSpecForProvider:
     Attributes
     ----------
     clusterName : str, default is Undefined, optional
-        –  Name of the EKS Cluster.
+        Name of the EKS Cluster.
     clusterNameRef : EksAwsUpboundIoV1beta1FargateProfileSpecForProviderClusterNameRef, default is Undefined, optional
         cluster name ref
     clusterNameSelector : EksAwsUpboundIoV1beta1FargateProfileSpecForProviderClusterNameSelector, default is Undefined, optional
         cluster name selector
     podExecutionRoleArn : str, default is Undefined, optional
-        –  Amazon Resource Name (ARN) of the IAM Role that provides permissions for the EKS Fargate Profile.
+        Amazon Resource Name (ARN) of the IAM Role that provides permissions for the EKS Fargate Profile.
     podExecutionRoleArnRef : EksAwsUpboundIoV1beta1FargateProfileSpecForProviderPodExecutionRoleArnRef, default is Undefined, optional
         pod execution role arn ref
     podExecutionRoleArnSelector : EksAwsUpboundIoV1beta1FargateProfileSpecForProviderPodExecutionRoleArnSelector, default is Undefined, optional
         pod execution role arn selector
     region : str, default is Undefined, required
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
     selector : [EksAwsUpboundIoV1beta1FargateProfileSpecForProviderSelectorItems0], default is Undefined, optional
         Configuration block(s) for selecting Kubernetes Pods to execute with this EKS Fargate Profile. Detailed below.
@@ -115,7 +112,7 @@ schema EksAwsUpboundIoV1beta1FargateProfileSpecForProvider:
     subnetIdSelector : EksAwsUpboundIoV1beta1FargateProfileSpecForProviderSubnetIDSelector, default is Undefined, optional
         subnet Id selector
     subnetIds : [str], default is Undefined, optional
-        –  Identifiers of private EC2 Subnets to associate with the EKS Fargate Profile. These subnets must have the following resource tag: kubernetes.io/cluster/CLUSTER_NAME (where CLUSTER_NAME is replaced with the name of the EKS Cluster).
+        Identifiers of private EC2 Subnets to associate with the EKS Fargate Profile. These subnets must have the following resource tag: kubernetes.io/cluster/CLUSTER_NAME (where CLUSTER_NAME is replaced with the name of the EKS Cluster).
     tags : {str:str}, default is Undefined, optional
         Key-value map of resource tags.
     """
@@ -447,13 +444,13 @@ schema EksAwsUpboundIoV1beta1FargateProfileSpecInitProvider:
     Attributes
     ----------
     clusterName : str, default is Undefined, optional
-        –  Name of the EKS Cluster.
+        Name of the EKS Cluster.
     clusterNameRef : EksAwsUpboundIoV1beta1FargateProfileSpecInitProviderClusterNameRef, default is Undefined, optional
         cluster name ref
     clusterNameSelector : EksAwsUpboundIoV1beta1FargateProfileSpecInitProviderClusterNameSelector, default is Undefined, optional
         cluster name selector
     podExecutionRoleArn : str, default is Undefined, optional
-        –  Amazon Resource Name (ARN) of the IAM Role that provides permissions for the EKS Fargate Profile.
+        Amazon Resource Name (ARN) of the IAM Role that provides permissions for the EKS Fargate Profile.
     podExecutionRoleArnRef : EksAwsUpboundIoV1beta1FargateProfileSpecInitProviderPodExecutionRoleArnRef, default is Undefined, optional
         pod execution role arn ref
     podExecutionRoleArnSelector : EksAwsUpboundIoV1beta1FargateProfileSpecInitProviderPodExecutionRoleArnSelector, default is Undefined, optional
@@ -465,7 +462,7 @@ schema EksAwsUpboundIoV1beta1FargateProfileSpecInitProvider:
     subnetIdSelector : EksAwsUpboundIoV1beta1FargateProfileSpecInitProviderSubnetIDSelector, default is Undefined, optional
         subnet Id selector
     subnetIds : [str], default is Undefined, optional
-        –  Identifiers of private EC2 Subnets to associate with the EKS Fargate Profile. These subnets must have the following resource tag: kubernetes.io/cluster/CLUSTER_NAME (where CLUSTER_NAME is replaced with the name of the EKS Cluster).
+        Identifiers of private EC2 Subnets to associate with the EKS Fargate Profile. These subnets must have the following resource tag: kubernetes.io/cluster/CLUSTER_NAME (where CLUSTER_NAME is replaced with the name of the EKS Cluster).
     tags : {str:str}, default is Undefined, optional
         Key-value map of resource tags.
     """
@@ -823,112 +820,12 @@ schema EksAwsUpboundIoV1beta1FargateProfileSpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
-schema EksAwsUpboundIoV1beta1FargateProfileSpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : EksAwsUpboundIoV1beta1FargateProfileSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : EksAwsUpboundIoV1beta1FargateProfileSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: EksAwsUpboundIoV1beta1FargateProfileSpecPublishConnectionDetailsToConfigRef
-
-    metadata?: EksAwsUpboundIoV1beta1FargateProfileSpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema EksAwsUpboundIoV1beta1FargateProfileSpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : EksAwsUpboundIoV1beta1FargateProfileSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: EksAwsUpboundIoV1beta1FargateProfileSpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema EksAwsUpboundIoV1beta1FargateProfileSpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema EksAwsUpboundIoV1beta1FargateProfileSpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema EksAwsUpboundIoV1beta1FargateProfileSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------
@@ -977,17 +874,20 @@ schema EksAwsUpboundIoV1beta1FargateProfileStatusAtProvider:
     arn : str, default is Undefined, optional
         Amazon Resource Name (ARN) of the EKS Fargate Profile.
     clusterName : str, default is Undefined, optional
-        –  Name of the EKS Cluster.
+        Name of the EKS Cluster.
     id : str, default is Undefined, optional
         EKS Cluster name and EKS Fargate Profile name separated by a colon (:).
     podExecutionRoleArn : str, default is Undefined, optional
-        –  Amazon Resource Name (ARN) of the IAM Role that provides permissions for the EKS Fargate Profile.
+        Amazon Resource Name (ARN) of the IAM Role that provides permissions for the EKS Fargate Profile.
+    region : str, default is Undefined, optional
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
+        Region is the region you'd like your resource to be created in.
     selector : [EksAwsUpboundIoV1beta1FargateProfileStatusAtProviderSelectorItems0], default is Undefined, optional
         Configuration block(s) for selecting Kubernetes Pods to execute with this EKS Fargate Profile. Detailed below.
     status : str, default is Undefined, optional
         Status of the EKS Fargate Profile.
     subnetIds : [str], default is Undefined, optional
-        –  Identifiers of private EC2 Subnets to associate with the EKS Fargate Profile. These subnets must have the following resource tag: kubernetes.io/cluster/CLUSTER_NAME (where CLUSTER_NAME is replaced with the name of the EKS Cluster).
+        Identifiers of private EC2 Subnets to associate with the EKS Fargate Profile. These subnets must have the following resource tag: kubernetes.io/cluster/CLUSTER_NAME (where CLUSTER_NAME is replaced with the name of the EKS Cluster).
     tags : {str:str}, default is Undefined, optional
         Key-value map of resource tags.
     tagsAll : {str:str}, default is Undefined, optional
@@ -1002,6 +902,8 @@ schema EksAwsUpboundIoV1beta1FargateProfileStatusAtProvider:
     id?: str
 
     podExecutionRoleArn?: str
+
+    region?: str
 
     selector?: [EksAwsUpboundIoV1beta1FargateProfileStatusAtProviderSelectorItems0]
 

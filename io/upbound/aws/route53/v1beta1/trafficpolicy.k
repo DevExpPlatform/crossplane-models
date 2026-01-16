@@ -66,8 +66,6 @@ schema Route53AwsUpboundIoV1beta1TrafficPolicySpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : Route53AwsUpboundIoV1beta1TrafficPolicySpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : Route53AwsUpboundIoV1beta1TrafficPolicySpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : Route53AwsUpboundIoV1beta1TrafficPolicySpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -82,8 +80,6 @@ schema Route53AwsUpboundIoV1beta1TrafficPolicySpec:
     managementPolicies?: [str] = ["*"]
 
     providerConfigRef?: Route53AwsUpboundIoV1beta1TrafficPolicySpecProviderConfigRef
-
-    publishConnectionDetailsTo?: Route53AwsUpboundIoV1beta1TrafficPolicySpecPublishConnectionDetailsTo
 
     writeConnectionSecretToRef?: Route53AwsUpboundIoV1beta1TrafficPolicySpecWriteConnectionSecretToRef
 
@@ -100,8 +96,6 @@ schema Route53AwsUpboundIoV1beta1TrafficPolicySpecForProvider:
         Policy document. This is a JSON formatted string. For more information about building Route53 traffic policy documents, see the AWS Route53 Traffic Policy document format
     name : str, default is Undefined, optional
         Name of the traffic policy.
-    region : str, default is Undefined, required
-        Region is the region you'd like your resource to be created in.
     """
 
 
@@ -110,8 +104,6 @@ schema Route53AwsUpboundIoV1beta1TrafficPolicySpecForProvider:
     document?: str
 
     name?: str
-
-    region: str
 
 
 schema Route53AwsUpboundIoV1beta1TrafficPolicySpecInitProvider:
@@ -189,112 +181,12 @@ schema Route53AwsUpboundIoV1beta1TrafficPolicySpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
-schema Route53AwsUpboundIoV1beta1TrafficPolicySpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : Route53AwsUpboundIoV1beta1TrafficPolicySpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : Route53AwsUpboundIoV1beta1TrafficPolicySpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: Route53AwsUpboundIoV1beta1TrafficPolicySpecPublishConnectionDetailsToConfigRef
-
-    metadata?: Route53AwsUpboundIoV1beta1TrafficPolicySpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema Route53AwsUpboundIoV1beta1TrafficPolicySpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : Route53AwsUpboundIoV1beta1TrafficPolicySpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: Route53AwsUpboundIoV1beta1TrafficPolicySpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema Route53AwsUpboundIoV1beta1TrafficPolicySpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema Route53AwsUpboundIoV1beta1TrafficPolicySpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema Route53AwsUpboundIoV1beta1TrafficPolicySpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------
@@ -340,12 +232,14 @@ schema Route53AwsUpboundIoV1beta1TrafficPolicyStatusAtProvider:
 
     Attributes
     ----------
+    arn : str, default is Undefined, optional
+        Amazon Resource Name (ARN) of the traffic policy.
     comment : str, default is Undefined, optional
         Comment for the traffic policy.
     document : str, default is Undefined, optional
         Policy document. This is a JSON formatted string. For more information about building Route53 traffic policy documents, see the AWS Route53 Traffic Policy document format
     id : str, default is Undefined, optional
-        ID of the traffic policy
+        ID of the traffic policy.
     name : str, default is Undefined, optional
         Name of the traffic policy.
     $type : str, default is Undefined, optional
@@ -354,6 +248,8 @@ schema Route53AwsUpboundIoV1beta1TrafficPolicyStatusAtProvider:
         Version number of the traffic policy. This value is automatically incremented by AWS after each update of this resource.
     """
 
+
+    arn?: str
 
     comment?: str
 

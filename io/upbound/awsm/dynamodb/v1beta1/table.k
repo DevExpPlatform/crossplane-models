@@ -125,6 +125,8 @@ schema DynamodbAwsmUpboundIoV1beta1TableSpecForProvider:
         Key-value map of resource tags.
     ttl : DynamodbAwsmUpboundIoV1beta1TableSpecForProviderTTL, default is Undefined, optional
         ttl
+    warmThroughput : DynamodbAwsmUpboundIoV1beta1TableSpecForProviderWarmThroughput, default is Undefined, optional
+        warm throughput
     writeCapacity : float, default is Undefined, optional
         Number of write units for this table. If the billing_mode is PROVISIONED, this field is required.
     """
@@ -176,6 +178,8 @@ schema DynamodbAwsmUpboundIoV1beta1TableSpecForProvider:
 
     ttl?: DynamodbAwsmUpboundIoV1beta1TableSpecForProviderTTL
 
+    warmThroughput?: DynamodbAwsmUpboundIoV1beta1TableSpecForProviderWarmThroughput
+
     writeCapacity?: float
 
 
@@ -217,6 +221,8 @@ schema DynamodbAwsmUpboundIoV1beta1TableSpecForProviderGlobalSecondaryIndexItems
         Name of the range key; must be defined
     readCapacity : float, default is Undefined, optional
         Number of read units for this index. Must be set if billing_mode is set to PROVISIONED.
+    warmThroughput : DynamodbAwsmUpboundIoV1beta1TableSpecForProviderGlobalSecondaryIndexItems0WarmThroughput, default is Undefined, optional
+        warm throughput
     writeCapacity : float, default is Undefined, optional
         Number of write units for this index. Must be set if billing_mode is set to PROVISIONED.
     """
@@ -236,12 +242,14 @@ schema DynamodbAwsmUpboundIoV1beta1TableSpecForProviderGlobalSecondaryIndexItems
 
     readCapacity?: float
 
+    warmThroughput?: DynamodbAwsmUpboundIoV1beta1TableSpecForProviderGlobalSecondaryIndexItems0WarmThroughput
+
     writeCapacity?: float
 
 
 schema DynamodbAwsmUpboundIoV1beta1TableSpecForProviderGlobalSecondaryIndexItems0OnDemandThroughput:
     r"""
-    Sets the maximum number of read and write units for the specified on-demand table. See below.
+    Sets the maximum number of read and write units for the specified on-demand index. See below.
 
     Attributes
     ----------
@@ -255,6 +263,24 @@ schema DynamodbAwsmUpboundIoV1beta1TableSpecForProviderGlobalSecondaryIndexItems
     maxReadRequestUnits?: float
 
     maxWriteRequestUnits?: float
+
+
+schema DynamodbAwsmUpboundIoV1beta1TableSpecForProviderGlobalSecondaryIndexItems0WarmThroughput:
+    r"""
+    Sets the number of warm read and write units for this index. See below.
+
+    Attributes
+    ----------
+    readUnitsPerSecond : float, default is Undefined, optional
+        Number of read operations a table or index can instantaneously support. For the base table, decreasing this value will force a new resource. For a global secondary index, this value can be increased or decreased without recreation. Minimum value of 12000 (default).
+    writeUnitsPerSecond : float, default is Undefined, optional
+        Number of write operations a table or index can instantaneously support. For the base table, decreasing this value will force a new resource. For a global secondary index, this value can be increased or decreased without recreation. Minimum value of 4000 (default).
+    """
+
+
+    readUnitsPerSecond?: float
+
+    writeUnitsPerSecond?: float
 
 
 schema DynamodbAwsmUpboundIoV1beta1TableSpecForProviderImportTable:
@@ -412,6 +438,8 @@ schema DynamodbAwsmUpboundIoV1beta1TableSpecForProviderReplicaItems0:
     ----------
     consistencyMode : str, default is Undefined, optional
         Whether this global table will be using STRONG consistency mode or EVENTUAL consistency mode. Default value is EVENTUAL.
+    deletionProtectionEnabled : bool, default is Undefined, optional
+        Whether deletion protection is enabled (true) or disabled (false) on the replica. Default is false.
     kmsKeyArn : str, default is Undefined, optional
         ARN of the CMK that should be used for the AWS KMS encryption.
         This argument should only be used if the key is different from the default KMS-managed DynamoDB key, alias/aws/dynamodb.
@@ -432,6 +460,8 @@ schema DynamodbAwsmUpboundIoV1beta1TableSpecForProviderReplicaItems0:
 
 
     consistencyMode?: str
+
+    deletionProtectionEnabled?: bool
 
     kmsKeyArn?: str
 
@@ -478,6 +508,24 @@ schema DynamodbAwsmUpboundIoV1beta1TableSpecForProviderTTL:
     attributeName?: str
 
     enabled?: bool
+
+
+schema DynamodbAwsmUpboundIoV1beta1TableSpecForProviderWarmThroughput:
+    r"""
+    Sets the number of warm read and write units for the specified table. See below.
+
+    Attributes
+    ----------
+    readUnitsPerSecond : float, default is Undefined, optional
+        Number of read operations a table or index can instantaneously support. For the base table, decreasing this value will force a new resource. For a global secondary index, this value can be increased or decreased without recreation. Minimum value of 12000 (default).
+    writeUnitsPerSecond : float, default is Undefined, optional
+        Number of write operations a table or index can instantaneously support. For the base table, decreasing this value will force a new resource. For a global secondary index, this value can be increased or decreased without recreation. Minimum value of 4000 (default).
+    """
+
+
+    readUnitsPerSecond?: float
+
+    writeUnitsPerSecond?: float
 
 
 schema DynamodbAwsmUpboundIoV1beta1TableSpecInitProvider:
@@ -541,6 +589,8 @@ schema DynamodbAwsmUpboundIoV1beta1TableSpecInitProvider:
         Key-value map of resource tags.
     ttl : DynamodbAwsmUpboundIoV1beta1TableSpecInitProviderTTL, default is Undefined, optional
         ttl
+    warmThroughput : DynamodbAwsmUpboundIoV1beta1TableSpecInitProviderWarmThroughput, default is Undefined, optional
+        warm throughput
     writeCapacity : float, default is Undefined, optional
         Number of write units for this table. If the billing_mode is PROVISIONED, this field is required.
     """
@@ -590,6 +640,8 @@ schema DynamodbAwsmUpboundIoV1beta1TableSpecInitProvider:
 
     ttl?: DynamodbAwsmUpboundIoV1beta1TableSpecInitProviderTTL
 
+    warmThroughput?: DynamodbAwsmUpboundIoV1beta1TableSpecInitProviderWarmThroughput
+
     writeCapacity?: float
 
 
@@ -631,6 +683,8 @@ schema DynamodbAwsmUpboundIoV1beta1TableSpecInitProviderGlobalSecondaryIndexItem
         Name of the range key; must be defined
     readCapacity : float, default is Undefined, optional
         Number of read units for this index. Must be set if billing_mode is set to PROVISIONED.
+    warmThroughput : DynamodbAwsmUpboundIoV1beta1TableSpecInitProviderGlobalSecondaryIndexItems0WarmThroughput, default is Undefined, optional
+        warm throughput
     writeCapacity : float, default is Undefined, optional
         Number of write units for this index. Must be set if billing_mode is set to PROVISIONED.
     """
@@ -650,12 +704,14 @@ schema DynamodbAwsmUpboundIoV1beta1TableSpecInitProviderGlobalSecondaryIndexItem
 
     readCapacity?: float
 
+    warmThroughput?: DynamodbAwsmUpboundIoV1beta1TableSpecInitProviderGlobalSecondaryIndexItems0WarmThroughput
+
     writeCapacity?: float
 
 
 schema DynamodbAwsmUpboundIoV1beta1TableSpecInitProviderGlobalSecondaryIndexItems0OnDemandThroughput:
     r"""
-    Sets the maximum number of read and write units for the specified on-demand table. See below.
+    Sets the maximum number of read and write units for the specified on-demand index. See below.
 
     Attributes
     ----------
@@ -669,6 +725,24 @@ schema DynamodbAwsmUpboundIoV1beta1TableSpecInitProviderGlobalSecondaryIndexItem
     maxReadRequestUnits?: float
 
     maxWriteRequestUnits?: float
+
+
+schema DynamodbAwsmUpboundIoV1beta1TableSpecInitProviderGlobalSecondaryIndexItems0WarmThroughput:
+    r"""
+    Sets the number of warm read and write units for this index. See below.
+
+    Attributes
+    ----------
+    readUnitsPerSecond : float, default is Undefined, optional
+        Number of read operations a table or index can instantaneously support. For the base table, decreasing this value will force a new resource. For a global secondary index, this value can be increased or decreased without recreation. Minimum value of 12000 (default).
+    writeUnitsPerSecond : float, default is Undefined, optional
+        Number of write operations a table or index can instantaneously support. For the base table, decreasing this value will force a new resource. For a global secondary index, this value can be increased or decreased without recreation. Minimum value of 4000 (default).
+    """
+
+
+    readUnitsPerSecond?: float
+
+    writeUnitsPerSecond?: float
 
 
 schema DynamodbAwsmUpboundIoV1beta1TableSpecInitProviderImportTable:
@@ -826,6 +900,8 @@ schema DynamodbAwsmUpboundIoV1beta1TableSpecInitProviderReplicaItems0:
     ----------
     consistencyMode : str, default is Undefined, optional
         Whether this global table will be using STRONG consistency mode or EVENTUAL consistency mode. Default value is EVENTUAL.
+    deletionProtectionEnabled : bool, default is Undefined, optional
+        Whether deletion protection is enabled (true) or disabled (false) on the replica. Default is false.
     kmsKeyArn : str, default is Undefined, optional
         ARN of the CMK that should be used for the AWS KMS encryption.
         This argument should only be used if the key is different from the default KMS-managed DynamoDB key, alias/aws/dynamodb.
@@ -846,6 +922,8 @@ schema DynamodbAwsmUpboundIoV1beta1TableSpecInitProviderReplicaItems0:
 
 
     consistencyMode?: str
+
+    deletionProtectionEnabled?: bool
 
     kmsKeyArn?: str
 
@@ -892,6 +970,24 @@ schema DynamodbAwsmUpboundIoV1beta1TableSpecInitProviderTTL:
     attributeName?: str
 
     enabled?: bool
+
+
+schema DynamodbAwsmUpboundIoV1beta1TableSpecInitProviderWarmThroughput:
+    r"""
+    Sets the number of warm read and write units for the specified table. See below.
+
+    Attributes
+    ----------
+    readUnitsPerSecond : float, default is Undefined, optional
+        Number of read operations a table or index can instantaneously support. For the base table, decreasing this value will force a new resource. For a global secondary index, this value can be increased or decreased without recreation. Minimum value of 12000 (default).
+    writeUnitsPerSecond : float, default is Undefined, optional
+        Number of write operations a table or index can instantaneously support. For the base table, decreasing this value will force a new resource. For a global secondary index, this value can be increased or decreased without recreation. Minimum value of 4000 (default).
+    """
+
+
+    readUnitsPerSecond?: float
+
+    writeUnitsPerSecond?: float
 
 
 schema DynamodbAwsmUpboundIoV1beta1TableSpecProviderConfigRef:
@@ -1020,6 +1116,8 @@ schema DynamodbAwsmUpboundIoV1beta1TableStatusAtProvider:
         Map of tags assigned to the resource, including those inherited from the provider default_tags configuration block.
     ttl : DynamodbAwsmUpboundIoV1beta1TableStatusAtProviderTTL, default is Undefined, optional
         ttl
+    warmThroughput : DynamodbAwsmUpboundIoV1beta1TableStatusAtProviderWarmThroughput, default is Undefined, optional
+        warm throughput
     writeCapacity : float, default is Undefined, optional
         Number of write units for this table. If the billing_mode is PROVISIONED, this field is required.
     """
@@ -1081,6 +1179,8 @@ schema DynamodbAwsmUpboundIoV1beta1TableStatusAtProvider:
 
     ttl?: DynamodbAwsmUpboundIoV1beta1TableStatusAtProviderTTL
 
+    warmThroughput?: DynamodbAwsmUpboundIoV1beta1TableStatusAtProviderWarmThroughput
+
     writeCapacity?: float
 
 
@@ -1122,6 +1222,8 @@ schema DynamodbAwsmUpboundIoV1beta1TableStatusAtProviderGlobalSecondaryIndexItem
         Name of the range key; must be defined
     readCapacity : float, default is Undefined, optional
         Number of read units for this index. Must be set if billing_mode is set to PROVISIONED.
+    warmThroughput : DynamodbAwsmUpboundIoV1beta1TableStatusAtProviderGlobalSecondaryIndexItems0WarmThroughput, default is Undefined, optional
+        warm throughput
     writeCapacity : float, default is Undefined, optional
         Number of write units for this index. Must be set if billing_mode is set to PROVISIONED.
     """
@@ -1141,12 +1243,14 @@ schema DynamodbAwsmUpboundIoV1beta1TableStatusAtProviderGlobalSecondaryIndexItem
 
     readCapacity?: float
 
+    warmThroughput?: DynamodbAwsmUpboundIoV1beta1TableStatusAtProviderGlobalSecondaryIndexItems0WarmThroughput
+
     writeCapacity?: float
 
 
 schema DynamodbAwsmUpboundIoV1beta1TableStatusAtProviderGlobalSecondaryIndexItems0OnDemandThroughput:
     r"""
-    Sets the maximum number of read and write units for the specified on-demand table. See below.
+    Sets the maximum number of read and write units for the specified on-demand index. See below.
 
     Attributes
     ----------
@@ -1160,6 +1264,24 @@ schema DynamodbAwsmUpboundIoV1beta1TableStatusAtProviderGlobalSecondaryIndexItem
     maxReadRequestUnits?: float
 
     maxWriteRequestUnits?: float
+
+
+schema DynamodbAwsmUpboundIoV1beta1TableStatusAtProviderGlobalSecondaryIndexItems0WarmThroughput:
+    r"""
+    Sets the number of warm read and write units for this index. See below.
+
+    Attributes
+    ----------
+    readUnitsPerSecond : float, default is Undefined, optional
+        Number of read operations a table or index can instantaneously support. For the base table, decreasing this value will force a new resource. For a global secondary index, this value can be increased or decreased without recreation. Minimum value of 12000 (default).
+    writeUnitsPerSecond : float, default is Undefined, optional
+        Number of write operations a table or index can instantaneously support. For the base table, decreasing this value will force a new resource. For a global secondary index, this value can be increased or decreased without recreation. Minimum value of 4000 (default).
+    """
+
+
+    readUnitsPerSecond?: float
+
+    writeUnitsPerSecond?: float
 
 
 schema DynamodbAwsmUpboundIoV1beta1TableStatusAtProviderImportTable:
@@ -1319,6 +1441,8 @@ schema DynamodbAwsmUpboundIoV1beta1TableStatusAtProviderReplicaItems0:
         ARN of the replica
     consistencyMode : str, default is Undefined, optional
         Whether this global table will be using STRONG consistency mode or EVENTUAL consistency mode. Default value is EVENTUAL.
+    deletionProtectionEnabled : bool, default is Undefined, optional
+        Whether deletion protection is enabled (true) or disabled (false) on the replica. Default is false.
     kmsKeyArn : str, default is Undefined, optional
         ARN of the CMK that should be used for the AWS KMS encryption.
         This argument should only be used if the key is different from the default KMS-managed DynamoDB key, alias/aws/dynamodb.
@@ -1345,6 +1469,8 @@ schema DynamodbAwsmUpboundIoV1beta1TableStatusAtProviderReplicaItems0:
     arn?: str
 
     consistencyMode?: str
+
+    deletionProtectionEnabled?: bool
 
     kmsKeyArn?: str
 
@@ -1395,6 +1521,24 @@ schema DynamodbAwsmUpboundIoV1beta1TableStatusAtProviderTTL:
     attributeName?: str
 
     enabled?: bool
+
+
+schema DynamodbAwsmUpboundIoV1beta1TableStatusAtProviderWarmThroughput:
+    r"""
+    Sets the number of warm read and write units for the specified table. See below.
+
+    Attributes
+    ----------
+    readUnitsPerSecond : float, default is Undefined, optional
+        Number of read operations a table or index can instantaneously support. For the base table, decreasing this value will force a new resource. For a global secondary index, this value can be increased or decreased without recreation. Minimum value of 12000 (default).
+    writeUnitsPerSecond : float, default is Undefined, optional
+        Number of write operations a table or index can instantaneously support. For the base table, decreasing this value will force a new resource. For a global secondary index, this value can be increased or decreased without recreation. Minimum value of 4000 (default).
+    """
+
+
+    readUnitsPerSecond?: float
+
+    writeUnitsPerSecond?: float
 
 
 schema DynamodbAwsmUpboundIoV1beta1TableStatusConditionsItems0:

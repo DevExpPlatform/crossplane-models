@@ -66,8 +66,6 @@ schema EksAwsUpboundIoV1beta1PodIdentityAssociationSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : EksAwsUpboundIoV1beta1PodIdentityAssociationSpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : EksAwsUpboundIoV1beta1PodIdentityAssociationSpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : EksAwsUpboundIoV1beta1PodIdentityAssociationSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -82,8 +80,6 @@ schema EksAwsUpboundIoV1beta1PodIdentityAssociationSpec:
     managementPolicies?: [str] = ["*"]
 
     providerConfigRef?: EksAwsUpboundIoV1beta1PodIdentityAssociationSpecProviderConfigRef
-
-    publishConnectionDetailsTo?: EksAwsUpboundIoV1beta1PodIdentityAssociationSpecPublishConnectionDetailsTo
 
     writeConnectionSecretToRef?: EksAwsUpboundIoV1beta1PodIdentityAssociationSpecWriteConnectionSecretToRef
 
@@ -100,9 +96,12 @@ schema EksAwsUpboundIoV1beta1PodIdentityAssociationSpecForProvider:
         cluster name ref
     clusterNameSelector : EksAwsUpboundIoV1beta1PodIdentityAssociationSpecForProviderClusterNameSelector, default is Undefined, optional
         cluster name selector
+    disableSessionTags : bool, default is Undefined, optional
+        Disable the tags that are automatically added to role session by Amazon EKS.
     namespace : str, default is Undefined, optional
         The name of the Kubernetes namespace inside the cluster to create the association in. The service account and the pods that use the service account must be in this namespace.
     region : str, default is Undefined, required
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
     roleArn : str, default is Undefined, optional
         The Amazon Resource Name (ARN) of the IAM role to associate with the service account. The EKS Pod Identity agent manages credentials to assume this role for applications in the containers in the pods that use this service account.
@@ -114,6 +113,12 @@ schema EksAwsUpboundIoV1beta1PodIdentityAssociationSpecForProvider:
         The name of the Kubernetes service account inside the cluster to associate the IAM credentials with.
     tags : {str:str}, default is Undefined, optional
         Key-value map of resource tags.
+    targetRoleArn : str, default is Undefined, optional
+        The Amazon Resource Name (ARN) of the IAM role to be chained to the the IAM role specified as role_arn.
+    targetRoleArnRef : EksAwsUpboundIoV1beta1PodIdentityAssociationSpecForProviderTargetRoleArnRef, default is Undefined, optional
+        target role arn ref
+    targetRoleArnSelector : EksAwsUpboundIoV1beta1PodIdentityAssociationSpecForProviderTargetRoleArnSelector, default is Undefined, optional
+        target role arn selector
     """
 
 
@@ -122,6 +127,8 @@ schema EksAwsUpboundIoV1beta1PodIdentityAssociationSpecForProvider:
     clusterNameRef?: EksAwsUpboundIoV1beta1PodIdentityAssociationSpecForProviderClusterNameRef
 
     clusterNameSelector?: EksAwsUpboundIoV1beta1PodIdentityAssociationSpecForProviderClusterNameSelector
+
+    disableSessionTags?: bool
 
     namespace?: str
 
@@ -136,6 +143,12 @@ schema EksAwsUpboundIoV1beta1PodIdentityAssociationSpecForProvider:
     serviceAccount?: str
 
     tags?: {str:str}
+
+    targetRoleArn?: str
+
+    targetRoleArnRef?: EksAwsUpboundIoV1beta1PodIdentityAssociationSpecForProviderTargetRoleArnRef
+
+    targetRoleArnSelector?: EksAwsUpboundIoV1beta1PodIdentityAssociationSpecForProviderTargetRoleArnSelector
 
 
 schema EksAwsUpboundIoV1beta1PodIdentityAssociationSpecForProviderClusterNameRef:
@@ -316,6 +329,95 @@ schema EksAwsUpboundIoV1beta1PodIdentityAssociationSpecForProviderRoleArnSelecto
     resolve?: "Always" | "IfNotPresent"
 
 
+schema EksAwsUpboundIoV1beta1PodIdentityAssociationSpecForProviderTargetRoleArnRef:
+    r"""
+    Reference to a Role in iam to populate targetRoleArn.
+
+    Attributes
+    ----------
+    name : str, default is Undefined, required
+        Name of the referenced object.
+    policy : EksAwsUpboundIoV1beta1PodIdentityAssociationSpecForProviderTargetRoleArnRefPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    name: str
+
+    policy?: EksAwsUpboundIoV1beta1PodIdentityAssociationSpecForProviderTargetRoleArnRefPolicy
+
+
+schema EksAwsUpboundIoV1beta1PodIdentityAssociationSpecForProviderTargetRoleArnRefPolicy:
+    r"""
+    Policies for referencing.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
+schema EksAwsUpboundIoV1beta1PodIdentityAssociationSpecForProviderTargetRoleArnSelector:
+    r"""
+    Selector for a Role in iam to populate targetRoleArn.
+
+    Attributes
+    ----------
+    matchControllerRef : bool, default is Undefined, optional
+        MatchControllerRef ensures an object with the same controller reference
+        as the selecting object is selected.
+    matchLabels : {str:str}, default is Undefined, optional
+        MatchLabels ensures an object with matching labels is selected.
+    policy : EksAwsUpboundIoV1beta1PodIdentityAssociationSpecForProviderTargetRoleArnSelectorPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    matchControllerRef?: bool
+
+    matchLabels?: {str:str}
+
+    policy?: EksAwsUpboundIoV1beta1PodIdentityAssociationSpecForProviderTargetRoleArnSelectorPolicy
+
+
+schema EksAwsUpboundIoV1beta1PodIdentityAssociationSpecForProviderTargetRoleArnSelectorPolicy:
+    r"""
+    Policies for selection.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
 schema EksAwsUpboundIoV1beta1PodIdentityAssociationSpecInitProvider:
     r"""
     THIS IS A BETA FIELD. It will be honored
@@ -337,6 +439,8 @@ schema EksAwsUpboundIoV1beta1PodIdentityAssociationSpecInitProvider:
         cluster name ref
     clusterNameSelector : EksAwsUpboundIoV1beta1PodIdentityAssociationSpecInitProviderClusterNameSelector, default is Undefined, optional
         cluster name selector
+    disableSessionTags : bool, default is Undefined, optional
+        Disable the tags that are automatically added to role session by Amazon EKS.
     namespace : str, default is Undefined, optional
         The name of the Kubernetes namespace inside the cluster to create the association in. The service account and the pods that use the service account must be in this namespace.
     roleArn : str, default is Undefined, optional
@@ -349,6 +453,12 @@ schema EksAwsUpboundIoV1beta1PodIdentityAssociationSpecInitProvider:
         The name of the Kubernetes service account inside the cluster to associate the IAM credentials with.
     tags : {str:str}, default is Undefined, optional
         Key-value map of resource tags.
+    targetRoleArn : str, default is Undefined, optional
+        The Amazon Resource Name (ARN) of the IAM role to be chained to the the IAM role specified as role_arn.
+    targetRoleArnRef : EksAwsUpboundIoV1beta1PodIdentityAssociationSpecInitProviderTargetRoleArnRef, default is Undefined, optional
+        target role arn ref
+    targetRoleArnSelector : EksAwsUpboundIoV1beta1PodIdentityAssociationSpecInitProviderTargetRoleArnSelector, default is Undefined, optional
+        target role arn selector
     """
 
 
@@ -357,6 +467,8 @@ schema EksAwsUpboundIoV1beta1PodIdentityAssociationSpecInitProvider:
     clusterNameRef?: EksAwsUpboundIoV1beta1PodIdentityAssociationSpecInitProviderClusterNameRef
 
     clusterNameSelector?: EksAwsUpboundIoV1beta1PodIdentityAssociationSpecInitProviderClusterNameSelector
+
+    disableSessionTags?: bool
 
     namespace?: str
 
@@ -369,6 +481,12 @@ schema EksAwsUpboundIoV1beta1PodIdentityAssociationSpecInitProvider:
     serviceAccount?: str
 
     tags?: {str:str}
+
+    targetRoleArn?: str
+
+    targetRoleArnRef?: EksAwsUpboundIoV1beta1PodIdentityAssociationSpecInitProviderTargetRoleArnRef
+
+    targetRoleArnSelector?: EksAwsUpboundIoV1beta1PodIdentityAssociationSpecInitProviderTargetRoleArnSelector
 
 
 schema EksAwsUpboundIoV1beta1PodIdentityAssociationSpecInitProviderClusterNameRef:
@@ -549,6 +667,95 @@ schema EksAwsUpboundIoV1beta1PodIdentityAssociationSpecInitProviderRoleArnSelect
     resolve?: "Always" | "IfNotPresent"
 
 
+schema EksAwsUpboundIoV1beta1PodIdentityAssociationSpecInitProviderTargetRoleArnRef:
+    r"""
+    Reference to a Role in iam to populate targetRoleArn.
+
+    Attributes
+    ----------
+    name : str, default is Undefined, required
+        Name of the referenced object.
+    policy : EksAwsUpboundIoV1beta1PodIdentityAssociationSpecInitProviderTargetRoleArnRefPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    name: str
+
+    policy?: EksAwsUpboundIoV1beta1PodIdentityAssociationSpecInitProviderTargetRoleArnRefPolicy
+
+
+schema EksAwsUpboundIoV1beta1PodIdentityAssociationSpecInitProviderTargetRoleArnRefPolicy:
+    r"""
+    Policies for referencing.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
+schema EksAwsUpboundIoV1beta1PodIdentityAssociationSpecInitProviderTargetRoleArnSelector:
+    r"""
+    Selector for a Role in iam to populate targetRoleArn.
+
+    Attributes
+    ----------
+    matchControllerRef : bool, default is Undefined, optional
+        MatchControllerRef ensures an object with the same controller reference
+        as the selecting object is selected.
+    matchLabels : {str:str}, default is Undefined, optional
+        MatchLabels ensures an object with matching labels is selected.
+    policy : EksAwsUpboundIoV1beta1PodIdentityAssociationSpecInitProviderTargetRoleArnSelectorPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    matchControllerRef?: bool
+
+    matchLabels?: {str:str}
+
+    policy?: EksAwsUpboundIoV1beta1PodIdentityAssociationSpecInitProviderTargetRoleArnSelectorPolicy
+
+
+schema EksAwsUpboundIoV1beta1PodIdentityAssociationSpecInitProviderTargetRoleArnSelectorPolicy:
+    r"""
+    Policies for selection.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
 schema EksAwsUpboundIoV1beta1PodIdentityAssociationSpecProviderConfigRef:
     r"""
     ProviderConfigReference specifies how the provider that will be used to
@@ -593,112 +800,12 @@ schema EksAwsUpboundIoV1beta1PodIdentityAssociationSpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
-schema EksAwsUpboundIoV1beta1PodIdentityAssociationSpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : EksAwsUpboundIoV1beta1PodIdentityAssociationSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : EksAwsUpboundIoV1beta1PodIdentityAssociationSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: EksAwsUpboundIoV1beta1PodIdentityAssociationSpecPublishConnectionDetailsToConfigRef
-
-    metadata?: EksAwsUpboundIoV1beta1PodIdentityAssociationSpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema EksAwsUpboundIoV1beta1PodIdentityAssociationSpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : EksAwsUpboundIoV1beta1PodIdentityAssociationSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: EksAwsUpboundIoV1beta1PodIdentityAssociationSpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema EksAwsUpboundIoV1beta1PodIdentityAssociationSpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema EksAwsUpboundIoV1beta1PodIdentityAssociationSpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema EksAwsUpboundIoV1beta1PodIdentityAssociationSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------
@@ -750,10 +857,17 @@ schema EksAwsUpboundIoV1beta1PodIdentityAssociationStatusAtProvider:
         The ID of the association.
     clusterName : str, default is Undefined, optional
         The name of the cluster to create the association in.
+    disableSessionTags : bool, default is Undefined, optional
+        Disable the tags that are automatically added to role session by Amazon EKS.
+    externalId : str, default is Undefined, optional
+        The unique identifier for this association for a target IAM role. You put this value in the trust policy of the target role, in a Condition to match the sts.ExternalId.
     id : str, default is Undefined, optional
         id
     namespace : str, default is Undefined, optional
         The name of the Kubernetes namespace inside the cluster to create the association in. The service account and the pods that use the service account must be in this namespace.
+    region : str, default is Undefined, optional
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
+        Region is the region you'd like your resource to be created in.
     roleArn : str, default is Undefined, optional
         The Amazon Resource Name (ARN) of the IAM role to associate with the service account. The EKS Pod Identity agent manages credentials to assume this role for applications in the containers in the pods that use this service account.
     serviceAccount : str, default is Undefined, optional
@@ -762,6 +876,8 @@ schema EksAwsUpboundIoV1beta1PodIdentityAssociationStatusAtProvider:
         Key-value map of resource tags.
     tagsAll : {str:str}, default is Undefined, optional
         A map of tags assigned to the resource, including those inherited from the provider default_tags configuration block.
+    targetRoleArn : str, default is Undefined, optional
+        The Amazon Resource Name (ARN) of the IAM role to be chained to the the IAM role specified as role_arn.
     """
 
 
@@ -771,9 +887,15 @@ schema EksAwsUpboundIoV1beta1PodIdentityAssociationStatusAtProvider:
 
     clusterName?: str
 
+    disableSessionTags?: bool
+
+    externalId?: str
+
     id?: str
 
     namespace?: str
+
+    region?: str
 
     roleArn?: str
 
@@ -782,6 +904,8 @@ schema EksAwsUpboundIoV1beta1PodIdentityAssociationStatusAtProvider:
     tags?: {str:str}
 
     tagsAll?: {str:str}
+
+    targetRoleArn?: str
 
 
 schema EksAwsUpboundIoV1beta1PodIdentityAssociationStatusConditionsItems0:

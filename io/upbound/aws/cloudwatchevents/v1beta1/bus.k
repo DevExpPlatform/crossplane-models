@@ -66,8 +66,6 @@ schema CloudwatcheventsAwsUpboundIoV1beta1BusSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : CloudwatcheventsAwsUpboundIoV1beta1BusSpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : CloudwatcheventsAwsUpboundIoV1beta1BusSpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : CloudwatcheventsAwsUpboundIoV1beta1BusSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -83,8 +81,6 @@ schema CloudwatcheventsAwsUpboundIoV1beta1BusSpec:
 
     providerConfigRef?: CloudwatcheventsAwsUpboundIoV1beta1BusSpecProviderConfigRef
 
-    publishConnectionDetailsTo?: CloudwatcheventsAwsUpboundIoV1beta1BusSpecPublishConnectionDetailsTo
-
     writeConnectionSecretToRef?: CloudwatcheventsAwsUpboundIoV1beta1BusSpecWriteConnectionSecretToRef
 
 
@@ -94,18 +90,26 @@ schema CloudwatcheventsAwsUpboundIoV1beta1BusSpecForProvider:
 
     Attributes
     ----------
+    deadLetterConfig : CloudwatcheventsAwsUpboundIoV1beta1BusSpecForProviderDeadLetterConfig, default is Undefined, optional
+        dead letter config
     description : str, default is Undefined, optional
         Event bus description.
     eventSourceName : str, default is Undefined, optional
         Partner event source that the new event bus will be matched with. Must match name.
     kmsKeyIdentifier : str, default is Undefined, optional
         Identifier of the AWS KMS customer managed key for EventBridge to use, if you choose to use a customer managed key to encrypt events on this event bus. The identifier can be the key Amazon Resource Name (ARN), KeyId, key alias, or key alias ARN.
+    logConfig : CloudwatcheventsAwsUpboundIoV1beta1BusSpecForProviderLogConfig, default is Undefined, optional
+        log config
     region : str, default is Undefined, required
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
+        The following arguments are required:
         Region is the region you'd like your resource to be created in.
     tags : {str:str}, default is Undefined, optional
         Key-value map of resource tags.
     """
 
+
+    deadLetterConfig?: CloudwatcheventsAwsUpboundIoV1beta1BusSpecForProviderDeadLetterConfig
 
     description?: str
 
@@ -113,9 +117,43 @@ schema CloudwatcheventsAwsUpboundIoV1beta1BusSpecForProvider:
 
     kmsKeyIdentifier?: str
 
+    logConfig?: CloudwatcheventsAwsUpboundIoV1beta1BusSpecForProviderLogConfig
+
     region: str
 
     tags?: {str:str}
+
+
+schema CloudwatcheventsAwsUpboundIoV1beta1BusSpecForProviderDeadLetterConfig:
+    r"""
+    Configuration details of the Amazon SQS queue for EventBridge to use as a dead-letter queue (DLQ). This block supports the following arguments:
+
+    Attributes
+    ----------
+    arn : str, default is Undefined, optional
+        The ARN of the SQS queue specified as the target for the dead-letter queue.
+    """
+
+
+    arn?: str
+
+
+schema CloudwatcheventsAwsUpboundIoV1beta1BusSpecForProviderLogConfig:
+    r"""
+    configured
+
+    Attributes
+    ----------
+    includeDetail : str, default is Undefined, optional
+        Whether EventBridge include detailed event information in the records it generates. Valid values are NONE and FULL.
+    level : str, default is Undefined, optional
+        Level of logging detail to include. Valid values are OFF, ERROR, INFO, and TRACE.
+    """
+
+
+    includeDetail?: str
+
+    level?: str
 
 
 schema CloudwatcheventsAwsUpboundIoV1beta1BusSpecInitProvider:
@@ -133,16 +171,22 @@ schema CloudwatcheventsAwsUpboundIoV1beta1BusSpecInitProvider:
 
     Attributes
     ----------
+    deadLetterConfig : CloudwatcheventsAwsUpboundIoV1beta1BusSpecInitProviderDeadLetterConfig, default is Undefined, optional
+        dead letter config
     description : str, default is Undefined, optional
         Event bus description.
     eventSourceName : str, default is Undefined, optional
         Partner event source that the new event bus will be matched with. Must match name.
     kmsKeyIdentifier : str, default is Undefined, optional
         Identifier of the AWS KMS customer managed key for EventBridge to use, if you choose to use a customer managed key to encrypt events on this event bus. The identifier can be the key Amazon Resource Name (ARN), KeyId, key alias, or key alias ARN.
+    logConfig : CloudwatcheventsAwsUpboundIoV1beta1BusSpecInitProviderLogConfig, default is Undefined, optional
+        log config
     tags : {str:str}, default is Undefined, optional
         Key-value map of resource tags.
     """
 
+
+    deadLetterConfig?: CloudwatcheventsAwsUpboundIoV1beta1BusSpecInitProviderDeadLetterConfig
 
     description?: str
 
@@ -150,7 +194,41 @@ schema CloudwatcheventsAwsUpboundIoV1beta1BusSpecInitProvider:
 
     kmsKeyIdentifier?: str
 
+    logConfig?: CloudwatcheventsAwsUpboundIoV1beta1BusSpecInitProviderLogConfig
+
     tags?: {str:str}
+
+
+schema CloudwatcheventsAwsUpboundIoV1beta1BusSpecInitProviderDeadLetterConfig:
+    r"""
+    Configuration details of the Amazon SQS queue for EventBridge to use as a dead-letter queue (DLQ). This block supports the following arguments:
+
+    Attributes
+    ----------
+    arn : str, default is Undefined, optional
+        The ARN of the SQS queue specified as the target for the dead-letter queue.
+    """
+
+
+    arn?: str
+
+
+schema CloudwatcheventsAwsUpboundIoV1beta1BusSpecInitProviderLogConfig:
+    r"""
+    configured
+
+    Attributes
+    ----------
+    includeDetail : str, default is Undefined, optional
+        Whether EventBridge include detailed event information in the records it generates. Valid values are NONE and FULL.
+    level : str, default is Undefined, optional
+        Level of logging detail to include. Valid values are OFF, ERROR, INFO, and TRACE.
+    """
+
+
+    includeDetail?: str
+
+    level?: str
 
 
 schema CloudwatcheventsAwsUpboundIoV1beta1BusSpecProviderConfigRef:
@@ -197,112 +275,12 @@ schema CloudwatcheventsAwsUpboundIoV1beta1BusSpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
-schema CloudwatcheventsAwsUpboundIoV1beta1BusSpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : CloudwatcheventsAwsUpboundIoV1beta1BusSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : CloudwatcheventsAwsUpboundIoV1beta1BusSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: CloudwatcheventsAwsUpboundIoV1beta1BusSpecPublishConnectionDetailsToConfigRef
-
-    metadata?: CloudwatcheventsAwsUpboundIoV1beta1BusSpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema CloudwatcheventsAwsUpboundIoV1beta1BusSpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : CloudwatcheventsAwsUpboundIoV1beta1BusSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: CloudwatcheventsAwsUpboundIoV1beta1BusSpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema CloudwatcheventsAwsUpboundIoV1beta1BusSpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema CloudwatcheventsAwsUpboundIoV1beta1BusSpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema CloudwatcheventsAwsUpboundIoV1beta1BusSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------
@@ -349,7 +327,9 @@ schema CloudwatcheventsAwsUpboundIoV1beta1BusStatusAtProvider:
     Attributes
     ----------
     arn : str, default is Undefined, optional
-        ARN of the event bus.
+        The ARN of the SQS queue specified as the target for the dead-letter queue.
+    deadLetterConfig : CloudwatcheventsAwsUpboundIoV1beta1BusStatusAtProviderDeadLetterConfig, default is Undefined, optional
+        dead letter config
     description : str, default is Undefined, optional
         Event bus description.
     eventSourceName : str, default is Undefined, optional
@@ -358,6 +338,12 @@ schema CloudwatcheventsAwsUpboundIoV1beta1BusStatusAtProvider:
         Name of the event bus.
     kmsKeyIdentifier : str, default is Undefined, optional
         Identifier of the AWS KMS customer managed key for EventBridge to use, if you choose to use a customer managed key to encrypt events on this event bus. The identifier can be the key Amazon Resource Name (ARN), KeyId, key alias, or key alias ARN.
+    logConfig : CloudwatcheventsAwsUpboundIoV1beta1BusStatusAtProviderLogConfig, default is Undefined, optional
+        log config
+    region : str, default is Undefined, optional
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
+        The following arguments are required:
+        Region is the region you'd like your resource to be created in.
     tags : {str:str}, default is Undefined, optional
         Key-value map of resource tags.
     tagsAll : {str:str}, default is Undefined, optional
@@ -367,6 +353,8 @@ schema CloudwatcheventsAwsUpboundIoV1beta1BusStatusAtProvider:
 
     arn?: str
 
+    deadLetterConfig?: CloudwatcheventsAwsUpboundIoV1beta1BusStatusAtProviderDeadLetterConfig
+
     description?: str
 
     eventSourceName?: str
@@ -375,9 +363,45 @@ schema CloudwatcheventsAwsUpboundIoV1beta1BusStatusAtProvider:
 
     kmsKeyIdentifier?: str
 
+    logConfig?: CloudwatcheventsAwsUpboundIoV1beta1BusStatusAtProviderLogConfig
+
+    region?: str
+
     tags?: {str:str}
 
     tagsAll?: {str:str}
+
+
+schema CloudwatcheventsAwsUpboundIoV1beta1BusStatusAtProviderDeadLetterConfig:
+    r"""
+    Configuration details of the Amazon SQS queue for EventBridge to use as a dead-letter queue (DLQ). This block supports the following arguments:
+
+    Attributes
+    ----------
+    arn : str, default is Undefined, optional
+        The ARN of the SQS queue specified as the target for the dead-letter queue.
+    """
+
+
+    arn?: str
+
+
+schema CloudwatcheventsAwsUpboundIoV1beta1BusStatusAtProviderLogConfig:
+    r"""
+    configured
+
+    Attributes
+    ----------
+    includeDetail : str, default is Undefined, optional
+        Whether EventBridge include detailed event information in the records it generates. Valid values are NONE and FULL.
+    level : str, default is Undefined, optional
+        Level of logging detail to include. Valid values are OFF, ERROR, INFO, and TRACE.
+    """
+
+
+    includeDetail?: str
+
+    level?: str
 
 
 schema CloudwatcheventsAwsUpboundIoV1beta1BusStatusConditionsItems0:

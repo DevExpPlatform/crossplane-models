@@ -102,6 +102,8 @@ schema Ec2AwsmUpboundIoV1beta1SpotInstanceRequestSpecForProvider:
         enclave options
     ephemeralBlockDevice : [Ec2AwsmUpboundIoV1beta1SpotInstanceRequestSpecForProviderEphemeralBlockDeviceItems0], default is Undefined, optional
         ephemeral block device
+    forceDestroy : bool, default is Undefined, optional
+        force destroy
     getPasswordData : bool, default is Undefined, optional
         get password data
     hibernation : bool, default is Undefined, optional
@@ -139,6 +141,8 @@ schema Ec2AwsmUpboundIoV1beta1SpotInstanceRequestSpecForProvider:
         network interface
     placementGroup : str, default is Undefined, optional
         placement group
+    placementGroupId : str, default is Undefined, optional
+        The Spot Instance Request ID.
     placementPartitionNumber : float, default is Undefined, optional
         placement partition number
     privateDnsNameOptions : Ec2AwsmUpboundIoV1beta1SpotInstanceRequestSpecForProviderPrivateDNSNameOptions, default is Undefined, optional
@@ -147,7 +151,6 @@ schema Ec2AwsmUpboundIoV1beta1SpotInstanceRequestSpecForProvider:
         The private IP address assigned to the instance
     region : str, default is Undefined, required
         Region where this resource will be managed. Defaults to the Region set in the provider configuration.
-        Spot Instance Requests support all the same arguments as aws_instance, with the addition of:
         Region is the region you'd like your resource to be created in.
     rootBlockDevice : Ec2AwsmUpboundIoV1beta1SpotInstanceRequestSpecForProviderRootBlockDevice, default is Undefined, optional
         root block device
@@ -221,6 +224,8 @@ schema Ec2AwsmUpboundIoV1beta1SpotInstanceRequestSpecForProvider:
 
     ephemeralBlockDevice?: [Ec2AwsmUpboundIoV1beta1SpotInstanceRequestSpecForProviderEphemeralBlockDeviceItems0]
 
+    forceDestroy?: bool
+
     getPasswordData?: bool
 
     hibernation?: bool
@@ -256,6 +261,8 @@ schema Ec2AwsmUpboundIoV1beta1SpotInstanceRequestSpecForProvider:
     networkInterface?: [Ec2AwsmUpboundIoV1beta1SpotInstanceRequestSpecForProviderNetworkInterfaceItems0]
 
     placementGroup?: str
+
+    placementGroupId?: str
 
     placementPartitionNumber?: float
 
@@ -546,8 +553,6 @@ schema Ec2AwsmUpboundIoV1beta1SpotInstanceRequestSpecForProviderNetworkInterface
         delete on termination
     deviceIndex : float, default is Undefined, optional
         device index
-    networkCardIndex : float, default is Undefined, optional
-        network card index
     networkInterfaceId : str, default is Undefined, optional
         The Spot Instance Request ID.
     """
@@ -556,8 +561,6 @@ schema Ec2AwsmUpboundIoV1beta1SpotInstanceRequestSpecForProviderNetworkInterface
     deleteOnTermination?: bool
 
     deviceIndex?: float
-
-    networkCardIndex?: float
 
     networkInterfaceId?: str
 
@@ -865,6 +868,8 @@ schema Ec2AwsmUpboundIoV1beta1SpotInstanceRequestSpecInitProvider:
         enclave options
     ephemeralBlockDevice : [Ec2AwsmUpboundIoV1beta1SpotInstanceRequestSpecInitProviderEphemeralBlockDeviceItems0], default is Undefined, optional
         ephemeral block device
+    forceDestroy : bool, default is Undefined, optional
+        force destroy
     getPasswordData : bool, default is Undefined, optional
         get password data
     hibernation : bool, default is Undefined, optional
@@ -902,6 +907,8 @@ schema Ec2AwsmUpboundIoV1beta1SpotInstanceRequestSpecInitProvider:
         network interface
     placementGroup : str, default is Undefined, optional
         placement group
+    placementGroupId : str, default is Undefined, optional
+        The Spot Instance Request ID.
     placementPartitionNumber : float, default is Undefined, optional
         placement partition number
     privateDnsNameOptions : Ec2AwsmUpboundIoV1beta1SpotInstanceRequestSpecInitProviderPrivateDNSNameOptions, default is Undefined, optional
@@ -980,6 +987,8 @@ schema Ec2AwsmUpboundIoV1beta1SpotInstanceRequestSpecInitProvider:
 
     ephemeralBlockDevice?: [Ec2AwsmUpboundIoV1beta1SpotInstanceRequestSpecInitProviderEphemeralBlockDeviceItems0]
 
+    forceDestroy?: bool
+
     getPasswordData?: bool
 
     hibernation?: bool
@@ -1015,6 +1024,8 @@ schema Ec2AwsmUpboundIoV1beta1SpotInstanceRequestSpecInitProvider:
     networkInterface?: [Ec2AwsmUpboundIoV1beta1SpotInstanceRequestSpecInitProviderNetworkInterfaceItems0]
 
     placementGroup?: str
+
+    placementGroupId?: str
 
     placementPartitionNumber?: float
 
@@ -1303,8 +1314,6 @@ schema Ec2AwsmUpboundIoV1beta1SpotInstanceRequestSpecInitProviderNetworkInterfac
         delete on termination
     deviceIndex : float, default is Undefined, optional
         device index
-    networkCardIndex : float, default is Undefined, optional
-        network card index
     networkInterfaceId : str, default is Undefined, optional
         The Spot Instance Request ID.
     """
@@ -1313,8 +1322,6 @@ schema Ec2AwsmUpboundIoV1beta1SpotInstanceRequestSpecInitProviderNetworkInterfac
     deleteOnTermination?: bool
 
     deviceIndex?: float
-
-    networkCardIndex?: float
 
     networkInterfaceId?: str
 
@@ -1676,6 +1683,8 @@ schema Ec2AwsmUpboundIoV1beta1SpotInstanceRequestStatusAtProvider:
         enclave options
     ephemeralBlockDevice : [Ec2AwsmUpboundIoV1beta1SpotInstanceRequestStatusAtProviderEphemeralBlockDeviceItems0], default is Undefined, optional
         ephemeral block device
+    forceDestroy : bool, default is Undefined, optional
+        force destroy
     getPasswordData : bool, default is Undefined, optional
         get password data
     hibernation : bool, default is Undefined, optional
@@ -1721,8 +1730,12 @@ schema Ec2AwsmUpboundIoV1beta1SpotInstanceRequestStatusAtProvider:
         password data
     placementGroup : str, default is Undefined, optional
         placement group
+    placementGroupId : str, default is Undefined, optional
+        The Spot Instance Request ID.
     placementPartitionNumber : float, default is Undefined, optional
         placement partition number
+    primaryNetworkInterface : [Ec2AwsmUpboundIoV1beta1SpotInstanceRequestStatusAtProviderPrimaryNetworkInterfaceItems0], default is Undefined, optional
+        primary network interface
     primaryNetworkInterfaceId : str, default is Undefined, optional
         The Spot Instance Request ID.
     privateDns : str, default is Undefined, optional
@@ -1740,7 +1753,6 @@ schema Ec2AwsmUpboundIoV1beta1SpotInstanceRequestStatusAtProvider:
         The public IP address assigned to the instance, if applicable.
     region : str, default is Undefined, optional
         Region where this resource will be managed. Defaults to the Region set in the provider configuration.
-        Spot Instance Requests support all the same arguments as aws_instance, with the addition of:
         Region is the region you'd like your resource to be created in.
     rootBlockDevice : Ec2AwsmUpboundIoV1beta1SpotInstanceRequestStatusAtProviderRootBlockDevice, default is Undefined, optional
         root block device
@@ -1821,6 +1833,8 @@ schema Ec2AwsmUpboundIoV1beta1SpotInstanceRequestStatusAtProvider:
 
     ephemeralBlockDevice?: [Ec2AwsmUpboundIoV1beta1SpotInstanceRequestStatusAtProviderEphemeralBlockDeviceItems0]
 
+    forceDestroy?: bool
+
     getPasswordData?: bool
 
     hibernation?: bool
@@ -1865,7 +1879,11 @@ schema Ec2AwsmUpboundIoV1beta1SpotInstanceRequestStatusAtProvider:
 
     placementGroup?: str
 
+    placementGroupId?: str
+
     placementPartitionNumber?: float
+
+    primaryNetworkInterface?: [Ec2AwsmUpboundIoV1beta1SpotInstanceRequestStatusAtProviderPrimaryNetworkInterfaceItems0]
 
     primaryNetworkInterfaceId?: str
 
@@ -2178,6 +2196,24 @@ schema Ec2AwsmUpboundIoV1beta1SpotInstanceRequestStatusAtProviderNetworkInterfac
     deviceIndex?: float
 
     networkCardIndex?: float
+
+    networkInterfaceId?: str
+
+
+schema Ec2AwsmUpboundIoV1beta1SpotInstanceRequestStatusAtProviderPrimaryNetworkInterfaceItems0:
+    r"""
+    ec2 awsm upbound io v1beta1 spot instance request status at provider primary network interface items0
+
+    Attributes
+    ----------
+    deleteOnTermination : bool, default is Undefined, optional
+        delete on termination
+    networkInterfaceId : str, default is Undefined, optional
+        The Spot Instance Request ID.
+    """
+
+
+    deleteOnTermination?: bool
 
     networkInterfaceId?: str
 

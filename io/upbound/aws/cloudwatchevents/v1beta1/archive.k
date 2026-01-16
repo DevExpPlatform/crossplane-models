@@ -66,8 +66,6 @@ schema CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -83,8 +81,6 @@ schema CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpec:
 
     providerConfigRef?: CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecProviderConfigRef
 
-    publishConnectionDetailsTo?: CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecPublishConnectionDetailsTo
-
     writeConnectionSecretToRef?: CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecWriteConnectionSecretToRef
 
 
@@ -95,16 +91,23 @@ schema CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecForProvider:
     Attributes
     ----------
     description : str, default is Undefined, optional
-        The description of the new event archive.
+        Description for the archive.
     eventPattern : str, default is Undefined, optional
-        Instructs the new event archive to only capture events matched by this pattern. By default, it attempts to archive every event received in the event_source_arn.
+        Event pattern to use to filter events sent to the archive. By default, it attempts to archive every event received in the event_source_arn.
     eventSourceArn : str, default is Undefined, optional
-        Event bus source ARN from where these events should be archived.
+        ARN of the event bus associated with the archive. Only events from this event bus are sent to the archive.
     eventSourceArnRef : CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecForProviderEventSourceArnRef, default is Undefined, optional
         event source arn ref
     eventSourceArnSelector : CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecForProviderEventSourceArnSelector, default is Undefined, optional
         event source arn selector
+    kmsKeyIdentifier : str, default is Undefined, optional
+        Identifier of the AWS KMS customer managed key for EventBridge to use, if you choose to use a customer managed key to encrypt this archive. The identifier can be the key Amazon Resource Name (ARN), KeyId, key alias, or key alias ARN.
+    kmsKeyIdentifierRef : CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecForProviderKmsKeyIdentifierRef, default is Undefined, optional
+        kms key identifier ref
+    kmsKeyIdentifierSelector : CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecForProviderKmsKeyIdentifierSelector, default is Undefined, optional
+        kms key identifier selector
     region : str, default is Undefined, required
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
     retentionDays : float, default is Undefined, optional
         The maximum number of days to retain events in the new event archive. By default, it archives indefinitely.
@@ -120,6 +123,12 @@ schema CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecForProvider:
     eventSourceArnRef?: CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecForProviderEventSourceArnRef
 
     eventSourceArnSelector?: CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecForProviderEventSourceArnSelector
+
+    kmsKeyIdentifier?: str
+
+    kmsKeyIdentifierRef?: CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecForProviderKmsKeyIdentifierRef
+
+    kmsKeyIdentifierSelector?: CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecForProviderKmsKeyIdentifierSelector
 
     region: str
 
@@ -215,6 +224,95 @@ schema CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecForProviderEventSourceArnSe
     resolve?: "Always" | "IfNotPresent"
 
 
+schema CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecForProviderKmsKeyIdentifierRef:
+    r"""
+    Reference to a Key in kms to populate kmsKeyIdentifier.
+
+    Attributes
+    ----------
+    name : str, default is Undefined, required
+        Name of the referenced object.
+    policy : CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecForProviderKmsKeyIdentifierRefPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    name: str
+
+    policy?: CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecForProviderKmsKeyIdentifierRefPolicy
+
+
+schema CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecForProviderKmsKeyIdentifierRefPolicy:
+    r"""
+    Policies for referencing.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
+schema CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecForProviderKmsKeyIdentifierSelector:
+    r"""
+    Selector for a Key in kms to populate kmsKeyIdentifier.
+
+    Attributes
+    ----------
+    matchControllerRef : bool, default is Undefined, optional
+        MatchControllerRef ensures an object with the same controller reference
+        as the selecting object is selected.
+    matchLabels : {str:str}, default is Undefined, optional
+        MatchLabels ensures an object with matching labels is selected.
+    policy : CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecForProviderKmsKeyIdentifierSelectorPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    matchControllerRef?: bool
+
+    matchLabels?: {str:str}
+
+    policy?: CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecForProviderKmsKeyIdentifierSelectorPolicy
+
+
+schema CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecForProviderKmsKeyIdentifierSelectorPolicy:
+    r"""
+    Policies for selection.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
 schema CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecInitProvider:
     r"""
     THIS IS A BETA FIELD. It will be honored
@@ -231,15 +329,21 @@ schema CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecInitProvider:
     Attributes
     ----------
     description : str, default is Undefined, optional
-        The description of the new event archive.
+        Description for the archive.
     eventPattern : str, default is Undefined, optional
-        Instructs the new event archive to only capture events matched by this pattern. By default, it attempts to archive every event received in the event_source_arn.
+        Event pattern to use to filter events sent to the archive. By default, it attempts to archive every event received in the event_source_arn.
     eventSourceArn : str, default is Undefined, optional
-        Event bus source ARN from where these events should be archived.
+        ARN of the event bus associated with the archive. Only events from this event bus are sent to the archive.
     eventSourceArnRef : CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecInitProviderEventSourceArnRef, default is Undefined, optional
         event source arn ref
     eventSourceArnSelector : CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecInitProviderEventSourceArnSelector, default is Undefined, optional
         event source arn selector
+    kmsKeyIdentifier : str, default is Undefined, optional
+        Identifier of the AWS KMS customer managed key for EventBridge to use, if you choose to use a customer managed key to encrypt this archive. The identifier can be the key Amazon Resource Name (ARN), KeyId, key alias, or key alias ARN.
+    kmsKeyIdentifierRef : CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecInitProviderKmsKeyIdentifierRef, default is Undefined, optional
+        kms key identifier ref
+    kmsKeyIdentifierSelector : CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecInitProviderKmsKeyIdentifierSelector, default is Undefined, optional
+        kms key identifier selector
     retentionDays : float, default is Undefined, optional
         The maximum number of days to retain events in the new event archive. By default, it archives indefinitely.
     """
@@ -254,6 +358,12 @@ schema CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecInitProvider:
     eventSourceArnRef?: CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecInitProviderEventSourceArnRef
 
     eventSourceArnSelector?: CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecInitProviderEventSourceArnSelector
+
+    kmsKeyIdentifier?: str
+
+    kmsKeyIdentifierRef?: CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecInitProviderKmsKeyIdentifierRef
+
+    kmsKeyIdentifierSelector?: CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecInitProviderKmsKeyIdentifierSelector
 
     retentionDays?: float
 
@@ -347,6 +457,95 @@ schema CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecInitProviderEventSourceArnS
     resolve?: "Always" | "IfNotPresent"
 
 
+schema CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecInitProviderKmsKeyIdentifierRef:
+    r"""
+    Reference to a Key in kms to populate kmsKeyIdentifier.
+
+    Attributes
+    ----------
+    name : str, default is Undefined, required
+        Name of the referenced object.
+    policy : CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecInitProviderKmsKeyIdentifierRefPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    name: str
+
+    policy?: CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecInitProviderKmsKeyIdentifierRefPolicy
+
+
+schema CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecInitProviderKmsKeyIdentifierRefPolicy:
+    r"""
+    Policies for referencing.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
+schema CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecInitProviderKmsKeyIdentifierSelector:
+    r"""
+    Selector for a Key in kms to populate kmsKeyIdentifier.
+
+    Attributes
+    ----------
+    matchControllerRef : bool, default is Undefined, optional
+        MatchControllerRef ensures an object with the same controller reference
+        as the selecting object is selected.
+    matchLabels : {str:str}, default is Undefined, optional
+        MatchLabels ensures an object with matching labels is selected.
+    policy : CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecInitProviderKmsKeyIdentifierSelectorPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    matchControllerRef?: bool
+
+    matchLabels?: {str:str}
+
+    policy?: CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecInitProviderKmsKeyIdentifierSelectorPolicy
+
+
+schema CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecInitProviderKmsKeyIdentifierSelectorPolicy:
+    r"""
+    Policies for selection.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
 schema CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecProviderConfigRef:
     r"""
     ProviderConfigReference specifies how the provider that will be used to
@@ -391,112 +590,12 @@ schema CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
-schema CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecPublishConnectionDetailsToConfigRef
-
-    metadata?: CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema CloudwatcheventsAwsUpboundIoV1beta1ArchiveSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------
@@ -543,15 +642,20 @@ schema CloudwatcheventsAwsUpboundIoV1beta1ArchiveStatusAtProvider:
     Attributes
     ----------
     arn : str, default is Undefined, optional
-        The Amazon Resource Name (ARN) of the event archive.
+        ARN of the archive.
     description : str, default is Undefined, optional
-        The description of the new event archive.
+        Description for the archive.
     eventPattern : str, default is Undefined, optional
-        Instructs the new event archive to only capture events matched by this pattern. By default, it attempts to archive every event received in the event_source_arn.
+        Event pattern to use to filter events sent to the archive. By default, it attempts to archive every event received in the event_source_arn.
     eventSourceArn : str, default is Undefined, optional
-        Event bus source ARN from where these events should be archived.
+        ARN of the event bus associated with the archive. Only events from this event bus are sent to the archive.
     id : str, default is Undefined, optional
         id
+    kmsKeyIdentifier : str, default is Undefined, optional
+        Identifier of the AWS KMS customer managed key for EventBridge to use, if you choose to use a customer managed key to encrypt this archive. The identifier can be the key Amazon Resource Name (ARN), KeyId, key alias, or key alias ARN.
+    region : str, default is Undefined, optional
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
+        Region is the region you'd like your resource to be created in.
     retentionDays : float, default is Undefined, optional
         The maximum number of days to retain events in the new event archive. By default, it archives indefinitely.
     """
@@ -566,6 +670,10 @@ schema CloudwatcheventsAwsUpboundIoV1beta1ArchiveStatusAtProvider:
     eventSourceArn?: str
 
     id?: str
+
+    kmsKeyIdentifier?: str
+
+    region?: str
 
     retentionDays?: float
 

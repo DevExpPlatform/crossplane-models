@@ -84,7 +84,9 @@ schema EcrAwsmUpboundIoV1beta1RepositorySpecForProvider:
     imageScanningConfiguration : EcrAwsmUpboundIoV1beta1RepositorySpecForProviderImageScanningConfiguration, default is Undefined, optional
         image scanning configuration
     imageTagMutability : str, default is Undefined, optional
-        The tag mutability setting for the repository. Must be one of: MUTABLE or IMMUTABLE. Defaults to MUTABLE.
+        The tag mutability setting for the repository. Must be one of: MUTABLE, IMMUTABLE, IMMUTABLE_WITH_EXCLUSION, or MUTABLE_WITH_EXCLUSION. Defaults to MUTABLE.
+    imageTagMutabilityExclusionFilter : [EcrAwsmUpboundIoV1beta1RepositorySpecForProviderImageTagMutabilityExclusionFilterItems0], default is Undefined, optional
+        Configuration block that defines filters to specify which image tags can override the default tag mutability setting. Only applicable when image_tag_mutability is set to IMMUTABLE_WITH_EXCLUSION or MUTABLE_WITH_EXCLUSION. See below for schema.
     region : str, default is Undefined, required
         Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
@@ -100,6 +102,8 @@ schema EcrAwsmUpboundIoV1beta1RepositorySpecForProvider:
     imageScanningConfiguration?: EcrAwsmUpboundIoV1beta1RepositorySpecForProviderImageScanningConfiguration
 
     imageTagMutability?: str
+
+    imageTagMutabilityExclusionFilter?: [EcrAwsmUpboundIoV1beta1RepositorySpecForProviderImageTagMutabilityExclusionFilterItems0]
 
     region: str
 
@@ -243,6 +247,24 @@ schema EcrAwsmUpboundIoV1beta1RepositorySpecForProviderImageScanningConfiguratio
     scanOnPush?: bool
 
 
+schema EcrAwsmUpboundIoV1beta1RepositorySpecForProviderImageTagMutabilityExclusionFilterItems0:
+    r"""
+    ecr awsm upbound io v1beta1 repository spec for provider image tag mutability exclusion filter items0
+
+    Attributes
+    ----------
+    $filter : str, default is Undefined, optional
+        The filter pattern to use for excluding image tags from the mutability setting. Must contain only letters, numbers, and special characters (._-). Each filter can be up to 128 characters long and can contain a maximum of 2 wildcards ().
+    filterType : str, default is Undefined, optional
+        The type of filter to use. Must be WILDCARD.
+    """
+
+
+    $filter?: str
+
+    filterType?: str
+
+
 schema EcrAwsmUpboundIoV1beta1RepositorySpecInitProvider:
     r"""
     THIS IS A BETA FIELD. It will be honored
@@ -266,7 +288,9 @@ schema EcrAwsmUpboundIoV1beta1RepositorySpecInitProvider:
     imageScanningConfiguration : EcrAwsmUpboundIoV1beta1RepositorySpecInitProviderImageScanningConfiguration, default is Undefined, optional
         image scanning configuration
     imageTagMutability : str, default is Undefined, optional
-        The tag mutability setting for the repository. Must be one of: MUTABLE or IMMUTABLE. Defaults to MUTABLE.
+        The tag mutability setting for the repository. Must be one of: MUTABLE, IMMUTABLE, IMMUTABLE_WITH_EXCLUSION, or MUTABLE_WITH_EXCLUSION. Defaults to MUTABLE.
+    imageTagMutabilityExclusionFilter : [EcrAwsmUpboundIoV1beta1RepositorySpecInitProviderImageTagMutabilityExclusionFilterItems0], default is Undefined, optional
+        Configuration block that defines filters to specify which image tags can override the default tag mutability setting. Only applicable when image_tag_mutability is set to IMMUTABLE_WITH_EXCLUSION or MUTABLE_WITH_EXCLUSION. See below for schema.
     tags : {str:str}, default is Undefined, optional
         Key-value map of resource tags.
     """
@@ -279,6 +303,8 @@ schema EcrAwsmUpboundIoV1beta1RepositorySpecInitProvider:
     imageScanningConfiguration?: EcrAwsmUpboundIoV1beta1RepositorySpecInitProviderImageScanningConfiguration
 
     imageTagMutability?: str
+
+    imageTagMutabilityExclusionFilter?: [EcrAwsmUpboundIoV1beta1RepositorySpecInitProviderImageTagMutabilityExclusionFilterItems0]
 
     tags?: {str:str}
 
@@ -420,6 +446,24 @@ schema EcrAwsmUpboundIoV1beta1RepositorySpecInitProviderImageScanningConfigurati
     scanOnPush?: bool
 
 
+schema EcrAwsmUpboundIoV1beta1RepositorySpecInitProviderImageTagMutabilityExclusionFilterItems0:
+    r"""
+    ecr awsm upbound io v1beta1 repository spec init provider image tag mutability exclusion filter items0
+
+    Attributes
+    ----------
+    $filter : str, default is Undefined, optional
+        The filter pattern to use for excluding image tags from the mutability setting. Must contain only letters, numbers, and special characters (._-). Each filter can be up to 128 characters long and can contain a maximum of 2 wildcards ().
+    filterType : str, default is Undefined, optional
+        The type of filter to use. Must be WILDCARD.
+    """
+
+
+    $filter?: str
+
+    filterType?: str
+
+
 schema EcrAwsmUpboundIoV1beta1RepositorySpecProviderConfigRef:
     r"""
     ProviderConfigReference specifies how the provider that will be used to
@@ -499,7 +543,9 @@ schema EcrAwsmUpboundIoV1beta1RepositoryStatusAtProvider:
     imageScanningConfiguration : EcrAwsmUpboundIoV1beta1RepositoryStatusAtProviderImageScanningConfiguration, default is Undefined, optional
         image scanning configuration
     imageTagMutability : str, default is Undefined, optional
-        The tag mutability setting for the repository. Must be one of: MUTABLE or IMMUTABLE. Defaults to MUTABLE.
+        The tag mutability setting for the repository. Must be one of: MUTABLE, IMMUTABLE, IMMUTABLE_WITH_EXCLUSION, or MUTABLE_WITH_EXCLUSION. Defaults to MUTABLE.
+    imageTagMutabilityExclusionFilter : [EcrAwsmUpboundIoV1beta1RepositoryStatusAtProviderImageTagMutabilityExclusionFilterItems0], default is Undefined, optional
+        Configuration block that defines filters to specify which image tags can override the default tag mutability setting. Only applicable when image_tag_mutability is set to IMMUTABLE_WITH_EXCLUSION or MUTABLE_WITH_EXCLUSION. See below for schema.
     region : str, default is Undefined, optional
         Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
@@ -525,6 +571,8 @@ schema EcrAwsmUpboundIoV1beta1RepositoryStatusAtProvider:
     imageScanningConfiguration?: EcrAwsmUpboundIoV1beta1RepositoryStatusAtProviderImageScanningConfiguration
 
     imageTagMutability?: str
+
+    imageTagMutabilityExclusionFilter?: [EcrAwsmUpboundIoV1beta1RepositoryStatusAtProviderImageTagMutabilityExclusionFilterItems0]
 
     region?: str
 
@@ -567,6 +615,24 @@ schema EcrAwsmUpboundIoV1beta1RepositoryStatusAtProviderImageScanningConfigurati
 
 
     scanOnPush?: bool
+
+
+schema EcrAwsmUpboundIoV1beta1RepositoryStatusAtProviderImageTagMutabilityExclusionFilterItems0:
+    r"""
+    ecr awsm upbound io v1beta1 repository status at provider image tag mutability exclusion filter items0
+
+    Attributes
+    ----------
+    $filter : str, default is Undefined, optional
+        The filter pattern to use for excluding image tags from the mutability setting. Must contain only letters, numbers, and special characters (._-). Each filter can be up to 128 characters long and can contain a maximum of 2 wildcards ().
+    filterType : str, default is Undefined, optional
+        The type of filter to use. Must be WILDCARD.
+    """
+
+
+    $filter?: str
+
+    filterType?: str
 
 
 schema EcrAwsmUpboundIoV1beta1RepositoryStatusConditionsItems0:

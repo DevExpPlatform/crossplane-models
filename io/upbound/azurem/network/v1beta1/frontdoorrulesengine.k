@@ -649,9 +649,9 @@ schema NetworkAzuremUpboundIoV1beta1FrontdoorRulesEngineStatusAtProvider:
     frontdoorName : str, default is Undefined, optional
         The name of the Front Door instance. Changing this forces a new resource to be created.
     id : str, default is Undefined, optional
-        The ID of the Front Door Rules Engine.
+        id
     location : str, default is Undefined, optional
-        The location in which the Front Door Rules Engine exists.
+        location
     resourceGroupName : str, default is Undefined, optional
         The name of the resource group. Changing this forces a new resource to be created.
     $rule : [NetworkAzuremUpboundIoV1beta1FrontdoorRulesEngineStatusAtProviderRuleItems0], default is Undefined, optional

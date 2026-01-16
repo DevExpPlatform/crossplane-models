@@ -123,7 +123,7 @@ schema NetworkAzuremUpboundIoV1beta1WebApplicationFirewallPolicySpecForProviderC
     enabled : bool, default is Undefined, optional
         Describes if the policy is in enabled state or disabled state. Defaults to true.
     groupRateLimitBy : str, default is Undefined, optional
-        Specifies what grouping the rate limit will count requests by. Possible values are ClientAddr, ClientAddrXFFHeader, GeoLocation, GeoLocationXFFHeader and None.
+        Specifies what grouping the rate limit will count requests by. Possible values are GeoLocation, ClientAddr and None.
     matchConditions : [NetworkAzuremUpboundIoV1beta1WebApplicationFirewallPolicySpecForProviderCustomRulesItems0MatchConditionsItems0], default is Undefined, optional
         One or more match_conditions blocks as defined below.
     name : str, default is Undefined, optional
@@ -594,7 +594,7 @@ schema NetworkAzuremUpboundIoV1beta1WebApplicationFirewallPolicySpecInitProvider
     enabled : bool, default is Undefined, optional
         Describes if the policy is in enabled state or disabled state. Defaults to true.
     groupRateLimitBy : str, default is Undefined, optional
-        Specifies what grouping the rate limit will count requests by. Possible values are ClientAddr, ClientAddrXFFHeader, GeoLocation, GeoLocationXFFHeader and None.
+        Specifies what grouping the rate limit will count requests by. Possible values are GeoLocation, ClientAddr and None.
     matchConditions : [NetworkAzuremUpboundIoV1beta1WebApplicationFirewallPolicySpecInitProviderCustomRulesItems0MatchConditionsItems0], default is Undefined, optional
         One or more match_conditions blocks as defined below.
     name : str, default is Undefined, optional
@@ -1036,7 +1036,7 @@ schema NetworkAzuremUpboundIoV1beta1WebApplicationFirewallPolicyStatusAtProvider
     enabled : bool, default is Undefined, optional
         Describes if the policy is in enabled state or disabled state. Defaults to true.
     groupRateLimitBy : str, default is Undefined, optional
-        Specifies what grouping the rate limit will count requests by. Possible values are ClientAddr, ClientAddrXFFHeader, GeoLocation, GeoLocationXFFHeader and None.
+        Specifies what grouping the rate limit will count requests by. Possible values are GeoLocation, ClientAddr and None.
     matchConditions : [NetworkAzuremUpboundIoV1beta1WebApplicationFirewallPolicyStatusAtProviderCustomRulesItems0MatchConditionsItems0], default is Undefined, optional
         One or more match_conditions blocks as defined below.
     name : str, default is Undefined, optional

@@ -102,6 +102,8 @@ schema Ec2AwsmUpboundIoV1beta1InstanceSpecForProvider:
         enclave options
     ephemeralBlockDevice : [Ec2AwsmUpboundIoV1beta1InstanceSpecForProviderEphemeralBlockDeviceItems0], default is Undefined, optional
         One or more configuration blocks to customize Ephemeral (also known as "Instance Store") volumes on the instance. See Block Devices below for details. When accessing this as an attribute reference, it is a set of objects.
+    forceDestroy : bool, default is Undefined, optional
+        Destroys instance even if disable_api_termination or disable_api_stop is set to true. Defaults to false. If setting this field in the same operation that would require replacing the instance or destroying the instance, this flag will not work.
     getPasswordData : bool, default is Undefined, optional
         If true, wait for password data to become available and retrieve it. Useful for getting the administrator password for instances running Microsoft Windows. The password data is exported to the password_data attribute. See GetPasswordData for more information.
     hibernation : bool, default is Undefined, optional
@@ -135,9 +137,13 @@ schema Ec2AwsmUpboundIoV1beta1InstanceSpecForProvider:
     networkInterface : [Ec2AwsmUpboundIoV1beta1InstanceSpecForProviderNetworkInterfaceItems0], default is Undefined, optional
         Customize network interfaces to be attached at instance boot time. See Network Interfaces below for more details.
     placementGroup : str, default is Undefined, optional
-        Placement Group to start the instance in.
+        Placement Group to start the instance in. Conflicts with placement_group_id.
+    placementGroupId : str, default is Undefined, optional
+        Placement Group ID to start the instance in. Conflicts with placement_group.
     placementPartitionNumber : float, default is Undefined, optional
         Number of the partition the instance is in. Valid only if the  strategy argument is set to "partition".
+    primaryNetworkInterface : Ec2AwsmUpboundIoV1beta1InstanceSpecForProviderPrimaryNetworkInterface, default is Undefined, optional
+        primary network interface
     privateDnsNameOptions : Ec2AwsmUpboundIoV1beta1InstanceSpecForProviderPrivateDNSNameOptions, default is Undefined, optional
         private Dns name options
     privateIp : str, default is Undefined, optional
@@ -204,6 +210,8 @@ schema Ec2AwsmUpboundIoV1beta1InstanceSpecForProvider:
 
     ephemeralBlockDevice?: [Ec2AwsmUpboundIoV1beta1InstanceSpecForProviderEphemeralBlockDeviceItems0]
 
+    forceDestroy?: bool
+
     getPasswordData?: bool
 
     hibernation?: bool
@@ -238,7 +246,11 @@ schema Ec2AwsmUpboundIoV1beta1InstanceSpecForProvider:
 
     placementGroup?: str
 
+    placementGroupId?: str
+
     placementPartitionNumber?: float
+
+    primaryNetworkInterface?: Ec2AwsmUpboundIoV1beta1InstanceSpecForProviderPrimaryNetworkInterface
 
     privateDnsNameOptions?: Ec2AwsmUpboundIoV1beta1InstanceSpecForProviderPrivateDNSNameOptions
 
@@ -785,6 +797,125 @@ schema Ec2AwsmUpboundIoV1beta1InstanceSpecForProviderNetworkInterfaceItems0Netwo
     resolve?: "Always" | "IfNotPresent"
 
 
+schema Ec2AwsmUpboundIoV1beta1InstanceSpecForProviderPrimaryNetworkInterface:
+    r"""
+    The primary network interface. See Primary Network Interface below.
+
+    Attributes
+    ----------
+    networkInterfaceId : str, default is Undefined, optional
+        ID of the network interface to attach.
+    networkInterfaceIdRef : Ec2AwsmUpboundIoV1beta1InstanceSpecForProviderPrimaryNetworkInterfaceNetworkInterfaceIDRef, default is Undefined, optional
+        network interface Id ref
+    networkInterfaceIdSelector : Ec2AwsmUpboundIoV1beta1InstanceSpecForProviderPrimaryNetworkInterfaceNetworkInterfaceIDSelector, default is Undefined, optional
+        network interface Id selector
+    """
+
+
+    networkInterfaceId?: str
+
+    networkInterfaceIdRef?: Ec2AwsmUpboundIoV1beta1InstanceSpecForProviderPrimaryNetworkInterfaceNetworkInterfaceIDRef
+
+    networkInterfaceIdSelector?: Ec2AwsmUpboundIoV1beta1InstanceSpecForProviderPrimaryNetworkInterfaceNetworkInterfaceIDSelector
+
+
+schema Ec2AwsmUpboundIoV1beta1InstanceSpecForProviderPrimaryNetworkInterfaceNetworkInterfaceIDRef:
+    r"""
+    Reference to a NetworkInterface in ec2 to populate networkInterfaceId.
+
+    Attributes
+    ----------
+    name : str, default is Undefined, required
+        Name of the referenced object.
+    namespace : str, default is Undefined, optional
+        Namespace of the referenced object
+    policy : Ec2AwsmUpboundIoV1beta1InstanceSpecForProviderPrimaryNetworkInterfaceNetworkInterfaceIDRefPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    name: str
+
+    namespace?: str
+
+    policy?: Ec2AwsmUpboundIoV1beta1InstanceSpecForProviderPrimaryNetworkInterfaceNetworkInterfaceIDRefPolicy
+
+
+schema Ec2AwsmUpboundIoV1beta1InstanceSpecForProviderPrimaryNetworkInterfaceNetworkInterfaceIDRefPolicy:
+    r"""
+    Policies for referencing.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
+schema Ec2AwsmUpboundIoV1beta1InstanceSpecForProviderPrimaryNetworkInterfaceNetworkInterfaceIDSelector:
+    r"""
+    Selector for a NetworkInterface in ec2 to populate networkInterfaceId.
+
+    Attributes
+    ----------
+    matchControllerRef : bool, default is Undefined, optional
+        MatchControllerRef ensures an object with the same controller reference
+        as the selecting object is selected.
+    matchLabels : {str:str}, default is Undefined, optional
+        MatchLabels ensures an object with matching labels is selected.
+    namespace : str, default is Undefined, optional
+        Namespace for the selector
+    policy : Ec2AwsmUpboundIoV1beta1InstanceSpecForProviderPrimaryNetworkInterfaceNetworkInterfaceIDSelectorPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    matchControllerRef?: bool
+
+    matchLabels?: {str:str}
+
+    namespace?: str
+
+    policy?: Ec2AwsmUpboundIoV1beta1InstanceSpecForProviderPrimaryNetworkInterfaceNetworkInterfaceIDSelectorPolicy
+
+
+schema Ec2AwsmUpboundIoV1beta1InstanceSpecForProviderPrimaryNetworkInterfaceNetworkInterfaceIDSelectorPolicy:
+    r"""
+    Policies for selection.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
 schema Ec2AwsmUpboundIoV1beta1InstanceSpecForProviderPrivateDNSNameOptions:
     r"""
     Options for the instance hostname. The default values are inherited from the subnet. See Private DNS Name Options below for more details.
@@ -1193,6 +1324,8 @@ schema Ec2AwsmUpboundIoV1beta1InstanceSpecInitProvider:
         enclave options
     ephemeralBlockDevice : [Ec2AwsmUpboundIoV1beta1InstanceSpecInitProviderEphemeralBlockDeviceItems0], default is Undefined, optional
         One or more configuration blocks to customize Ephemeral (also known as "Instance Store") volumes on the instance. See Block Devices below for details. When accessing this as an attribute reference, it is a set of objects.
+    forceDestroy : bool, default is Undefined, optional
+        Destroys instance even if disable_api_termination or disable_api_stop is set to true. Defaults to false. If setting this field in the same operation that would require replacing the instance or destroying the instance, this flag will not work.
     getPasswordData : bool, default is Undefined, optional
         If true, wait for password data to become available and retrieve it. Useful for getting the administrator password for instances running Microsoft Windows. The password data is exported to the password_data attribute. See GetPasswordData for more information.
     hibernation : bool, default is Undefined, optional
@@ -1226,9 +1359,13 @@ schema Ec2AwsmUpboundIoV1beta1InstanceSpecInitProvider:
     networkInterface : [Ec2AwsmUpboundIoV1beta1InstanceSpecInitProviderNetworkInterfaceItems0], default is Undefined, optional
         Customize network interfaces to be attached at instance boot time. See Network Interfaces below for more details.
     placementGroup : str, default is Undefined, optional
-        Placement Group to start the instance in.
+        Placement Group to start the instance in. Conflicts with placement_group_id.
+    placementGroupId : str, default is Undefined, optional
+        Placement Group ID to start the instance in. Conflicts with placement_group.
     placementPartitionNumber : float, default is Undefined, optional
         Number of the partition the instance is in. Valid only if the  strategy argument is set to "partition".
+    primaryNetworkInterface : Ec2AwsmUpboundIoV1beta1InstanceSpecInitProviderPrimaryNetworkInterface, default is Undefined, optional
+        primary network interface
     privateDnsNameOptions : Ec2AwsmUpboundIoV1beta1InstanceSpecInitProviderPrivateDNSNameOptions, default is Undefined, optional
         private Dns name options
     privateIp : str, default is Undefined, optional
@@ -1292,6 +1429,8 @@ schema Ec2AwsmUpboundIoV1beta1InstanceSpecInitProvider:
 
     ephemeralBlockDevice?: [Ec2AwsmUpboundIoV1beta1InstanceSpecInitProviderEphemeralBlockDeviceItems0]
 
+    forceDestroy?: bool
+
     getPasswordData?: bool
 
     hibernation?: bool
@@ -1326,7 +1465,11 @@ schema Ec2AwsmUpboundIoV1beta1InstanceSpecInitProvider:
 
     placementGroup?: str
 
+    placementGroupId?: str
+
     placementPartitionNumber?: float
+
+    primaryNetworkInterface?: Ec2AwsmUpboundIoV1beta1InstanceSpecInitProviderPrimaryNetworkInterface
 
     privateDnsNameOptions?: Ec2AwsmUpboundIoV1beta1InstanceSpecInitProviderPrivateDNSNameOptions
 
@@ -1871,6 +2014,125 @@ schema Ec2AwsmUpboundIoV1beta1InstanceSpecInitProviderNetworkInterfaceItems0Netw
     resolve?: "Always" | "IfNotPresent"
 
 
+schema Ec2AwsmUpboundIoV1beta1InstanceSpecInitProviderPrimaryNetworkInterface:
+    r"""
+    The primary network interface. See Primary Network Interface below.
+
+    Attributes
+    ----------
+    networkInterfaceId : str, default is Undefined, optional
+        ID of the network interface to attach.
+    networkInterfaceIdRef : Ec2AwsmUpboundIoV1beta1InstanceSpecInitProviderPrimaryNetworkInterfaceNetworkInterfaceIDRef, default is Undefined, optional
+        network interface Id ref
+    networkInterfaceIdSelector : Ec2AwsmUpboundIoV1beta1InstanceSpecInitProviderPrimaryNetworkInterfaceNetworkInterfaceIDSelector, default is Undefined, optional
+        network interface Id selector
+    """
+
+
+    networkInterfaceId?: str
+
+    networkInterfaceIdRef?: Ec2AwsmUpboundIoV1beta1InstanceSpecInitProviderPrimaryNetworkInterfaceNetworkInterfaceIDRef
+
+    networkInterfaceIdSelector?: Ec2AwsmUpboundIoV1beta1InstanceSpecInitProviderPrimaryNetworkInterfaceNetworkInterfaceIDSelector
+
+
+schema Ec2AwsmUpboundIoV1beta1InstanceSpecInitProviderPrimaryNetworkInterfaceNetworkInterfaceIDRef:
+    r"""
+    Reference to a NetworkInterface in ec2 to populate networkInterfaceId.
+
+    Attributes
+    ----------
+    name : str, default is Undefined, required
+        Name of the referenced object.
+    namespace : str, default is Undefined, optional
+        Namespace of the referenced object
+    policy : Ec2AwsmUpboundIoV1beta1InstanceSpecInitProviderPrimaryNetworkInterfaceNetworkInterfaceIDRefPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    name: str
+
+    namespace?: str
+
+    policy?: Ec2AwsmUpboundIoV1beta1InstanceSpecInitProviderPrimaryNetworkInterfaceNetworkInterfaceIDRefPolicy
+
+
+schema Ec2AwsmUpboundIoV1beta1InstanceSpecInitProviderPrimaryNetworkInterfaceNetworkInterfaceIDRefPolicy:
+    r"""
+    Policies for referencing.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
+schema Ec2AwsmUpboundIoV1beta1InstanceSpecInitProviderPrimaryNetworkInterfaceNetworkInterfaceIDSelector:
+    r"""
+    Selector for a NetworkInterface in ec2 to populate networkInterfaceId.
+
+    Attributes
+    ----------
+    matchControllerRef : bool, default is Undefined, optional
+        MatchControllerRef ensures an object with the same controller reference
+        as the selecting object is selected.
+    matchLabels : {str:str}, default is Undefined, optional
+        MatchLabels ensures an object with matching labels is selected.
+    namespace : str, default is Undefined, optional
+        Namespace for the selector
+    policy : Ec2AwsmUpboundIoV1beta1InstanceSpecInitProviderPrimaryNetworkInterfaceNetworkInterfaceIDSelectorPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    matchControllerRef?: bool
+
+    matchLabels?: {str:str}
+
+    namespace?: str
+
+    policy?: Ec2AwsmUpboundIoV1beta1InstanceSpecInitProviderPrimaryNetworkInterfaceNetworkInterfaceIDSelectorPolicy
+
+
+schema Ec2AwsmUpboundIoV1beta1InstanceSpecInitProviderPrimaryNetworkInterfaceNetworkInterfaceIDSelectorPolicy:
+    r"""
+    Policies for selection.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
 schema Ec2AwsmUpboundIoV1beta1InstanceSpecInitProviderPrivateDNSNameOptions:
     r"""
     Options for the instance hostname. The default values are inherited from the subnet. See Private DNS Name Options below for more details.
@@ -2333,6 +2595,8 @@ schema Ec2AwsmUpboundIoV1beta1InstanceStatusAtProvider:
         enclave options
     ephemeralBlockDevice : [Ec2AwsmUpboundIoV1beta1InstanceStatusAtProviderEphemeralBlockDeviceItems0], default is Undefined, optional
         One or more configuration blocks to customize Ephemeral (also known as "Instance Store") volumes on the instance. See Block Devices below for details. When accessing this as an attribute reference, it is a set of objects.
+    forceDestroy : bool, default is Undefined, optional
+        Destroys instance even if disable_api_termination or disable_api_stop is set to true. Defaults to false. If setting this field in the same operation that would require replacing the instance or destroying the instance, this flag will not work.
     getPasswordData : bool, default is Undefined, optional
         If true, wait for password data to become available and retrieve it. Useful for getting the administrator password for instances running Microsoft Windows. The password data is exported to the password_data attribute. See GetPasswordData for more information.
     hibernation : bool, default is Undefined, optional
@@ -2376,9 +2640,13 @@ schema Ec2AwsmUpboundIoV1beta1InstanceStatusAtProvider:
     passwordData : str, default is Undefined, optional
         Base-64 encoded encrypted password data for the instance. Useful for getting the administrator password for instances running Microsoft Windows. This attribute is only exported if get_password_data is true. Note that this encrypted value will be stored in the state file, as with all exported attributes. See GetPasswordData for more information.
     placementGroup : str, default is Undefined, optional
-        Placement Group to start the instance in.
+        Placement Group to start the instance in. Conflicts with placement_group_id.
+    placementGroupId : str, default is Undefined, optional
+        Placement Group ID to start the instance in. Conflicts with placement_group.
     placementPartitionNumber : float, default is Undefined, optional
         Number of the partition the instance is in. Valid only if the  strategy argument is set to "partition".
+    primaryNetworkInterface : Ec2AwsmUpboundIoV1beta1InstanceStatusAtProviderPrimaryNetworkInterface, default is Undefined, optional
+        primary network interface
     primaryNetworkInterfaceId : str, default is Undefined, optional
         ID of the instance's primary network interface.
     privateDns : str, default is Undefined, optional
@@ -2453,6 +2721,8 @@ schema Ec2AwsmUpboundIoV1beta1InstanceStatusAtProvider:
 
     ephemeralBlockDevice?: [Ec2AwsmUpboundIoV1beta1InstanceStatusAtProviderEphemeralBlockDeviceItems0]
 
+    forceDestroy?: bool
+
     getPasswordData?: bool
 
     hibernation?: bool
@@ -2497,7 +2767,11 @@ schema Ec2AwsmUpboundIoV1beta1InstanceStatusAtProvider:
 
     placementGroup?: str
 
+    placementGroupId?: str
+
     placementPartitionNumber?: float
+
+    primaryNetworkInterface?: Ec2AwsmUpboundIoV1beta1InstanceStatusAtProviderPrimaryNetworkInterface
 
     primaryNetworkInterfaceId?: str
 
@@ -2840,6 +3114,24 @@ schema Ec2AwsmUpboundIoV1beta1InstanceStatusAtProviderNetworkInterfaceItems0:
     deviceIndex?: float
 
     networkCardIndex?: float
+
+    networkInterfaceId?: str
+
+
+schema Ec2AwsmUpboundIoV1beta1InstanceStatusAtProviderPrimaryNetworkInterface:
+    r"""
+    The primary network interface. See Primary Network Interface below.
+
+    Attributes
+    ----------
+    deleteOnTermination : bool, default is Undefined, optional
+        (Read-Only) Whether the network interface will be deleted when the instance terminates.
+    networkInterfaceId : str, default is Undefined, optional
+        ID of the network interface to attach.
+    """
+
+
+    deleteOnTermination?: bool
 
     networkInterfaceId?: str
 

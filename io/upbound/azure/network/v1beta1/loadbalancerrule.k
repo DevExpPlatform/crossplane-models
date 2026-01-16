@@ -66,6 +66,8 @@ schema NetworkAzureUpboundIoV1beta1LoadBalancerRuleSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : NetworkAzureUpboundIoV1beta1LoadBalancerRuleSpecProviderConfigRef, default is Undefined, optional
         provider config ref
+    publishConnectionDetailsTo : NetworkAzureUpboundIoV1beta1LoadBalancerRuleSpecPublishConnectionDetailsTo, default is Undefined, optional
+        publish connection details to
     writeConnectionSecretToRef : NetworkAzureUpboundIoV1beta1LoadBalancerRuleSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -80,6 +82,8 @@ schema NetworkAzureUpboundIoV1beta1LoadBalancerRuleSpec:
     managementPolicies?: [str] = ["*"]
 
     providerConfigRef?: NetworkAzureUpboundIoV1beta1LoadBalancerRuleSpecProviderConfigRef
+
+    publishConnectionDetailsTo?: NetworkAzureUpboundIoV1beta1LoadBalancerRuleSpecPublishConnectionDetailsTo
 
     writeConnectionSecretToRef?: NetworkAzureUpboundIoV1beta1LoadBalancerRuleSpecWriteConnectionSecretToRef
 
@@ -97,11 +101,9 @@ schema NetworkAzureUpboundIoV1beta1LoadBalancerRuleSpecForProvider:
     disableOutboundSnat : bool, default is Undefined, optional
         Is snat enabled for this Load Balancer Rule? Default false.
     enableFloatingIp : bool, default is Undefined, optional
-        enable floating Ip
+        Are the Floating IPs enabled for this Load Balancer Rule? A "floating” IP is reassigned to a secondary server in case the primary server fails. Required to configure a SQL AlwaysOn Availability Group. Defaults to false.
     enableTcpReset : bool, default is Undefined, optional
-        enable Tcp reset
-    floatingIpEnabled : bool, default is Undefined, optional
-        Are the Floating IPs enabled for this Load Balancer Rule? A "floating" IP is reassigned to a secondary server in case the primary server fails. Required to configure a SQL AlwaysOn Availability Group. Defaults to false.
+        Is TCP Reset enabled for this Load Balancer Rule?
     frontendIpConfigurationName : str, default is Undefined, optional
         The name of the frontend IP configuration to which the rule is associated.
     frontendPort : float, default is Undefined, optional
@@ -120,8 +122,6 @@ schema NetworkAzureUpboundIoV1beta1LoadBalancerRuleSpecForProvider:
         A reference to a Probe used by this Load Balancing Rule.
     $protocol : str, default is Undefined, optional
         The transport protocol for the external endpoint. Possible values are Tcp, Udp or All.
-    tcpResetEnabled : bool, default is Undefined, optional
-        Is TCP Reset enabled for this Load Balancer Rule?
     """
 
 
@@ -134,8 +134,6 @@ schema NetworkAzureUpboundIoV1beta1LoadBalancerRuleSpecForProvider:
     enableFloatingIp?: bool
 
     enableTcpReset?: bool
-
-    floatingIpEnabled?: bool
 
     frontendIpConfigurationName?: str
 
@@ -154,8 +152,6 @@ schema NetworkAzureUpboundIoV1beta1LoadBalancerRuleSpecForProvider:
     probeId?: str
 
     $protocol?: str
-
-    tcpResetEnabled?: bool
 
 
 schema NetworkAzureUpboundIoV1beta1LoadBalancerRuleSpecForProviderLoadbalancerIDRef:
@@ -269,11 +265,9 @@ schema NetworkAzureUpboundIoV1beta1LoadBalancerRuleSpecInitProvider:
     disableOutboundSnat : bool, default is Undefined, optional
         Is snat enabled for this Load Balancer Rule? Default false.
     enableFloatingIp : bool, default is Undefined, optional
-        enable floating Ip
+        Are the Floating IPs enabled for this Load Balancer Rule? A "floating” IP is reassigned to a secondary server in case the primary server fails. Required to configure a SQL AlwaysOn Availability Group. Defaults to false.
     enableTcpReset : bool, default is Undefined, optional
-        enable Tcp reset
-    floatingIpEnabled : bool, default is Undefined, optional
-        Are the Floating IPs enabled for this Load Balancer Rule? A "floating" IP is reassigned to a secondary server in case the primary server fails. Required to configure a SQL AlwaysOn Availability Group. Defaults to false.
+        Is TCP Reset enabled for this Load Balancer Rule?
     frontendIpConfigurationName : str, default is Undefined, optional
         The name of the frontend IP configuration to which the rule is associated.
     frontendPort : float, default is Undefined, optional
@@ -286,8 +280,6 @@ schema NetworkAzureUpboundIoV1beta1LoadBalancerRuleSpecInitProvider:
         A reference to a Probe used by this Load Balancing Rule.
     $protocol : str, default is Undefined, optional
         The transport protocol for the external endpoint. Possible values are Tcp, Udp or All.
-    tcpResetEnabled : bool, default is Undefined, optional
-        Is TCP Reset enabled for this Load Balancer Rule?
     """
 
 
@@ -301,8 +293,6 @@ schema NetworkAzureUpboundIoV1beta1LoadBalancerRuleSpecInitProvider:
 
     enableTcpReset?: bool
 
-    floatingIpEnabled?: bool
-
     frontendIpConfigurationName?: str
 
     frontendPort?: float
@@ -314,8 +304,6 @@ schema NetworkAzureUpboundIoV1beta1LoadBalancerRuleSpecInitProvider:
     probeId?: str
 
     $protocol?: str
-
-    tcpResetEnabled?: bool
 
 
 schema NetworkAzureUpboundIoV1beta1LoadBalancerRuleSpecProviderConfigRef:
@@ -362,12 +350,112 @@ schema NetworkAzureUpboundIoV1beta1LoadBalancerRuleSpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
+schema NetworkAzureUpboundIoV1beta1LoadBalancerRuleSpecPublishConnectionDetailsTo:
+    r"""
+    PublishConnectionDetailsTo specifies the connection secret config which
+    contains a name, metadata and a reference to secret store config to
+    which any connection details for this managed resource should be written.
+    Connection details frequently include the endpoint, username,
+    and password required to connect to the managed resource.
+
+    Attributes
+    ----------
+    configRef : NetworkAzureUpboundIoV1beta1LoadBalancerRuleSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
+        config ref
+    metadata : NetworkAzureUpboundIoV1beta1LoadBalancerRuleSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
+        metadata
+    name : str, default is Undefined, required
+        Name is the name of the connection secret.
+    """
+
+
+    configRef?: NetworkAzureUpboundIoV1beta1LoadBalancerRuleSpecPublishConnectionDetailsToConfigRef
+
+    metadata?: NetworkAzureUpboundIoV1beta1LoadBalancerRuleSpecPublishConnectionDetailsToMetadata
+
+    name: str
+
+
+schema NetworkAzureUpboundIoV1beta1LoadBalancerRuleSpecPublishConnectionDetailsToConfigRef:
+    r"""
+    SecretStoreConfigRef specifies which secret store config should be used
+    for this ConnectionSecret.
+
+    Attributes
+    ----------
+    name : str, default is Undefined, required
+        Name of the referenced object.
+    policy : NetworkAzureUpboundIoV1beta1LoadBalancerRuleSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    name: str
+
+    policy?: NetworkAzureUpboundIoV1beta1LoadBalancerRuleSpecPublishConnectionDetailsToConfigRefPolicy
+
+
+schema NetworkAzureUpboundIoV1beta1LoadBalancerRuleSpecPublishConnectionDetailsToConfigRefPolicy:
+    r"""
+    Policies for referencing.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
+schema NetworkAzureUpboundIoV1beta1LoadBalancerRuleSpecPublishConnectionDetailsToMetadata:
+    r"""
+    Metadata is the metadata for connection secret.
+
+    Attributes
+    ----------
+    annotations : {str:str}, default is Undefined, optional
+        Annotations are the annotations to be added to connection secret.
+        - For Kubernetes secrets, this will be used as "metadata.annotations".
+        - It is up to Secret Store implementation for others store types.
+    labels : {str:str}, default is Undefined, optional
+        Labels are the labels/tags to be added to connection secret.
+        - For Kubernetes secrets, this will be used as "metadata.labels".
+        - It is up to Secret Store implementation for others store types.
+    $type : str, default is Undefined, optional
+        Type is the SecretType for the connection secret.
+        - Only valid for Kubernetes Secret Stores.
+    """
+
+
+    annotations?: {str:str}
+
+    labels?: {str:str}
+
+    $type?: str
+
+
 schema NetworkAzureUpboundIoV1beta1LoadBalancerRuleSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
+    This field is planned to be replaced in a future release in favor of
+    PublishConnectionDetailsTo. Currently, both could be set independently
+    and connection details would be published to both without affecting
+    each other.
 
     Attributes
     ----------
@@ -420,11 +508,9 @@ schema NetworkAzureUpboundIoV1beta1LoadBalancerRuleStatusAtProvider:
     disableOutboundSnat : bool, default is Undefined, optional
         Is snat enabled for this Load Balancer Rule? Default false.
     enableFloatingIp : bool, default is Undefined, optional
-        enable floating Ip
+        Are the Floating IPs enabled for this Load Balancer Rule? A "floating” IP is reassigned to a secondary server in case the primary server fails. Required to configure a SQL AlwaysOn Availability Group. Defaults to false.
     enableTcpReset : bool, default is Undefined, optional
-        enable Tcp reset
-    floatingIpEnabled : bool, default is Undefined, optional
-        Are the Floating IPs enabled for this Load Balancer Rule? A "floating" IP is reassigned to a secondary server in case the primary server fails. Required to configure a SQL AlwaysOn Availability Group. Defaults to false.
+        Is TCP Reset enabled for this Load Balancer Rule?
     frontendIpConfigurationId : str, default is Undefined, optional
         The ID of the Load Balancer Rule.
     frontendIpConfigurationName : str, default is Undefined, optional
@@ -443,8 +529,6 @@ schema NetworkAzureUpboundIoV1beta1LoadBalancerRuleStatusAtProvider:
         A reference to a Probe used by this Load Balancing Rule.
     $protocol : str, default is Undefined, optional
         The transport protocol for the external endpoint. Possible values are Tcp, Udp or All.
-    tcpResetEnabled : bool, default is Undefined, optional
-        Is TCP Reset enabled for this Load Balancer Rule?
     """
 
 
@@ -457,8 +541,6 @@ schema NetworkAzureUpboundIoV1beta1LoadBalancerRuleStatusAtProvider:
     enableFloatingIp?: bool
 
     enableTcpReset?: bool
-
-    floatingIpEnabled?: bool
 
     frontendIpConfigurationId?: str
 
@@ -477,8 +559,6 @@ schema NetworkAzureUpboundIoV1beta1LoadBalancerRuleStatusAtProvider:
     probeId?: str
 
     $protocol?: str
-
-    tcpResetEnabled?: bool
 
 
 schema NetworkAzureUpboundIoV1beta1LoadBalancerRuleStatusConditionsItems0:

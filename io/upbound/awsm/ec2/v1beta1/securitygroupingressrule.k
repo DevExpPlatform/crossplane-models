@@ -892,7 +892,7 @@ schema Ec2AwsmUpboundIoV1beta1SecurityGroupIngressRuleStatusAtProvider:
     fromPort : float, default is Undefined, optional
         The start of port range for the TCP and UDP protocols, or an ICMP/ICMPv6 type.
     id : str, default is Undefined, optional
-        id
+        (String) ID of the security group rule.
     ipProtocol : str, default is Undefined, optional
         The IP protocol name or number. Use -1 to specify all protocols. Note that if ip_protocol is set to -1, it translates to all protocols, all port ranges, and from_port and to_port values should not be defined.
     prefixListId : str, default is Undefined, optional

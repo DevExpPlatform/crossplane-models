@@ -457,7 +457,7 @@ schema Ec2AwsmUpboundIoV1beta1LaunchTemplateSpecForProviderCapacityReservationSp
     Attributes
     ----------
     capacityReservationPreference : str, default is Undefined, optional
-        Indicates the instance's Capacity Reservation preferences. Can be open or none. (Default none).
+        Indicates the instance's Capacity Reservation preferences. Can be capacity-reservations-only, open or none. If capacity_reservation_id or capacity_reservation_resource_group_arn is specified in capacity_reservation_target block, either omit capacity_reservation_preference or set it to capacity-reservations-only.
     capacityReservationTarget : Ec2AwsmUpboundIoV1beta1LaunchTemplateSpecForProviderCapacityReservationSpecificationCapacityReservationTarget, default is Undefined, optional
         capacity reservation target
     """
@@ -1628,8 +1628,10 @@ schema Ec2AwsmUpboundIoV1beta1LaunchTemplateSpecForProviderPlacement:
         The affinity setting for an instance on a Dedicated Host.
     availabilityZone : str, default is Undefined, optional
         The Availability Zone for the instance.
+    groupId : str, default is Undefined, optional
+        The ID of the placement group for the instance. Conflicts with group_name.
     groupName : str, default is Undefined, optional
-        The name of the placement group for the instance.
+        The name of the placement group for the instance. Conflicts with group_id.
     hostId : str, default is Undefined, optional
         The ID of the Dedicated Host for the instance.
     hostResourceGroupArn : str, default is Undefined, optional
@@ -1646,6 +1648,8 @@ schema Ec2AwsmUpboundIoV1beta1LaunchTemplateSpecForProviderPlacement:
     affinity?: str
 
     availabilityZone?: str
+
+    groupId?: str
 
     groupName?: str
 
@@ -2285,7 +2289,7 @@ schema Ec2AwsmUpboundIoV1beta1LaunchTemplateSpecInitProviderCapacityReservationS
     Attributes
     ----------
     capacityReservationPreference : str, default is Undefined, optional
-        Indicates the instance's Capacity Reservation preferences. Can be open or none. (Default none).
+        Indicates the instance's Capacity Reservation preferences. Can be capacity-reservations-only, open or none. If capacity_reservation_id or capacity_reservation_resource_group_arn is specified in capacity_reservation_target block, either omit capacity_reservation_preference or set it to capacity-reservations-only.
     capacityReservationTarget : Ec2AwsmUpboundIoV1beta1LaunchTemplateSpecInitProviderCapacityReservationSpecificationCapacityReservationTarget, default is Undefined, optional
         capacity reservation target
     """
@@ -3456,8 +3460,10 @@ schema Ec2AwsmUpboundIoV1beta1LaunchTemplateSpecInitProviderPlacement:
         The affinity setting for an instance on a Dedicated Host.
     availabilityZone : str, default is Undefined, optional
         The Availability Zone for the instance.
+    groupId : str, default is Undefined, optional
+        The ID of the placement group for the instance. Conflicts with group_name.
     groupName : str, default is Undefined, optional
-        The name of the placement group for the instance.
+        The name of the placement group for the instance. Conflicts with group_id.
     hostId : str, default is Undefined, optional
         The ID of the Dedicated Host for the instance.
     hostResourceGroupArn : str, default is Undefined, optional
@@ -3474,6 +3480,8 @@ schema Ec2AwsmUpboundIoV1beta1LaunchTemplateSpecInitProviderPlacement:
     affinity?: str
 
     availabilityZone?: str
+
+    groupId?: str
 
     groupName?: str
 
@@ -4065,7 +4073,7 @@ schema Ec2AwsmUpboundIoV1beta1LaunchTemplateStatusAtProviderCapacityReservationS
     Attributes
     ----------
     capacityReservationPreference : str, default is Undefined, optional
-        Indicates the instance's Capacity Reservation preferences. Can be open or none. (Default none).
+        Indicates the instance's Capacity Reservation preferences. Can be capacity-reservations-only, open or none. If capacity_reservation_id or capacity_reservation_resource_group_arn is specified in capacity_reservation_target block, either omit capacity_reservation_preference or set it to capacity-reservations-only.
     capacityReservationTarget : Ec2AwsmUpboundIoV1beta1LaunchTemplateStatusAtProviderCapacityReservationSpecificationCapacityReservationTarget, default is Undefined, optional
         capacity reservation target
     """
@@ -4711,8 +4719,10 @@ schema Ec2AwsmUpboundIoV1beta1LaunchTemplateStatusAtProviderPlacement:
         The affinity setting for an instance on a Dedicated Host.
     availabilityZone : str, default is Undefined, optional
         The Availability Zone for the instance.
+    groupId : str, default is Undefined, optional
+        The ID of the placement group for the instance. Conflicts with group_name.
     groupName : str, default is Undefined, optional
-        The name of the placement group for the instance.
+        The name of the placement group for the instance. Conflicts with group_id.
     hostId : str, default is Undefined, optional
         The ID of the Dedicated Host for the instance.
     hostResourceGroupArn : str, default is Undefined, optional
@@ -4729,6 +4739,8 @@ schema Ec2AwsmUpboundIoV1beta1LaunchTemplateStatusAtProviderPlacement:
     affinity?: str
 
     availabilityZone?: str
+
+    groupId?: str
 
     groupName?: str
 

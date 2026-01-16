@@ -78,6 +78,8 @@ schema DynamodbAwsmUpboundIoV1beta1ContributorInsightsSpecForProvider:
     ----------
     indexName : str, default is Undefined, optional
         The global secondary index name
+    mode : str, default is Undefined, optional
+        argument to specify the CloudWatch contributor insights mode
     region : str, default is Undefined, required
         Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
@@ -91,6 +93,8 @@ schema DynamodbAwsmUpboundIoV1beta1ContributorInsightsSpecForProvider:
 
 
     indexName?: str
+
+    mode?: str
 
     region: str
 
@@ -215,6 +219,8 @@ schema DynamodbAwsmUpboundIoV1beta1ContributorInsightsSpecInitProvider:
     ----------
     indexName : str, default is Undefined, optional
         The global secondary index name
+    mode : str, default is Undefined, optional
+        argument to specify the CloudWatch contributor insights mode
     tableName : str, default is Undefined, optional
         The name of the table to enable contributor insights
     tableNameRef : DynamodbAwsmUpboundIoV1beta1ContributorInsightsSpecInitProviderTableNameRef, default is Undefined, optional
@@ -225,6 +231,8 @@ schema DynamodbAwsmUpboundIoV1beta1ContributorInsightsSpecInitProvider:
 
 
     indexName?: str
+
+    mode?: str
 
     tableName?: str
 
@@ -401,6 +409,8 @@ schema DynamodbAwsmUpboundIoV1beta1ContributorInsightsStatusAtProvider:
         id
     indexName : str, default is Undefined, optional
         The global secondary index name
+    mode : str, default is Undefined, optional
+        argument to specify the CloudWatch contributor insights mode
     region : str, default is Undefined, optional
         Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
@@ -412,6 +422,8 @@ schema DynamodbAwsmUpboundIoV1beta1ContributorInsightsStatusAtProvider:
     id?: str
 
     indexName?: str
+
+    mode?: str
 
     region?: str
 
