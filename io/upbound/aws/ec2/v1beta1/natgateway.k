@@ -66,8 +66,6 @@ schema Ec2AwsUpboundIoV1beta1NATGatewaySpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : Ec2AwsUpboundIoV1beta1NATGatewaySpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : Ec2AwsUpboundIoV1beta1NATGatewaySpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : Ec2AwsUpboundIoV1beta1NATGatewaySpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -82,8 +80,6 @@ schema Ec2AwsUpboundIoV1beta1NATGatewaySpec:
     managementPolicies?: [str] = ["*"]
 
     providerConfigRef?: Ec2AwsUpboundIoV1beta1NATGatewaySpecProviderConfigRef
-
-    publishConnectionDetailsTo?: Ec2AwsUpboundIoV1beta1NATGatewaySpecPublishConnectionDetailsTo
 
     writeConnectionSecretToRef?: Ec2AwsUpboundIoV1beta1NATGatewaySpecWriteConnectionSecretToRef
 
@@ -105,9 +101,10 @@ schema Ec2AwsUpboundIoV1beta1NATGatewaySpecForProvider:
     privateIp : str, default is Undefined, optional
         The private IPv4 address to assign to the NAT Gateway. If you don't provide an address, a private IPv4 address will be automatically assigned.
     region : str, default is Undefined, required
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
     secondaryAllocationIds : [str], default is Undefined, optional
-        A list of secondary allocation EIP IDs for this NAT Gateway.
+        A list of secondary allocation EIP IDs for this NAT Gateway. To remove all secondary allocations an empty list should be specified.
     secondaryAllocationIdsRefs : [Ec2AwsUpboundIoV1beta1NATGatewaySpecForProviderSecondaryAllocationIdsRefsItems0], default is Undefined, optional
         References to EIP in ec2 to populate secondaryAllocationIds.
     secondaryAllocationIdsSelector : Ec2AwsUpboundIoV1beta1NATGatewaySpecForProviderSecondaryAllocationIdsSelector, default is Undefined, optional
@@ -115,7 +112,7 @@ schema Ec2AwsUpboundIoV1beta1NATGatewaySpecForProvider:
     secondaryPrivateIpAddressCount : float, default is Undefined, optional
         [Private NAT Gateway only] The number of secondary private IPv4 addresses you want to assign to the NAT Gateway.
     secondaryPrivateIpAddresses : [str], default is Undefined, optional
-        A list of secondary private IPv4 addresses to assign to the NAT Gateway.
+        A list of secondary private IPv4 addresses to assign to the NAT Gateway. To remove all secondary private addresses an empty list should be specified.
     subnetId : str, default is Undefined, optional
         The Subnet ID of the subnet in which to place the NAT Gateway.
     subnetIdRef : Ec2AwsUpboundIoV1beta1NATGatewaySpecForProviderSubnetIDRef, default is Undefined, optional
@@ -451,7 +448,7 @@ schema Ec2AwsUpboundIoV1beta1NATGatewaySpecInitProvider:
     privateIp : str, default is Undefined, optional
         The private IPv4 address to assign to the NAT Gateway. If you don't provide an address, a private IPv4 address will be automatically assigned.
     secondaryAllocationIds : [str], default is Undefined, optional
-        A list of secondary allocation EIP IDs for this NAT Gateway.
+        A list of secondary allocation EIP IDs for this NAT Gateway. To remove all secondary allocations an empty list should be specified.
     secondaryAllocationIdsRefs : [Ec2AwsUpboundIoV1beta1NATGatewaySpecInitProviderSecondaryAllocationIdsRefsItems0], default is Undefined, optional
         References to EIP in ec2 to populate secondaryAllocationIds.
     secondaryAllocationIdsSelector : Ec2AwsUpboundIoV1beta1NATGatewaySpecInitProviderSecondaryAllocationIdsSelector, default is Undefined, optional
@@ -459,7 +456,7 @@ schema Ec2AwsUpboundIoV1beta1NATGatewaySpecInitProvider:
     secondaryPrivateIpAddressCount : float, default is Undefined, optional
         [Private NAT Gateway only] The number of secondary private IPv4 addresses you want to assign to the NAT Gateway.
     secondaryPrivateIpAddresses : [str], default is Undefined, optional
-        A list of secondary private IPv4 addresses to assign to the NAT Gateway.
+        A list of secondary private IPv4 addresses to assign to the NAT Gateway. To remove all secondary private addresses an empty list should be specified.
     subnetId : str, default is Undefined, optional
         The Subnet ID of the subnet in which to place the NAT Gateway.
     subnetIdRef : Ec2AwsUpboundIoV1beta1NATGatewaySpecInitProviderSubnetIDRef, default is Undefined, optional
@@ -811,112 +808,12 @@ schema Ec2AwsUpboundIoV1beta1NATGatewaySpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
-schema Ec2AwsUpboundIoV1beta1NATGatewaySpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : Ec2AwsUpboundIoV1beta1NATGatewaySpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : Ec2AwsUpboundIoV1beta1NATGatewaySpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: Ec2AwsUpboundIoV1beta1NATGatewaySpecPublishConnectionDetailsToConfigRef
-
-    metadata?: Ec2AwsUpboundIoV1beta1NATGatewaySpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema Ec2AwsUpboundIoV1beta1NATGatewaySpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : Ec2AwsUpboundIoV1beta1NATGatewaySpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: Ec2AwsUpboundIoV1beta1NATGatewaySpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema Ec2AwsUpboundIoV1beta1NATGatewaySpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema Ec2AwsUpboundIoV1beta1NATGatewaySpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema Ec2AwsUpboundIoV1beta1NATGatewaySpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------
@@ -976,12 +873,15 @@ schema Ec2AwsUpboundIoV1beta1NATGatewayStatusAtProvider:
         The private IPv4 address to assign to the NAT Gateway. If you don't provide an address, a private IPv4 address will be automatically assigned.
     publicIp : str, default is Undefined, optional
         The Elastic IP address associated with the NAT Gateway.
+    region : str, default is Undefined, optional
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
+        Region is the region you'd like your resource to be created in.
     secondaryAllocationIds : [str], default is Undefined, optional
-        A list of secondary allocation EIP IDs for this NAT Gateway.
+        A list of secondary allocation EIP IDs for this NAT Gateway. To remove all secondary allocations an empty list should be specified.
     secondaryPrivateIpAddressCount : float, default is Undefined, optional
         [Private NAT Gateway only] The number of secondary private IPv4 addresses you want to assign to the NAT Gateway.
     secondaryPrivateIpAddresses : [str], default is Undefined, optional
-        A list of secondary private IPv4 addresses to assign to the NAT Gateway.
+        A list of secondary private IPv4 addresses to assign to the NAT Gateway. To remove all secondary private addresses an empty list should be specified.
     subnetId : str, default is Undefined, optional
         The Subnet ID of the subnet in which to place the NAT Gateway.
     tags : {str:str}, default is Undefined, optional
@@ -1004,6 +904,8 @@ schema Ec2AwsUpboundIoV1beta1NATGatewayStatusAtProvider:
     privateIp?: str
 
     publicIp?: str
+
+    region?: str
 
     secondaryAllocationIds?: [str]
 

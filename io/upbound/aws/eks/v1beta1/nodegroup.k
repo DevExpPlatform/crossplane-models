@@ -66,6 +66,8 @@ schema EksAwsUpboundIoV1beta1NodeGroupSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : EksAwsUpboundIoV1beta1NodeGroupSpecProviderConfigRef, default is Undefined, optional
         provider config ref
+    publishConnectionDetailsTo : EksAwsUpboundIoV1beta1NodeGroupSpecPublishConnectionDetailsTo, default is Undefined, optional
+        publish connection details to
     writeConnectionSecretToRef : EksAwsUpboundIoV1beta1NodeGroupSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -81,6 +83,8 @@ schema EksAwsUpboundIoV1beta1NodeGroupSpec:
 
     providerConfigRef?: EksAwsUpboundIoV1beta1NodeGroupSpecProviderConfigRef
 
+    publishConnectionDetailsTo?: EksAwsUpboundIoV1beta1NodeGroupSpecPublishConnectionDetailsTo
+
     writeConnectionSecretToRef?: EksAwsUpboundIoV1beta1NodeGroupSpecWriteConnectionSecretToRef
 
 
@@ -95,7 +99,7 @@ schema EksAwsUpboundIoV1beta1NodeGroupSpecForProvider:
     capacityType : str, default is Undefined, optional
         Type of capacity associated with the EKS Node Group. Valid values: ON_DEMAND, SPOT.
     clusterName : str, default is Undefined, optional
-        Name of the EKS Cluster.
+        –  Name of the EKS Cluster.
     clusterNameRef : EksAwsUpboundIoV1beta1NodeGroupSpecForProviderClusterNameRef, default is Undefined, optional
         cluster name ref
     clusterNameSelector : EksAwsUpboundIoV1beta1NodeGroupSpecForProviderClusterNameSelector, default is Undefined, optional
@@ -110,19 +114,16 @@ schema EksAwsUpboundIoV1beta1NodeGroupSpecForProvider:
         Key-value map of Kubernetes labels. Only labels that are applied with the EKS API are managed by this argument. Other Kubernetes labels applied to the EKS Node Group will not be managed.
     launchTemplate : [EksAwsUpboundIoV1beta1NodeGroupSpecForProviderLaunchTemplateItems0], default is Undefined, optional
         Configuration block with Launch Template settings. See launch_template below for details. Conflicts with remote_access.
-    nodeRepairConfig : [EksAwsUpboundIoV1beta1NodeGroupSpecForProviderNodeRepairConfigItems0], default is Undefined, optional
-        The node auto repair configuration for the node group. See node_repair_config below for details.
     nodeRoleArn : str, default is Undefined, optional
-        Amazon Resource Name (ARN) of the IAM Role that provides permissions for the EKS Node Group.
+        –  Amazon Resource Name (ARN) of the IAM Role that provides permissions for the EKS Node Group.
     nodeRoleArnRef : EksAwsUpboundIoV1beta1NodeGroupSpecForProviderNodeRoleArnRef, default is Undefined, optional
         node role arn ref
     nodeRoleArnSelector : EksAwsUpboundIoV1beta1NodeGroupSpecForProviderNodeRoleArnSelector, default is Undefined, optional
         node role arn selector
     region : str, default is Undefined, required
-        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
     releaseVersion : str, default is Undefined, optional
-        AMI version of the EKS Node Group. Defaults to latest version for Kubernetes version.
+        –  AMI version of the EKS Node Group. Defaults to latest version for Kubernetes version.
     remoteAccess : [EksAwsUpboundIoV1beta1NodeGroupSpecForProviderRemoteAccessItems0], default is Undefined, optional
         Configuration block with remote access settings. See remote_access below for details. Conflicts with launch_template.
     scalingConfig : [EksAwsUpboundIoV1beta1NodeGroupSpecForProviderScalingConfigItems0], default is Undefined, optional
@@ -140,7 +141,7 @@ schema EksAwsUpboundIoV1beta1NodeGroupSpecForProvider:
     updateConfig : [EksAwsUpboundIoV1beta1NodeGroupSpecForProviderUpdateConfigItems0], default is Undefined, optional
         Configuration block with update settings. See update_config below for details.
     version : str, default is Undefined, optional
-        Kubernetes version. Defaults to EKS Cluster Kubernetes version.
+        –  Kubernetes version. Defaults to EKS Cluster Kubernetes version.
     versionRef : EksAwsUpboundIoV1beta1NodeGroupSpecForProviderVersionRef, default is Undefined, optional
         version ref
     versionSelector : EksAwsUpboundIoV1beta1NodeGroupSpecForProviderVersionSelector, default is Undefined, optional
@@ -167,8 +168,6 @@ schema EksAwsUpboundIoV1beta1NodeGroupSpecForProvider:
     labels?: {str:str}
 
     launchTemplate?: [EksAwsUpboundIoV1beta1NodeGroupSpecForProviderLaunchTemplateItems0]
-
-    nodeRepairConfig?: [EksAwsUpboundIoV1beta1NodeGroupSpecForProviderNodeRepairConfigItems0]
 
     nodeRoleArn?: str
 
@@ -303,7 +302,7 @@ schema EksAwsUpboundIoV1beta1NodeGroupSpecForProviderLaunchTemplateItems0:
     name : str, default is Undefined, optional
         Name of the EC2 Launch Template. Conflicts with id.
     version : str, default is Undefined, optional
-        EC2 Launch Template version number.
+        EC2 Launch Template version number. While the API accepts values like $Default and $Latest, the API will convert the value to the associated version number (e.g., 1). Using the default_version or latest_version attribute of the aws_launch_template resource or data source is recommended for this argument.
     """
 
 
@@ -312,20 +311,6 @@ schema EksAwsUpboundIoV1beta1NodeGroupSpecForProviderLaunchTemplateItems0:
     name?: str
 
     version?: str
-
-
-schema EksAwsUpboundIoV1beta1NodeGroupSpecForProviderNodeRepairConfigItems0:
-    r"""
-    eks aws upbound io v1beta1 node group spec for provider node repair config items0
-
-    Attributes
-    ----------
-    enabled : bool, default is Undefined, optional
-        Specifies whether to enable node auto repair for the node group. Node auto repair is disabled by default.
-    """
-
-
-    enabled?: bool
 
 
 schema EksAwsUpboundIoV1beta1NodeGroupSpecForProviderNodeRoleArnRef:
@@ -801,16 +786,14 @@ schema EksAwsUpboundIoV1beta1NodeGroupSpecInitProvider:
         Key-value map of Kubernetes labels. Only labels that are applied with the EKS API are managed by this argument. Other Kubernetes labels applied to the EKS Node Group will not be managed.
     launchTemplate : [EksAwsUpboundIoV1beta1NodeGroupSpecInitProviderLaunchTemplateItems0], default is Undefined, optional
         Configuration block with Launch Template settings. See launch_template below for details. Conflicts with remote_access.
-    nodeRepairConfig : [EksAwsUpboundIoV1beta1NodeGroupSpecInitProviderNodeRepairConfigItems0], default is Undefined, optional
-        The node auto repair configuration for the node group. See node_repair_config below for details.
     nodeRoleArn : str, default is Undefined, optional
-        Amazon Resource Name (ARN) of the IAM Role that provides permissions for the EKS Node Group.
+        –  Amazon Resource Name (ARN) of the IAM Role that provides permissions for the EKS Node Group.
     nodeRoleArnRef : EksAwsUpboundIoV1beta1NodeGroupSpecInitProviderNodeRoleArnRef, default is Undefined, optional
         node role arn ref
     nodeRoleArnSelector : EksAwsUpboundIoV1beta1NodeGroupSpecInitProviderNodeRoleArnSelector, default is Undefined, optional
         node role arn selector
     releaseVersion : str, default is Undefined, optional
-        AMI version of the EKS Node Group. Defaults to latest version for Kubernetes version.
+        –  AMI version of the EKS Node Group. Defaults to latest version for Kubernetes version.
     remoteAccess : [EksAwsUpboundIoV1beta1NodeGroupSpecInitProviderRemoteAccessItems0], default is Undefined, optional
         Configuration block with remote access settings. See remote_access below for details. Conflicts with launch_template.
     scalingConfig : [EksAwsUpboundIoV1beta1NodeGroupSpecInitProviderScalingConfigItems0], default is Undefined, optional
@@ -828,7 +811,7 @@ schema EksAwsUpboundIoV1beta1NodeGroupSpecInitProvider:
     updateConfig : [EksAwsUpboundIoV1beta1NodeGroupSpecInitProviderUpdateConfigItems0], default is Undefined, optional
         Configuration block with update settings. See update_config below for details.
     version : str, default is Undefined, optional
-        Kubernetes version. Defaults to EKS Cluster Kubernetes version.
+        –  Kubernetes version. Defaults to EKS Cluster Kubernetes version.
     versionRef : EksAwsUpboundIoV1beta1NodeGroupSpecInitProviderVersionRef, default is Undefined, optional
         version ref
     versionSelector : EksAwsUpboundIoV1beta1NodeGroupSpecInitProviderVersionSelector, default is Undefined, optional
@@ -849,8 +832,6 @@ schema EksAwsUpboundIoV1beta1NodeGroupSpecInitProvider:
     labels?: {str:str}
 
     launchTemplate?: [EksAwsUpboundIoV1beta1NodeGroupSpecInitProviderLaunchTemplateItems0]
-
-    nodeRepairConfig?: [EksAwsUpboundIoV1beta1NodeGroupSpecInitProviderNodeRepairConfigItems0]
 
     nodeRoleArn?: str
 
@@ -894,7 +875,7 @@ schema EksAwsUpboundIoV1beta1NodeGroupSpecInitProviderLaunchTemplateItems0:
     name : str, default is Undefined, optional
         Name of the EC2 Launch Template. Conflicts with id.
     version : str, default is Undefined, optional
-        EC2 Launch Template version number.
+        EC2 Launch Template version number. While the API accepts values like $Default and $Latest, the API will convert the value to the associated version number (e.g., 1). Using the default_version or latest_version attribute of the aws_launch_template resource or data source is recommended for this argument.
     """
 
 
@@ -903,20 +884,6 @@ schema EksAwsUpboundIoV1beta1NodeGroupSpecInitProviderLaunchTemplateItems0:
     name?: str
 
     version?: str
-
-
-schema EksAwsUpboundIoV1beta1NodeGroupSpecInitProviderNodeRepairConfigItems0:
-    r"""
-    eks aws upbound io v1beta1 node group spec init provider node repair config items0
-
-    Attributes
-    ----------
-    enabled : bool, default is Undefined, optional
-        Specifies whether to enable node auto repair for the node group. Node auto repair is disabled by default.
-    """
-
-
-    enabled?: bool
 
 
 schema EksAwsUpboundIoV1beta1NodeGroupSpecInitProviderNodeRoleArnRef:
@@ -1407,12 +1374,112 @@ schema EksAwsUpboundIoV1beta1NodeGroupSpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
+schema EksAwsUpboundIoV1beta1NodeGroupSpecPublishConnectionDetailsTo:
+    r"""
+    PublishConnectionDetailsTo specifies the connection secret config which
+    contains a name, metadata and a reference to secret store config to
+    which any connection details for this managed resource should be written.
+    Connection details frequently include the endpoint, username,
+    and password required to connect to the managed resource.
+
+    Attributes
+    ----------
+    configRef : EksAwsUpboundIoV1beta1NodeGroupSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
+        config ref
+    metadata : EksAwsUpboundIoV1beta1NodeGroupSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
+        metadata
+    name : str, default is Undefined, required
+        Name is the name of the connection secret.
+    """
+
+
+    configRef?: EksAwsUpboundIoV1beta1NodeGroupSpecPublishConnectionDetailsToConfigRef
+
+    metadata?: EksAwsUpboundIoV1beta1NodeGroupSpecPublishConnectionDetailsToMetadata
+
+    name: str
+
+
+schema EksAwsUpboundIoV1beta1NodeGroupSpecPublishConnectionDetailsToConfigRef:
+    r"""
+    SecretStoreConfigRef specifies which secret store config should be used
+    for this ConnectionSecret.
+
+    Attributes
+    ----------
+    name : str, default is Undefined, required
+        Name of the referenced object.
+    policy : EksAwsUpboundIoV1beta1NodeGroupSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    name: str
+
+    policy?: EksAwsUpboundIoV1beta1NodeGroupSpecPublishConnectionDetailsToConfigRefPolicy
+
+
+schema EksAwsUpboundIoV1beta1NodeGroupSpecPublishConnectionDetailsToConfigRefPolicy:
+    r"""
+    Policies for referencing.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
+schema EksAwsUpboundIoV1beta1NodeGroupSpecPublishConnectionDetailsToMetadata:
+    r"""
+    Metadata is the metadata for connection secret.
+
+    Attributes
+    ----------
+    annotations : {str:str}, default is Undefined, optional
+        Annotations are the annotations to be added to connection secret.
+        - For Kubernetes secrets, this will be used as "metadata.annotations".
+        - It is up to Secret Store implementation for others store types.
+    labels : {str:str}, default is Undefined, optional
+        Labels are the labels/tags to be added to connection secret.
+        - For Kubernetes secrets, this will be used as "metadata.labels".
+        - It is up to Secret Store implementation for others store types.
+    $type : str, default is Undefined, optional
+        Type is the SecretType for the connection secret.
+        - Only valid for Kubernetes Secret Stores.
+    """
+
+
+    annotations?: {str:str}
+
+    labels?: {str:str}
+
+    $type?: str
+
+
 schema EksAwsUpboundIoV1beta1NodeGroupSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
+    This field is planned to be replaced in a future release in favor of
+    PublishConnectionDetailsTo. Currently, both could be set independently
+    and connection details would be published to both without affecting
+    each other.
 
     Attributes
     ----------
@@ -1465,7 +1532,7 @@ schema EksAwsUpboundIoV1beta1NodeGroupStatusAtProvider:
     capacityType : str, default is Undefined, optional
         Type of capacity associated with the EKS Node Group. Valid values: ON_DEMAND, SPOT.
     clusterName : str, default is Undefined, optional
-        Name of the EKS Cluster.
+        –  Name of the EKS Cluster.
     diskSize : float, default is Undefined, optional
         Disk size in GiB for worker nodes. Defaults to 50 for Windows, 20 all other node groups.
     forceUpdateVersion : bool, default is Undefined, optional
@@ -1478,15 +1545,10 @@ schema EksAwsUpboundIoV1beta1NodeGroupStatusAtProvider:
         Key-value map of Kubernetes labels. Only labels that are applied with the EKS API are managed by this argument. Other Kubernetes labels applied to the EKS Node Group will not be managed.
     launchTemplate : [EksAwsUpboundIoV1beta1NodeGroupStatusAtProviderLaunchTemplateItems0], default is Undefined, optional
         Configuration block with Launch Template settings. See launch_template below for details. Conflicts with remote_access.
-    nodeRepairConfig : [EksAwsUpboundIoV1beta1NodeGroupStatusAtProviderNodeRepairConfigItems0], default is Undefined, optional
-        The node auto repair configuration for the node group. See node_repair_config below for details.
     nodeRoleArn : str, default is Undefined, optional
-        Amazon Resource Name (ARN) of the IAM Role that provides permissions for the EKS Node Group.
-    region : str, default is Undefined, optional
-        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
-        Region is the region you'd like your resource to be created in.
+        –  Amazon Resource Name (ARN) of the IAM Role that provides permissions for the EKS Node Group.
     releaseVersion : str, default is Undefined, optional
-        AMI version of the EKS Node Group. Defaults to latest version for Kubernetes version.
+        –  AMI version of the EKS Node Group. Defaults to latest version for Kubernetes version.
     remoteAccess : [EksAwsUpboundIoV1beta1NodeGroupStatusAtProviderRemoteAccessItems0], default is Undefined, optional
         Configuration block with remote access settings. See remote_access below for details. Conflicts with launch_template.
     resources : [EksAwsUpboundIoV1beta1NodeGroupStatusAtProviderResourcesItems0], default is Undefined, optional
@@ -1506,7 +1568,7 @@ schema EksAwsUpboundIoV1beta1NodeGroupStatusAtProvider:
     updateConfig : [EksAwsUpboundIoV1beta1NodeGroupStatusAtProviderUpdateConfigItems0], default is Undefined, optional
         Configuration block with update settings. See update_config below for details.
     version : str, default is Undefined, optional
-        Kubernetes version. Defaults to EKS Cluster Kubernetes version.
+        –  Kubernetes version. Defaults to EKS Cluster Kubernetes version.
     """
 
 
@@ -1530,11 +1592,7 @@ schema EksAwsUpboundIoV1beta1NodeGroupStatusAtProvider:
 
     launchTemplate?: [EksAwsUpboundIoV1beta1NodeGroupStatusAtProviderLaunchTemplateItems0]
 
-    nodeRepairConfig?: [EksAwsUpboundIoV1beta1NodeGroupStatusAtProviderNodeRepairConfigItems0]
-
     nodeRoleArn?: str
-
-    region?: str
 
     releaseVersion?: str
 
@@ -1570,7 +1628,7 @@ schema EksAwsUpboundIoV1beta1NodeGroupStatusAtProviderLaunchTemplateItems0:
     name : str, default is Undefined, optional
         Name of the EC2 Launch Template. Conflicts with id.
     version : str, default is Undefined, optional
-        EC2 Launch Template version number.
+        EC2 Launch Template version number. While the API accepts values like $Default and $Latest, the API will convert the value to the associated version number (e.g., 1). Using the default_version or latest_version attribute of the aws_launch_template resource or data source is recommended for this argument.
     """
 
 
@@ -1579,20 +1637,6 @@ schema EksAwsUpboundIoV1beta1NodeGroupStatusAtProviderLaunchTemplateItems0:
     name?: str
 
     version?: str
-
-
-schema EksAwsUpboundIoV1beta1NodeGroupStatusAtProviderNodeRepairConfigItems0:
-    r"""
-    eks aws upbound io v1beta1 node group status at provider node repair config items0
-
-    Attributes
-    ----------
-    enabled : bool, default is Undefined, optional
-        Specifies whether to enable node auto repair for the node group. Node auto repair is disabled by default.
-    """
-
-
-    enabled?: bool
 
 
 schema EksAwsUpboundIoV1beta1NodeGroupStatusAtProviderRemoteAccessItems0:

@@ -66,8 +66,6 @@ schema NetworkAzureUpboundIoV1beta2DNSZoneSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : NetworkAzureUpboundIoV1beta2DNSZoneSpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : NetworkAzureUpboundIoV1beta2DNSZoneSpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : NetworkAzureUpboundIoV1beta2DNSZoneSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -82,8 +80,6 @@ schema NetworkAzureUpboundIoV1beta2DNSZoneSpec:
     managementPolicies?: [str] = ["*"]
 
     providerConfigRef?: NetworkAzureUpboundIoV1beta2DNSZoneSpecProviderConfigRef
-
-    publishConnectionDetailsTo?: NetworkAzureUpboundIoV1beta2DNSZoneSpecPublishConnectionDetailsTo
 
     writeConnectionSecretToRef?: NetworkAzureUpboundIoV1beta2DNSZoneSpecWriteConnectionSecretToRef
 
@@ -217,8 +213,6 @@ schema NetworkAzureUpboundIoV1beta2DNSZoneSpecForProviderSoaRecord:
         The email contact for the SOA record.
     expireTime : float, default is Undefined, optional
         The expire time for the SOA record. Defaults to 2419200.
-    hostName : str, default is Undefined, optional
-        The domain name of the authoritative name server for the SOA record. If not set, computed value from Azure will be used.
     minimumTtl : float, default is Undefined, optional
         The minimum Time To Live for the SOA record. By convention, it is used to determine the negative caching duration. Defaults to 300.
     refreshTime : float, default is Undefined, optional
@@ -237,8 +231,6 @@ schema NetworkAzureUpboundIoV1beta2DNSZoneSpecForProviderSoaRecord:
     email?: str
 
     expireTime?: float
-
-    hostName?: str
 
     minimumTtl?: float
 
@@ -290,8 +282,6 @@ schema NetworkAzureUpboundIoV1beta2DNSZoneSpecInitProviderSoaRecord:
         The email contact for the SOA record.
     expireTime : float, default is Undefined, optional
         The expire time for the SOA record. Defaults to 2419200.
-    hostName : str, default is Undefined, optional
-        The domain name of the authoritative name server for the SOA record. If not set, computed value from Azure will be used.
     minimumTtl : float, default is Undefined, optional
         The minimum Time To Live for the SOA record. By convention, it is used to determine the negative caching duration. Defaults to 300.
     refreshTime : float, default is Undefined, optional
@@ -310,8 +300,6 @@ schema NetworkAzureUpboundIoV1beta2DNSZoneSpecInitProviderSoaRecord:
     email?: str
 
     expireTime?: float
-
-    hostName?: str
 
     minimumTtl?: float
 
@@ -370,112 +358,12 @@ schema NetworkAzureUpboundIoV1beta2DNSZoneSpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
-schema NetworkAzureUpboundIoV1beta2DNSZoneSpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : NetworkAzureUpboundIoV1beta2DNSZoneSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : NetworkAzureUpboundIoV1beta2DNSZoneSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: NetworkAzureUpboundIoV1beta2DNSZoneSpecPublishConnectionDetailsToConfigRef
-
-    metadata?: NetworkAzureUpboundIoV1beta2DNSZoneSpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema NetworkAzureUpboundIoV1beta2DNSZoneSpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : NetworkAzureUpboundIoV1beta2DNSZoneSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: NetworkAzureUpboundIoV1beta2DNSZoneSpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema NetworkAzureUpboundIoV1beta2DNSZoneSpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema NetworkAzureUpboundIoV1beta2DNSZoneSpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema NetworkAzureUpboundIoV1beta2DNSZoneSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------

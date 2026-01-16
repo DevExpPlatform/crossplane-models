@@ -78,6 +78,8 @@ schema NetworkAzuremUpboundIoV1beta1VirtualHubSpecForProvider:
     ----------
     addressPrefix : str, default is Undefined, optional
         The Address Prefix which should be used for this Virtual Hub. Changing this forces a new resource to be created. The address prefix subnet cannot be smaller than a .
+    branchToBranchTrafficEnabled : bool, default is Undefined, optional
+        Boolean flag to specify whether branch to branch traffic is allowed. Defaults to false.
     hubRoutingPreference : str, default is Undefined, optional
         The hub routing preference. Possible values are ExpressRoute, ASPath and VpnGateway. Defaults to ExpressRoute.
     location : str, default is Undefined, optional
@@ -106,6 +108,8 @@ schema NetworkAzuremUpboundIoV1beta1VirtualHubSpecForProvider:
 
 
     addressPrefix?: str
+
+    branchToBranchTrafficEnabled?: bool
 
     hubRoutingPreference?: str
 
@@ -361,6 +365,8 @@ schema NetworkAzuremUpboundIoV1beta1VirtualHubSpecInitProvider:
     ----------
     addressPrefix : str, default is Undefined, optional
         The Address Prefix which should be used for this Virtual Hub. Changing this forces a new resource to be created. The address prefix subnet cannot be smaller than a .
+    branchToBranchTrafficEnabled : bool, default is Undefined, optional
+        Boolean flag to specify whether branch to branch traffic is allowed. Defaults to false.
     hubRoutingPreference : str, default is Undefined, optional
         The hub routing preference. Possible values are ExpressRoute, ASPath and VpnGateway. Defaults to ExpressRoute.
     location : str, default is Undefined, optional
@@ -383,6 +389,8 @@ schema NetworkAzuremUpboundIoV1beta1VirtualHubSpecInitProvider:
 
 
     addressPrefix?: str
+
+    branchToBranchTrafficEnabled?: bool
 
     hubRoutingPreference?: str
 
@@ -587,6 +595,8 @@ schema NetworkAzuremUpboundIoV1beta1VirtualHubStatusAtProvider:
     ----------
     addressPrefix : str, default is Undefined, optional
         The Address Prefix which should be used for this Virtual Hub. Changing this forces a new resource to be created. The address prefix subnet cannot be smaller than a .
+    branchToBranchTrafficEnabled : bool, default is Undefined, optional
+        Boolean flag to specify whether branch to branch traffic is allowed. Defaults to false.
     defaultRouteTableId : str, default is Undefined, optional
         The ID of the default Route Table in the Virtual Hub.
     hubRoutingPreference : str, default is Undefined, optional
@@ -615,6 +625,8 @@ schema NetworkAzuremUpboundIoV1beta1VirtualHubStatusAtProvider:
 
 
     addressPrefix?: str
+
+    branchToBranchTrafficEnabled?: bool
 
     defaultRouteTableId?: str
 

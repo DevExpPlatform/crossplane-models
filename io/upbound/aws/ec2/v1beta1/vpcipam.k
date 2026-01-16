@@ -66,8 +66,6 @@ schema Ec2AwsUpboundIoV1beta1VPCIpamSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : Ec2AwsUpboundIoV1beta1VPCIpamSpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : Ec2AwsUpboundIoV1beta1VPCIpamSpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : Ec2AwsUpboundIoV1beta1VPCIpamSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -82,8 +80,6 @@ schema Ec2AwsUpboundIoV1beta1VPCIpamSpec:
     managementPolicies?: [str] = ["*"]
 
     providerConfigRef?: Ec2AwsUpboundIoV1beta1VPCIpamSpecProviderConfigRef
-
-    publishConnectionDetailsTo?: Ec2AwsUpboundIoV1beta1VPCIpamSpecPublishConnectionDetailsTo
 
     writeConnectionSecretToRef?: Ec2AwsUpboundIoV1beta1VPCIpamSpecWriteConnectionSecretToRef
 
@@ -100,9 +96,12 @@ schema Ec2AwsUpboundIoV1beta1VPCIpamSpecForProvider:
         A description for the IPAM.
     enablePrivateGua : bool, default is Undefined, optional
         Enable this option to use your own GUA ranges as private IPv6 addresses. Default: false.
+    meteredAccount : str, default is Undefined, optional
+        AWS account that is charged for active IP addresses managed in IPAM. Valid values are ipam-owner (default) and resource-owner.
     operatingRegions : [Ec2AwsUpboundIoV1beta1VPCIpamSpecForProviderOperatingRegionsItems0], default is Undefined, optional
         Determines which locales can be chosen when you create pools. Locale is the Region where you want to make an IPAM pool available for allocations. You can only create pools with locales that match the operating Regions of the IPAM. You can only create VPCs from a pool whose locale matches the VPC's Region. You specify a region using the region_name parameter. You must set your provider block region as an operating_region.
     region : str, default is Undefined, required
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
     tags : {str:str}, default is Undefined, optional
         Key-value map of resource tags.
@@ -116,6 +115,8 @@ schema Ec2AwsUpboundIoV1beta1VPCIpamSpecForProvider:
     description?: str
 
     enablePrivateGua?: bool
+
+    meteredAccount?: str
 
     operatingRegions?: [Ec2AwsUpboundIoV1beta1VPCIpamSpecForProviderOperatingRegionsItems0]
 
@@ -161,6 +162,8 @@ schema Ec2AwsUpboundIoV1beta1VPCIpamSpecInitProvider:
         A description for the IPAM.
     enablePrivateGua : bool, default is Undefined, optional
         Enable this option to use your own GUA ranges as private IPv6 addresses. Default: false.
+    meteredAccount : str, default is Undefined, optional
+        AWS account that is charged for active IP addresses managed in IPAM. Valid values are ipam-owner (default) and resource-owner.
     operatingRegions : [Ec2AwsUpboundIoV1beta1VPCIpamSpecInitProviderOperatingRegionsItems0], default is Undefined, optional
         Determines which locales can be chosen when you create pools. Locale is the Region where you want to make an IPAM pool available for allocations. You can only create pools with locales that match the operating Regions of the IPAM. You can only create VPCs from a pool whose locale matches the VPC's Region. You specify a region using the region_name parameter. You must set your provider block region as an operating_region.
     tags : {str:str}, default is Undefined, optional
@@ -175,6 +178,8 @@ schema Ec2AwsUpboundIoV1beta1VPCIpamSpecInitProvider:
     description?: str
 
     enablePrivateGua?: bool
+
+    meteredAccount?: str
 
     operatingRegions?: [Ec2AwsUpboundIoV1beta1VPCIpamSpecInitProviderOperatingRegionsItems0]
 
@@ -241,112 +246,12 @@ schema Ec2AwsUpboundIoV1beta1VPCIpamSpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
-schema Ec2AwsUpboundIoV1beta1VPCIpamSpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : Ec2AwsUpboundIoV1beta1VPCIpamSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : Ec2AwsUpboundIoV1beta1VPCIpamSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: Ec2AwsUpboundIoV1beta1VPCIpamSpecPublishConnectionDetailsToConfigRef
-
-    metadata?: Ec2AwsUpboundIoV1beta1VPCIpamSpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema Ec2AwsUpboundIoV1beta1VPCIpamSpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : Ec2AwsUpboundIoV1beta1VPCIpamSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: Ec2AwsUpboundIoV1beta1VPCIpamSpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema Ec2AwsUpboundIoV1beta1VPCIpamSpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema Ec2AwsUpboundIoV1beta1VPCIpamSpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema Ec2AwsUpboundIoV1beta1VPCIpamSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------
@@ -406,6 +311,8 @@ schema Ec2AwsUpboundIoV1beta1VPCIpamStatusAtProvider:
         Enable this option to use your own GUA ranges as private IPv6 addresses. Default: false.
     id : str, default is Undefined, optional
         The ID of the IPAM
+    meteredAccount : str, default is Undefined, optional
+        AWS account that is charged for active IP addresses managed in IPAM. Valid values are ipam-owner (default) and resource-owner.
     operatingRegions : [Ec2AwsUpboundIoV1beta1VPCIpamStatusAtProviderOperatingRegionsItems0], default is Undefined, optional
         Determines which locales can be chosen when you create pools. Locale is the Region where you want to make an IPAM pool available for allocations. You can only create pools with locales that match the operating Regions of the IPAM. You can only create VPCs from a pool whose locale matches the VPC's Region. You specify a region using the region_name parameter. You must set your provider block region as an operating_region.
     privateDefaultScopeId : str, default is Undefined, optional
@@ -413,6 +320,9 @@ schema Ec2AwsUpboundIoV1beta1VPCIpamStatusAtProvider:
     publicDefaultScopeId : str, default is Undefined, optional
         The ID of the IPAM's public scope. A scope is a top-level container in IPAM. Each scope represents an IP-independent network. Scopes enable you to represent networks where you have overlapping IP space. When you create an IPAM, IPAM automatically creates two scopes: public and private. The private scope is intended for private
         IP space. The public scope is intended for all internet-routable IP space.
+    region : str, default is Undefined, optional
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
+        Region is the region you'd like your resource to be created in.
     scopeCount : float, default is Undefined, optional
         The number of scopes in the IPAM.
     tags : {str:str}, default is Undefined, optional
@@ -438,11 +348,15 @@ schema Ec2AwsUpboundIoV1beta1VPCIpamStatusAtProvider:
 
     id?: str
 
+    meteredAccount?: str
+
     operatingRegions?: [Ec2AwsUpboundIoV1beta1VPCIpamStatusAtProviderOperatingRegionsItems0]
 
     privateDefaultScopeId?: str
 
     publicDefaultScopeId?: str
+
+    region?: str
 
     scopeCount?: float
 

@@ -66,8 +66,6 @@ schema NetworkAzureUpboundIoV1beta1BastionHostSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : NetworkAzureUpboundIoV1beta1BastionHostSpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : NetworkAzureUpboundIoV1beta1BastionHostSpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : NetworkAzureUpboundIoV1beta1BastionHostSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -82,8 +80,6 @@ schema NetworkAzureUpboundIoV1beta1BastionHostSpec:
     managementPolicies?: [str] = ["*"]
 
     providerConfigRef?: NetworkAzureUpboundIoV1beta1BastionHostSpecProviderConfigRef
-
-    publishConnectionDetailsTo?: NetworkAzureUpboundIoV1beta1BastionHostSpecPublishConnectionDetailsTo
 
     writeConnectionSecretToRef?: NetworkAzureUpboundIoV1beta1BastionHostSpecWriteConnectionSecretToRef
 
@@ -114,16 +110,20 @@ schema NetworkAzureUpboundIoV1beta1BastionHostSpecForProvider:
         resource group name selector
     scaleUnits : float, default is Undefined, optional
         The number of scale units with which to provision the Bastion Host. Possible values are between 2 and 50. Defaults to 2.
+    sessionRecordingEnabled : bool, default is Undefined, optional
+        Is Session Recording feature enabled for the Bastion Host. Defaults to false.
     shareableLinkEnabled : bool, default is Undefined, optional
         Is Shareable Link feature enabled for the Bastion Host. Defaults to false.
     sku : str, default is Undefined, optional
-        The SKU of the Bastion Host. Accepted values are Developer, Basic and Standard. Defaults to Basic.
+        The SKU of the Bastion Host. Accepted values are Developer, Basic, Standard and Premium. Defaults to Basic.
     tags : {str:str}, default is Undefined, optional
         A mapping of tags to assign to the resource.
     tunnelingEnabled : bool, default is Undefined, optional
         Is Tunneling feature enabled for the Bastion Host. Defaults to false.
     virtualNetworkId : str, default is Undefined, optional
         The ID of the Virtual Network for the Developer Bastion Host. Changing this forces a new resource to be created.
+    zones : [str], default is Undefined, optional
+        Specifies a list of Availability Zones in which this Public Bastion Host should be located. Changing this forces a new resource to be created.
     """
 
 
@@ -147,6 +147,8 @@ schema NetworkAzureUpboundIoV1beta1BastionHostSpecForProvider:
 
     scaleUnits?: float
 
+    sessionRecordingEnabled?: bool
+
     shareableLinkEnabled?: bool
 
     sku?: str
@@ -156,6 +158,8 @@ schema NetworkAzureUpboundIoV1beta1BastionHostSpecForProvider:
     tunnelingEnabled?: bool
 
     virtualNetworkId?: str
+
+    zones?: [str]
 
 
 schema NetworkAzureUpboundIoV1beta1BastionHostSpecForProviderIPConfiguration:
@@ -492,16 +496,20 @@ schema NetworkAzureUpboundIoV1beta1BastionHostSpecInitProvider:
         Specifies the supported Azure location where the resource exists. Changing this forces a new resource to be created. Review Azure Bastion Host FAQ for supported locations.
     scaleUnits : float, default is Undefined, optional
         The number of scale units with which to provision the Bastion Host. Possible values are between 2 and 50. Defaults to 2.
+    sessionRecordingEnabled : bool, default is Undefined, optional
+        Is Session Recording feature enabled for the Bastion Host. Defaults to false.
     shareableLinkEnabled : bool, default is Undefined, optional
         Is Shareable Link feature enabled for the Bastion Host. Defaults to false.
     sku : str, default is Undefined, optional
-        The SKU of the Bastion Host. Accepted values are Developer, Basic and Standard. Defaults to Basic.
+        The SKU of the Bastion Host. Accepted values are Developer, Basic, Standard and Premium. Defaults to Basic.
     tags : {str:str}, default is Undefined, optional
         A mapping of tags to assign to the resource.
     tunnelingEnabled : bool, default is Undefined, optional
         Is Tunneling feature enabled for the Bastion Host. Defaults to false.
     virtualNetworkId : str, default is Undefined, optional
         The ID of the Virtual Network for the Developer Bastion Host. Changing this forces a new resource to be created.
+    zones : [str], default is Undefined, optional
+        Specifies a list of Availability Zones in which this Public Bastion Host should be located. Changing this forces a new resource to be created.
     """
 
 
@@ -519,6 +527,8 @@ schema NetworkAzureUpboundIoV1beta1BastionHostSpecInitProvider:
 
     scaleUnits?: float
 
+    sessionRecordingEnabled?: bool
+
     shareableLinkEnabled?: bool
 
     sku?: str
@@ -528,6 +538,8 @@ schema NetworkAzureUpboundIoV1beta1BastionHostSpecInitProvider:
     tunnelingEnabled?: bool
 
     virtualNetworkId?: str
+
+    zones?: [str]
 
 
 schema NetworkAzureUpboundIoV1beta1BastionHostSpecInitProviderIPConfiguration:
@@ -790,112 +802,12 @@ schema NetworkAzureUpboundIoV1beta1BastionHostSpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
-schema NetworkAzureUpboundIoV1beta1BastionHostSpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : NetworkAzureUpboundIoV1beta1BastionHostSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : NetworkAzureUpboundIoV1beta1BastionHostSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: NetworkAzureUpboundIoV1beta1BastionHostSpecPublishConnectionDetailsToConfigRef
-
-    metadata?: NetworkAzureUpboundIoV1beta1BastionHostSpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema NetworkAzureUpboundIoV1beta1BastionHostSpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : NetworkAzureUpboundIoV1beta1BastionHostSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: NetworkAzureUpboundIoV1beta1BastionHostSpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema NetworkAzureUpboundIoV1beta1BastionHostSpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema NetworkAzureUpboundIoV1beta1BastionHostSpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema NetworkAzureUpboundIoV1beta1BastionHostSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------
@@ -961,16 +873,20 @@ schema NetworkAzureUpboundIoV1beta1BastionHostStatusAtProvider:
         The name of the resource group in which to create the Bastion Host. Changing this forces a new resource to be created.
     scaleUnits : float, default is Undefined, optional
         The number of scale units with which to provision the Bastion Host. Possible values are between 2 and 50. Defaults to 2.
+    sessionRecordingEnabled : bool, default is Undefined, optional
+        Is Session Recording feature enabled for the Bastion Host. Defaults to false.
     shareableLinkEnabled : bool, default is Undefined, optional
         Is Shareable Link feature enabled for the Bastion Host. Defaults to false.
     sku : str, default is Undefined, optional
-        The SKU of the Bastion Host. Accepted values are Developer, Basic and Standard. Defaults to Basic.
+        The SKU of the Bastion Host. Accepted values are Developer, Basic, Standard and Premium. Defaults to Basic.
     tags : {str:str}, default is Undefined, optional
         A mapping of tags to assign to the resource.
     tunnelingEnabled : bool, default is Undefined, optional
         Is Tunneling feature enabled for the Bastion Host. Defaults to false.
     virtualNetworkId : str, default is Undefined, optional
         The ID of the Virtual Network for the Developer Bastion Host. Changing this forces a new resource to be created.
+    zones : [str], default is Undefined, optional
+        Specifies a list of Availability Zones in which this Public Bastion Host should be located. Changing this forces a new resource to be created.
     """
 
 
@@ -994,6 +910,8 @@ schema NetworkAzureUpboundIoV1beta1BastionHostStatusAtProvider:
 
     scaleUnits?: float
 
+    sessionRecordingEnabled?: bool
+
     shareableLinkEnabled?: bool
 
     sku?: str
@@ -1003,6 +921,8 @@ schema NetworkAzureUpboundIoV1beta1BastionHostStatusAtProvider:
     tunnelingEnabled?: bool
 
     virtualNetworkId?: str
+
+    zones?: [str]
 
 
 schema NetworkAzureUpboundIoV1beta1BastionHostStatusAtProviderIPConfiguration:

@@ -78,6 +78,8 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProvider:
     ----------
     aciConnectorLinux : ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderAciConnectorLinux, default is Undefined, optional
         aci connector linux
+    aiToolchainOperatorEnabled : bool, default is Undefined, optional
+        Specifies whether the AI Toolchain Operator should be enabled for the Cluster. Defaults to false.
     apiServerAccessProfile : ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderAPIServerAccessProfile, default is Undefined, optional
         api server access profile
     autoScalerProfile : ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderAutoScalerProfile, default is Undefined, optional
@@ -88,10 +90,14 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProvider:
         azure active directory role based access control
     azurePolicyEnabled : bool, default is Undefined, optional
         Should the Azure Policy Add-On be enabled? For more details please visit Understand Azure Policy for Azure Kubernetes Service
+    bootstrapProfile : ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderBootstrapProfile, default is Undefined, optional
+        bootstrap profile
     confidentialComputing : ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderConfidentialComputing, default is Undefined, optional
         confidential computing
     costAnalysisEnabled : bool, default is Undefined, optional
         Should cost analysis be enabled for this Kubernetes Cluster? Defaults to false. The sku_tier must be set to Standard or Premium to enable this feature. Enabling this will add Kubernetes Namespace and Deployment details to the Cost Analysis views in the Azure portal.
+    customCaTrustCertificatesBase64 : [str], default is Undefined, optional
+        A list of up to 10 base64 encoded CA certificates that will be added to the trust store on nodes.
     defaultNodePool : ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderDefaultNodePool, default is Undefined, optional
         default node pool
     diskEncryptionSetId : str, default is Undefined, optional
@@ -111,7 +117,7 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProvider:
     imageCleanerEnabled : bool, default is Undefined, optional
         Specifies whether Image Cleaner is enabled.
     imageCleanerIntervalHours : float, default is Undefined, optional
-        Specifies the interval in hours when images should be cleaned up. Defaults to 0.
+        Specifies the interval in hours when images should be cleaned up.
     ingressApplicationGateway : ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderIngressApplicationGateway, default is Undefined, optional
         ingress application gateway
     keyManagementService : ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderKeyManagementService, default is Undefined, optional
@@ -197,6 +203,8 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProvider:
 
     aciConnectorLinux?: ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderAciConnectorLinux
 
+    aiToolchainOperatorEnabled?: bool
+
     apiServerAccessProfile?: ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderAPIServerAccessProfile
 
     autoScalerProfile?: ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderAutoScalerProfile
@@ -207,9 +215,13 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProvider:
 
     azurePolicyEnabled?: bool
 
+    bootstrapProfile?: ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderBootstrapProfile
+
     confidentialComputing?: ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderConfidentialComputing
 
     costAnalysisEnabled?: bool
+
+    customCaTrustCertificatesBase64?: [str]
 
     defaultNodePool?: ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderDefaultNodePool
 
@@ -320,10 +332,123 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderAPI
     ----------
     authorizedIpRanges : [str], default is Undefined, optional
         Set of authorized IP ranges to allow access to API server, e.g. ["198.51.100.0/24"].
+    subnetId : str, default is Undefined, optional
+        The ID of the Subnet where the API server endpoint is delegated to.
+    subnetIdRef : ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderAPIServerAccessProfileSubnetIDRef, default is Undefined, optional
+        subnet Id ref
+    subnetIdSelector : ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderAPIServerAccessProfileSubnetIDSelector, default is Undefined, optional
+        subnet Id selector
+    virtualNetworkIntegrationEnabled : bool, default is Undefined, optional
+        Whether to enable virtual network integration for the API Server. Defaults to false.
     """
 
 
     authorizedIpRanges?: [str]
+
+    subnetId?: str
+
+    subnetIdRef?: ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderAPIServerAccessProfileSubnetIDRef
+
+    subnetIdSelector?: ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderAPIServerAccessProfileSubnetIDSelector
+
+    virtualNetworkIntegrationEnabled?: bool
+
+
+schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderAPIServerAccessProfileSubnetIDRef:
+    r"""
+    Reference to a Subnet in network to populate subnetId.
+
+    Attributes
+    ----------
+    name : str, default is Undefined, required
+        Name of the referenced object.
+    namespace : str, default is Undefined, optional
+        Namespace of the referenced object
+    policy : ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderAPIServerAccessProfileSubnetIDRefPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    name: str
+
+    namespace?: str
+
+    policy?: ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderAPIServerAccessProfileSubnetIDRefPolicy
+
+
+schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderAPIServerAccessProfileSubnetIDRefPolicy:
+    r"""
+    Policies for referencing.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
+schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderAPIServerAccessProfileSubnetIDSelector:
+    r"""
+    Selector for a Subnet in network to populate subnetId.
+
+    Attributes
+    ----------
+    matchControllerRef : bool, default is Undefined, optional
+        MatchControllerRef ensures an object with the same controller reference
+        as the selecting object is selected.
+    matchLabels : {str:str}, default is Undefined, optional
+        MatchLabels ensures an object with matching labels is selected.
+    namespace : str, default is Undefined, optional
+        Namespace for the selector
+    policy : ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderAPIServerAccessProfileSubnetIDSelectorPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    matchControllerRef?: bool
+
+    matchLabels?: {str:str}
+
+    namespace?: str
+
+    policy?: ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderAPIServerAccessProfileSubnetIDSelectorPolicy
+
+
+schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderAPIServerAccessProfileSubnetIDSelectorPolicy:
+    r"""
+    Policies for selection.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
 
 
 schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderAciConnectorLinux:
@@ -488,7 +613,7 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderAut
     scanInterval : str, default is Undefined, optional
         How often the AKS Cluster should be re-evaluated for scale up/down. Defaults to 10s.
     skipNodesWithLocalStorage : bool, default is Undefined, optional
-        If true cluster autoscaler will never delete nodes with pods with local storage, for example, EmptyDir or HostPath. Defaults to true.
+        If true cluster autoscaler will never delete nodes with pods with local storage, for example, EmptyDir or HostPath. Defaults to false.
     skipNodesWithSystemPods : bool, default is Undefined, optional
         If true cluster autoscaler will never delete nodes with pods from kube-system (except for DaemonSet or mirror pods). Defaults to true.
     """
@@ -557,6 +682,24 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderAzu
     tenantId?: str
 
 
+schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderBootstrapProfile:
+    r"""
+    A bootstrap_profile block as defined below.
+
+    Attributes
+    ----------
+    artifactSource : str, default is Undefined, optional
+        The artifact source. The source where the artifacts are downloaded from. Possible values are Cache and Direct. Defaults to Direct.
+    containerRegistryId : str, default is Undefined, optional
+        The resource Id of Azure Container Registry.
+    """
+
+
+    artifactSource?: str
+
+    containerRegistryId?: str
+
+
 schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderConfidentialComputing:
     r"""
     A confidential_computing block as defined below. For more details please the documentation
@@ -582,7 +725,9 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderDef
     capacityReservationGroupId : str, default is Undefined, optional
         Specifies the ID of the Capacity Reservation Group within which this AKS Cluster should be created. Changing this forces a new resource to be created.
     fipsEnabled : bool, default is Undefined, optional
-        Should the nodes in this Node Pool have Federal Information Processing Standard enabled? temporary_name_for_rotation must be specified when changing this block. Changing this forces a new resource to be created.
+        Should the nodes in this Node Pool have Federal Information Processing Standard enabled? temporary_name_for_rotation must be specified when changing this block.
+    gpuDriver : str, default is Undefined, optional
+        Specifies the driver type for GPU nodes. Possible values are Install and None. Changing this forces a new resource to be created.
     gpuInstance : str, default is Undefined, optional
         Specifies the GPU MIG instance profile for supported GPU VM SKU. The allowed values are MIG1g, MIG2g, MIG3g, MIG4g and MIG7g. Changing this forces a new resource to be created.
     hostEncryptionEnabled : bool, default is Undefined, optional
@@ -622,7 +767,7 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderDef
     osDiskType : str, default is Undefined, optional
         The type of disk which should be used for the Operating System. Possible values are Ephemeral and Managed. Defaults to Managed. temporary_name_for_rotation must be specified when attempting a change.
     osSku : str, default is Undefined, optional
-        Specifies the OS SKU used by the agent pool. Possible values are AzureLinux, Ubuntu, Windows2019 and Windows2022. If not specified, the default is Ubuntu if OSType=Linux or Windows2019 if OSType=Windows. And the default Windows OSSKU will be changed to Windows2022 after Windows2019 is deprecated. Changing this from AzureLinux or Ubuntu to AzureLinux or Ubuntu will not replace the resource, otherwise temporary_name_for_rotation must be specified when attempting a change.
+        Specifies the OS SKU used by the agent pool. Possible values are AzureLinux, AzureLinux3, Ubuntu, Ubuntu2204, Windows2019 and Windows2022. If not specified, the default is Ubuntu if OSType=Linux or Windows2019 if OSType=Windows. And the default Windows OSSKU will be changed to Windows2022 after Windows2019 is deprecated. Changing this from AzureLinux or Ubuntu to AzureLinux or Ubuntu will not replace the resource, otherwise temporary_name_for_rotation must be specified when attempting a change.
     podSubnetId : str, default is Undefined, optional
         The ID of the Subnet where the pods in the default Node Pool should exist.
     podSubnetIdRef : ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderDefaultNodePoolPodSubnetIDRef, default is Undefined, optional
@@ -665,6 +810,8 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderDef
     capacityReservationGroupId?: str
 
     fipsEnabled?: bool
+
+    gpuDriver?: str
 
     gpuInstance?: str
 
@@ -801,16 +948,20 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderDef
         Specifies the size of the swap file on each node in MB.
     sysctlConfig : ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderDefaultNodePoolLinuxOsConfigSysctlConfig, default is Undefined, optional
         sysctl config
+    transparentHugePage : str, default is Undefined, optional
+        Specifies the Transparent Huge Page configuration. Possible values are always, madvise and never.
     transparentHugePageDefrag : str, default is Undefined, optional
         specifies the defrag configuration for Transparent Huge Page. Possible values are always, defer, defer+madvise, madvise and never.
     transparentHugePageEnabled : str, default is Undefined, optional
-        Specifies the Transparent Huge Page enabled configuration. Possible values are always, madvise and never.
+        transparent huge page enabled
     """
 
 
     swapFileSizeMb?: float
 
     sysctlConfig?: ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderDefaultNodePoolLinuxOsConfigSysctlConfig
+
+    transparentHugePage?: str
 
     transparentHugePageDefrag?: str
 
@@ -1095,7 +1246,9 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderDef
     maxSurge : str, default is Undefined, optional
         The maximum number or percentage of nodes which will be added to the Node Pool size during an upgrade.
     nodeSoakDurationInMinutes : float, default is Undefined, optional
-        The amount of time in minutes to wait after draining a node and before reimaging and moving on to next node. Defaults to 0.
+        The amount of time in minutes to wait after draining a node and before reimaging and moving on to next node.
+    undrainableNodeBehavior : str, default is Undefined, optional
+        Specifies the action when a node is undrainable during upgrade. Possible values are Cordon and Schedule. Unsetting this after configuring it will force a new resource to be created.
     """
 
 
@@ -1104,6 +1257,8 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderDef
     maxSurge?: str
 
     nodeSoakDurationInMinutes?: float
+
+    undrainableNodeBehavior?: str
 
 
 schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderDefaultNodePoolVnetSubnetIDRef:
@@ -1640,7 +1795,7 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderMai
     duration : float, default is Undefined, optional
         The duration of the window for maintenance to run in hours. Possible options are between 4 to 24.
     frequency : str, default is Undefined, optional
-        Frequency of maintenance. Possible options are Weekly, AbsoluteMonthly and RelativeMonthly.
+        Frequency of maintenance. Possible options are Daily, Weekly, AbsoluteMonthly and RelativeMonthly.
     interval : float, default is Undefined, optional
         The interval for maintenance runs. Depending on the frequency this interval is week or month based.
     notAllowed : [ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderMaintenanceWindowAutoUpgradeNotAllowedItems0], default is Undefined, optional
@@ -1820,6 +1975,8 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderNet
 
     Attributes
     ----------
+    advancedNetworking : ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderNetworkProfileAdvancedNetworking, default is Undefined, optional
+        advanced networking
     dnsServiceIp : str, default is Undefined, optional
         IP address within the Kubernetes service address range that will be used by cluster service discovery (kube-dns). Changing this forces a new resource to be created.
     ipVersions : [str], default is Undefined, optional
@@ -1841,7 +1998,7 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderNet
     networkPolicy : str, default is Undefined, optional
         Sets up network policy to be used with Azure CNI. Network policy allows us to control the traffic flow between pods. Currently supported values are calico, azure and cilium.
     outboundType : str, default is Undefined, optional
-        The outbound (egress) routing method which should be used for this Kubernetes Cluster. Possible values are loadBalancer, userDefinedRouting, managedNATGateway and userAssignedNATGateway. Defaults to loadBalancer. More information on supported migration paths for outbound_type can be found in this documentation.
+        The outbound (egress) routing method which should be used for this Kubernetes Cluster. Possible values are loadBalancer, userDefinedRouting, managedNATGateway, userAssignedNATGateway and none. Defaults to loadBalancer.
     podCidr : str, default is Undefined, optional
         The CIDR to use for pod IP addresses. This field can only be set when network_plugin is set to kubenet or network_plugin_mode is set to overlay. Changing this forces a new resource to be created.
     podCidrs : [str], default is Undefined, optional
@@ -1852,6 +2009,8 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderNet
         A list of CIDRs to use for Kubernetes services. For single-stack networking a single IPv4 CIDR is expected. For dual-stack networking an IPv4 and IPv6 CIDR are expected. Changing this forces a new resource to be created.
     """
 
+
+    advancedNetworking?: ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderNetworkProfileAdvancedNetworking
 
     dnsServiceIp?: str
 
@@ -1882,6 +2041,24 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderNet
     serviceCidr?: str
 
     serviceCidrs?: [str]
+
+
+schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderNetworkProfileAdvancedNetworking:
+    r"""
+    An advanced_networking block as defined below. This can only be specified when network_plugin is set to azure and network_data_plane is set to cilium.
+
+    Attributes
+    ----------
+    observabilityEnabled : bool, default is Undefined, optional
+        Is observability enabled? Defaults to false.
+    securityEnabled : bool, default is Undefined, optional
+        Is security enabled? Defaults to false.
+    """
+
+
+    observabilityEnabled?: bool
+
+    securityEnabled?: bool
 
 
 schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderNetworkProfileLoadBalancerProfile:
@@ -2167,7 +2344,7 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderSer
     mode : str, default is Undefined, optional
         The mode of the service mesh. Possible value is Istio.
     revisions : [str], default is Undefined, optional
-        Specify 1 or 2 Istio control plane revisions for managing minor upgrades using the canary upgrade process. For example, create the resource with revisions set to ["asm-1-20"], or leave it empty (the revisions will only be known after apply). To start the canary upgrade, change revisions to ["asm-1-20", "asm-1-21"]. To roll back the canary upgrade, revert to ["asm-1-20"]. To confirm the upgrade, change to ["asm-1-21"].
+        Specify 1 or 2 Istio control plane revisions for managing minor upgrades using the canary upgrade process. For example, create the resource with revisions set to ["asm-1-25"], or leave it empty (the revisions will only be known after apply). To start the canary upgrade, change revisions to ["asm-1-25", "asm-1-26"]. To roll back the canary upgrade, revert to ["asm-1-25"]. To confirm the upgrade, change to ["asm-1-26"].
     """
 
 
@@ -2298,10 +2475,14 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecForProviderWeb
 
     Attributes
     ----------
+    defaultNginxController : str, default is Undefined, optional
+        Specifies the ingress type for the default NginxIngressController custom resource. The allowed values are None, Internal, External and AnnotationControlled. Defaults to AnnotationControlled.
     dnsZoneIds : [str], default is Undefined, optional
         Specifies the list of the DNS Zone IDs in which DNS entries are created for applications deployed to the cluster when Web App Routing is enabled. If not using Bring-Your-Own DNS zones this property should be set to an empty list.
     """
 
+
+    defaultNginxController?: str
 
     dnsZoneIds?: [str]
 
@@ -2403,6 +2584,8 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProvider:
     ----------
     aciConnectorLinux : ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderAciConnectorLinux, default is Undefined, optional
         aci connector linux
+    aiToolchainOperatorEnabled : bool, default is Undefined, optional
+        Specifies whether the AI Toolchain Operator should be enabled for the Cluster. Defaults to false.
     apiServerAccessProfile : ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderAPIServerAccessProfile, default is Undefined, optional
         api server access profile
     autoScalerProfile : ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderAutoScalerProfile, default is Undefined, optional
@@ -2413,10 +2596,14 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProvider:
         azure active directory role based access control
     azurePolicyEnabled : bool, default is Undefined, optional
         Should the Azure Policy Add-On be enabled? For more details please visit Understand Azure Policy for Azure Kubernetes Service
+    bootstrapProfile : ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderBootstrapProfile, default is Undefined, optional
+        bootstrap profile
     confidentialComputing : ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderConfidentialComputing, default is Undefined, optional
         confidential computing
     costAnalysisEnabled : bool, default is Undefined, optional
         Should cost analysis be enabled for this Kubernetes Cluster? Defaults to false. The sku_tier must be set to Standard or Premium to enable this feature. Enabling this will add Kubernetes Namespace and Deployment details to the Cost Analysis views in the Azure portal.
+    customCaTrustCertificatesBase64 : [str], default is Undefined, optional
+        A list of up to 10 base64 encoded CA certificates that will be added to the trust store on nodes.
     defaultNodePool : ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderDefaultNodePool, default is Undefined, optional
         default node pool
     diskEncryptionSetId : str, default is Undefined, optional
@@ -2436,7 +2623,7 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProvider:
     imageCleanerEnabled : bool, default is Undefined, optional
         Specifies whether Image Cleaner is enabled.
     imageCleanerIntervalHours : float, default is Undefined, optional
-        Specifies the interval in hours when images should be cleaned up. Defaults to 0.
+        Specifies the interval in hours when images should be cleaned up.
     ingressApplicationGateway : ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderIngressApplicationGateway, default is Undefined, optional
         ingress application gateway
     keyManagementService : ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderKeyManagementService, default is Undefined, optional
@@ -2516,6 +2703,8 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProvider:
 
     aciConnectorLinux?: ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderAciConnectorLinux
 
+    aiToolchainOperatorEnabled?: bool
+
     apiServerAccessProfile?: ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderAPIServerAccessProfile
 
     autoScalerProfile?: ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderAutoScalerProfile
@@ -2526,9 +2715,13 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProvider:
 
     azurePolicyEnabled?: bool
 
+    bootstrapProfile?: ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderBootstrapProfile
+
     confidentialComputing?: ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderConfidentialComputing
 
     costAnalysisEnabled?: bool
+
+    customCaTrustCertificatesBase64?: [str]
 
     defaultNodePool?: ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderDefaultNodePool
 
@@ -2633,10 +2826,123 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderAP
     ----------
     authorizedIpRanges : [str], default is Undefined, optional
         Set of authorized IP ranges to allow access to API server, e.g. ["198.51.100.0/24"].
+    subnetId : str, default is Undefined, optional
+        The ID of the Subnet where the API server endpoint is delegated to.
+    subnetIdRef : ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderAPIServerAccessProfileSubnetIDRef, default is Undefined, optional
+        subnet Id ref
+    subnetIdSelector : ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderAPIServerAccessProfileSubnetIDSelector, default is Undefined, optional
+        subnet Id selector
+    virtualNetworkIntegrationEnabled : bool, default is Undefined, optional
+        Whether to enable virtual network integration for the API Server. Defaults to false.
     """
 
 
     authorizedIpRanges?: [str]
+
+    subnetId?: str
+
+    subnetIdRef?: ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderAPIServerAccessProfileSubnetIDRef
+
+    subnetIdSelector?: ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderAPIServerAccessProfileSubnetIDSelector
+
+    virtualNetworkIntegrationEnabled?: bool
+
+
+schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderAPIServerAccessProfileSubnetIDRef:
+    r"""
+    Reference to a Subnet in network to populate subnetId.
+
+    Attributes
+    ----------
+    name : str, default is Undefined, required
+        Name of the referenced object.
+    namespace : str, default is Undefined, optional
+        Namespace of the referenced object
+    policy : ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderAPIServerAccessProfileSubnetIDRefPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    name: str
+
+    namespace?: str
+
+    policy?: ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderAPIServerAccessProfileSubnetIDRefPolicy
+
+
+schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderAPIServerAccessProfileSubnetIDRefPolicy:
+    r"""
+    Policies for referencing.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
+schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderAPIServerAccessProfileSubnetIDSelector:
+    r"""
+    Selector for a Subnet in network to populate subnetId.
+
+    Attributes
+    ----------
+    matchControllerRef : bool, default is Undefined, optional
+        MatchControllerRef ensures an object with the same controller reference
+        as the selecting object is selected.
+    matchLabels : {str:str}, default is Undefined, optional
+        MatchLabels ensures an object with matching labels is selected.
+    namespace : str, default is Undefined, optional
+        Namespace for the selector
+    policy : ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderAPIServerAccessProfileSubnetIDSelectorPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    matchControllerRef?: bool
+
+    matchLabels?: {str:str}
+
+    namespace?: str
+
+    policy?: ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderAPIServerAccessProfileSubnetIDSelectorPolicy
+
+
+schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderAPIServerAccessProfileSubnetIDSelectorPolicy:
+    r"""
+    Policies for selection.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
 
 
 schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderAciConnectorLinux:
@@ -2801,7 +3107,7 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderAu
     scanInterval : str, default is Undefined, optional
         How often the AKS Cluster should be re-evaluated for scale up/down. Defaults to 10s.
     skipNodesWithLocalStorage : bool, default is Undefined, optional
-        If true cluster autoscaler will never delete nodes with pods with local storage, for example, EmptyDir or HostPath. Defaults to true.
+        If true cluster autoscaler will never delete nodes with pods with local storage, for example, EmptyDir or HostPath. Defaults to false.
     skipNodesWithSystemPods : bool, default is Undefined, optional
         If true cluster autoscaler will never delete nodes with pods from kube-system (except for DaemonSet or mirror pods). Defaults to true.
     """
@@ -2870,6 +3176,24 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderAz
     tenantId?: str
 
 
+schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderBootstrapProfile:
+    r"""
+    A bootstrap_profile block as defined below.
+
+    Attributes
+    ----------
+    artifactSource : str, default is Undefined, optional
+        The artifact source. The source where the artifacts are downloaded from. Possible values are Cache and Direct. Defaults to Direct.
+    containerRegistryId : str, default is Undefined, optional
+        The resource Id of Azure Container Registry.
+    """
+
+
+    artifactSource?: str
+
+    containerRegistryId?: str
+
+
 schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderConfidentialComputing:
     r"""
     A confidential_computing block as defined below. For more details please the documentation
@@ -2895,7 +3219,9 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderDe
     capacityReservationGroupId : str, default is Undefined, optional
         Specifies the ID of the Capacity Reservation Group within which this AKS Cluster should be created. Changing this forces a new resource to be created.
     fipsEnabled : bool, default is Undefined, optional
-        Should the nodes in this Node Pool have Federal Information Processing Standard enabled? temporary_name_for_rotation must be specified when changing this block. Changing this forces a new resource to be created.
+        Should the nodes in this Node Pool have Federal Information Processing Standard enabled? temporary_name_for_rotation must be specified when changing this block.
+    gpuDriver : str, default is Undefined, optional
+        Specifies the driver type for GPU nodes. Possible values are Install and None. Changing this forces a new resource to be created.
     gpuInstance : str, default is Undefined, optional
         Specifies the GPU MIG instance profile for supported GPU VM SKU. The allowed values are MIG1g, MIG2g, MIG3g, MIG4g and MIG7g. Changing this forces a new resource to be created.
     hostEncryptionEnabled : bool, default is Undefined, optional
@@ -2935,7 +3261,7 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderDe
     osDiskType : str, default is Undefined, optional
         The type of disk which should be used for the Operating System. Possible values are Ephemeral and Managed. Defaults to Managed. temporary_name_for_rotation must be specified when attempting a change.
     osSku : str, default is Undefined, optional
-        Specifies the OS SKU used by the agent pool. Possible values are AzureLinux, Ubuntu, Windows2019 and Windows2022. If not specified, the default is Ubuntu if OSType=Linux or Windows2019 if OSType=Windows. And the default Windows OSSKU will be changed to Windows2022 after Windows2019 is deprecated. Changing this from AzureLinux or Ubuntu to AzureLinux or Ubuntu will not replace the resource, otherwise temporary_name_for_rotation must be specified when attempting a change.
+        Specifies the OS SKU used by the agent pool. Possible values are AzureLinux, AzureLinux3, Ubuntu, Ubuntu2204, Windows2019 and Windows2022. If not specified, the default is Ubuntu if OSType=Linux or Windows2019 if OSType=Windows. And the default Windows OSSKU will be changed to Windows2022 after Windows2019 is deprecated. Changing this from AzureLinux or Ubuntu to AzureLinux or Ubuntu will not replace the resource, otherwise temporary_name_for_rotation must be specified when attempting a change.
     podSubnetId : str, default is Undefined, optional
         The ID of the Subnet where the pods in the default Node Pool should exist.
     podSubnetIdRef : ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderDefaultNodePoolPodSubnetIDRef, default is Undefined, optional
@@ -2978,6 +3304,8 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderDe
     capacityReservationGroupId?: str
 
     fipsEnabled?: bool
+
+    gpuDriver?: str
 
     gpuInstance?: str
 
@@ -3114,16 +3442,20 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderDe
         Specifies the size of the swap file on each node in MB.
     sysctlConfig : ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderDefaultNodePoolLinuxOsConfigSysctlConfig, default is Undefined, optional
         sysctl config
+    transparentHugePage : str, default is Undefined, optional
+        Specifies the Transparent Huge Page configuration. Possible values are always, madvise and never.
     transparentHugePageDefrag : str, default is Undefined, optional
         specifies the defrag configuration for Transparent Huge Page. Possible values are always, defer, defer+madvise, madvise and never.
     transparentHugePageEnabled : str, default is Undefined, optional
-        Specifies the Transparent Huge Page enabled configuration. Possible values are always, madvise and never.
+        transparent huge page enabled
     """
 
 
     swapFileSizeMb?: float
 
     sysctlConfig?: ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderDefaultNodePoolLinuxOsConfigSysctlConfig
+
+    transparentHugePage?: str
 
     transparentHugePageDefrag?: str
 
@@ -3408,7 +3740,9 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderDe
     maxSurge : str, default is Undefined, optional
         The maximum number or percentage of nodes which will be added to the Node Pool size during an upgrade.
     nodeSoakDurationInMinutes : float, default is Undefined, optional
-        The amount of time in minutes to wait after draining a node and before reimaging and moving on to next node. Defaults to 0.
+        The amount of time in minutes to wait after draining a node and before reimaging and moving on to next node.
+    undrainableNodeBehavior : str, default is Undefined, optional
+        Specifies the action when a node is undrainable during upgrade. Possible values are Cordon and Schedule. Unsetting this after configuring it will force a new resource to be created.
     """
 
 
@@ -3417,6 +3751,8 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderDe
     maxSurge?: str
 
     nodeSoakDurationInMinutes?: float
+
+    undrainableNodeBehavior?: str
 
 
 schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderDefaultNodePoolVnetSubnetIDRef:
@@ -3953,7 +4289,7 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderMa
     duration : float, default is Undefined, optional
         The duration of the window for maintenance to run in hours. Possible options are between 4 to 24.
     frequency : str, default is Undefined, optional
-        Frequency of maintenance. Possible options are Weekly, AbsoluteMonthly and RelativeMonthly.
+        Frequency of maintenance. Possible options are Daily, Weekly, AbsoluteMonthly and RelativeMonthly.
     interval : float, default is Undefined, optional
         The interval for maintenance runs. Depending on the frequency this interval is week or month based.
     notAllowed : [ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderMaintenanceWindowAutoUpgradeNotAllowedItems0], default is Undefined, optional
@@ -4133,6 +4469,8 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderNe
 
     Attributes
     ----------
+    advancedNetworking : ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderNetworkProfileAdvancedNetworking, default is Undefined, optional
+        advanced networking
     dnsServiceIp : str, default is Undefined, optional
         IP address within the Kubernetes service address range that will be used by cluster service discovery (kube-dns). Changing this forces a new resource to be created.
     ipVersions : [str], default is Undefined, optional
@@ -4154,7 +4492,7 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderNe
     networkPolicy : str, default is Undefined, optional
         Sets up network policy to be used with Azure CNI. Network policy allows us to control the traffic flow between pods. Currently supported values are calico, azure and cilium.
     outboundType : str, default is Undefined, optional
-        The outbound (egress) routing method which should be used for this Kubernetes Cluster. Possible values are loadBalancer, userDefinedRouting, managedNATGateway and userAssignedNATGateway. Defaults to loadBalancer. More information on supported migration paths for outbound_type can be found in this documentation.
+        The outbound (egress) routing method which should be used for this Kubernetes Cluster. Possible values are loadBalancer, userDefinedRouting, managedNATGateway, userAssignedNATGateway and none. Defaults to loadBalancer.
     podCidr : str, default is Undefined, optional
         The CIDR to use for pod IP addresses. This field can only be set when network_plugin is set to kubenet or network_plugin_mode is set to overlay. Changing this forces a new resource to be created.
     podCidrs : [str], default is Undefined, optional
@@ -4165,6 +4503,8 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderNe
         A list of CIDRs to use for Kubernetes services. For single-stack networking a single IPv4 CIDR is expected. For dual-stack networking an IPv4 and IPv6 CIDR are expected. Changing this forces a new resource to be created.
     """
 
+
+    advancedNetworking?: ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderNetworkProfileAdvancedNetworking
 
     dnsServiceIp?: str
 
@@ -4195,6 +4535,24 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderNe
     serviceCidr?: str
 
     serviceCidrs?: [str]
+
+
+schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderNetworkProfileAdvancedNetworking:
+    r"""
+    An advanced_networking block as defined below. This can only be specified when network_plugin is set to azure and network_data_plane is set to cilium.
+
+    Attributes
+    ----------
+    observabilityEnabled : bool, default is Undefined, optional
+        Is observability enabled? Defaults to false.
+    securityEnabled : bool, default is Undefined, optional
+        Is security enabled? Defaults to false.
+    """
+
+
+    observabilityEnabled?: bool
+
+    securityEnabled?: bool
 
 
 schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderNetworkProfileLoadBalancerProfile:
@@ -4383,7 +4741,7 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderSe
     mode : str, default is Undefined, optional
         The mode of the service mesh. Possible value is Istio.
     revisions : [str], default is Undefined, optional
-        Specify 1 or 2 Istio control plane revisions for managing minor upgrades using the canary upgrade process. For example, create the resource with revisions set to ["asm-1-20"], or leave it empty (the revisions will only be known after apply). To start the canary upgrade, change revisions to ["asm-1-20", "asm-1-21"]. To roll back the canary upgrade, revert to ["asm-1-20"]. To confirm the upgrade, change to ["asm-1-21"].
+        Specify 1 or 2 Istio control plane revisions for managing minor upgrades using the canary upgrade process. For example, create the resource with revisions set to ["asm-1-25"], or leave it empty (the revisions will only be known after apply). To start the canary upgrade, change revisions to ["asm-1-25", "asm-1-26"]. To roll back the canary upgrade, revert to ["asm-1-25"]. To confirm the upgrade, change to ["asm-1-26"].
     """
 
 
@@ -4514,10 +4872,14 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterSpecInitProviderWe
 
     Attributes
     ----------
+    defaultNginxController : str, default is Undefined, optional
+        Specifies the ingress type for the default NginxIngressController custom resource. The allowed values are None, Internal, External and AnnotationControlled. Defaults to AnnotationControlled.
     dnsZoneIds : [str], default is Undefined, optional
         Specifies the list of the DNS Zone IDs in which DNS entries are created for applications deployed to the cluster when Web App Routing is enabled. If not using Bring-Your-Own DNS zones this property should be set to an empty list.
     """
 
+
+    defaultNginxController?: str
 
     dnsZoneIds?: [str]
 
@@ -4671,6 +5033,8 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterStatusAtProvider:
     ----------
     aciConnectorLinux : ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterStatusAtProviderAciConnectorLinux, default is Undefined, optional
         aci connector linux
+    aiToolchainOperatorEnabled : bool, default is Undefined, optional
+        Specifies whether the AI Toolchain Operator should be enabled for the Cluster. Defaults to false.
     apiServerAccessProfile : ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterStatusAtProviderAPIServerAccessProfile, default is Undefined, optional
         api server access profile
     autoScalerProfile : ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterStatusAtProviderAutoScalerProfile, default is Undefined, optional
@@ -4681,12 +5045,16 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterStatusAtProvider:
         azure active directory role based access control
     azurePolicyEnabled : bool, default is Undefined, optional
         Should the Azure Policy Add-On be enabled? For more details please visit Understand Azure Policy for Azure Kubernetes Service
+    bootstrapProfile : ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterStatusAtProviderBootstrapProfile, default is Undefined, optional
+        bootstrap profile
     confidentialComputing : ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterStatusAtProviderConfidentialComputing, default is Undefined, optional
         confidential computing
     costAnalysisEnabled : bool, default is Undefined, optional
         Should cost analysis be enabled for this Kubernetes Cluster? Defaults to false. The sku_tier must be set to Standard or Premium to enable this feature. Enabling this will add Kubernetes Namespace and Deployment details to the Cost Analysis views in the Azure portal.
     currentKubernetesVersion : str, default is Undefined, optional
         The current version running on the Azure Kubernetes Managed Cluster.
+    customCaTrustCertificatesBase64 : [str], default is Undefined, optional
+        A list of up to 10 base64 encoded CA certificates that will be added to the trust store on nodes.
     defaultNodePool : ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterStatusAtProviderDefaultNodePool, default is Undefined, optional
         default node pool
     diskEncryptionSetId : str, default is Undefined, optional
@@ -4712,7 +5080,7 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterStatusAtProvider:
     imageCleanerEnabled : bool, default is Undefined, optional
         Specifies whether Image Cleaner is enabled.
     imageCleanerIntervalHours : float, default is Undefined, optional
-        Specifies the interval in hours when images should be cleaned up. Defaults to 0.
+        Specifies the interval in hours when images should be cleaned up.
     ingressApplicationGateway : ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterStatusAtProviderIngressApplicationGateway, default is Undefined, optional
         ingress application gateway
     keyManagementService : ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterStatusAtProviderKeyManagementService, default is Undefined, optional
@@ -4798,6 +5166,8 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterStatusAtProvider:
 
     aciConnectorLinux?: ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterStatusAtProviderAciConnectorLinux
 
+    aiToolchainOperatorEnabled?: bool
+
     apiServerAccessProfile?: ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterStatusAtProviderAPIServerAccessProfile
 
     autoScalerProfile?: ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterStatusAtProviderAutoScalerProfile
@@ -4808,11 +5178,15 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterStatusAtProvider:
 
     azurePolicyEnabled?: bool
 
+    bootstrapProfile?: ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterStatusAtProviderBootstrapProfile
+
     confidentialComputing?: ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterStatusAtProviderConfidentialComputing
 
     costAnalysisEnabled?: bool
 
     currentKubernetesVersion?: str
+
+    customCaTrustCertificatesBase64?: [str]
 
     defaultNodePool?: ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterStatusAtProviderDefaultNodePool
 
@@ -4929,10 +5303,18 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterStatusAtProviderAP
     ----------
     authorizedIpRanges : [str], default is Undefined, optional
         Set of authorized IP ranges to allow access to API server, e.g. ["198.51.100.0/24"].
+    subnetId : str, default is Undefined, optional
+        The ID of the Subnet where the API server endpoint is delegated to.
+    virtualNetworkIntegrationEnabled : bool, default is Undefined, optional
+        Whether to enable virtual network integration for the API Server. Defaults to false.
     """
 
 
     authorizedIpRanges?: [str]
+
+    subnetId?: str
+
+    virtualNetworkIntegrationEnabled?: bool
 
 
 schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterStatusAtProviderAciConnectorLinux:
@@ -5018,7 +5400,7 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterStatusAtProviderAu
     scanInterval : str, default is Undefined, optional
         How often the AKS Cluster should be re-evaluated for scale up/down. Defaults to 10s.
     skipNodesWithLocalStorage : bool, default is Undefined, optional
-        If true cluster autoscaler will never delete nodes with pods with local storage, for example, EmptyDir or HostPath. Defaults to true.
+        If true cluster autoscaler will never delete nodes with pods with local storage, for example, EmptyDir or HostPath. Defaults to false.
     skipNodesWithSystemPods : bool, default is Undefined, optional
         If true cluster autoscaler will never delete nodes with pods from kube-system (except for DaemonSet or mirror pods). Defaults to true.
     """
@@ -5087,6 +5469,24 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterStatusAtProviderAz
     tenantId?: str
 
 
+schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterStatusAtProviderBootstrapProfile:
+    r"""
+    A bootstrap_profile block as defined below.
+
+    Attributes
+    ----------
+    artifactSource : str, default is Undefined, optional
+        The artifact source. The source where the artifacts are downloaded from. Possible values are Cache and Direct. Defaults to Direct.
+    containerRegistryId : str, default is Undefined, optional
+        The resource Id of Azure Container Registry.
+    """
+
+
+    artifactSource?: str
+
+    containerRegistryId?: str
+
+
 schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterStatusAtProviderConfidentialComputing:
     r"""
     A confidential_computing block as defined below. For more details please the documentation
@@ -5112,7 +5512,9 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterStatusAtProviderDe
     capacityReservationGroupId : str, default is Undefined, optional
         Specifies the ID of the Capacity Reservation Group within which this AKS Cluster should be created. Changing this forces a new resource to be created.
     fipsEnabled : bool, default is Undefined, optional
-        Should the nodes in this Node Pool have Federal Information Processing Standard enabled? temporary_name_for_rotation must be specified when changing this block. Changing this forces a new resource to be created.
+        Should the nodes in this Node Pool have Federal Information Processing Standard enabled? temporary_name_for_rotation must be specified when changing this block.
+    gpuDriver : str, default is Undefined, optional
+        Specifies the driver type for GPU nodes. Possible values are Install and None. Changing this forces a new resource to be created.
     gpuInstance : str, default is Undefined, optional
         Specifies the GPU MIG instance profile for supported GPU VM SKU. The allowed values are MIG1g, MIG2g, MIG3g, MIG4g and MIG7g. Changing this forces a new resource to be created.
     hostEncryptionEnabled : bool, default is Undefined, optional
@@ -5152,7 +5554,7 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterStatusAtProviderDe
     osDiskType : str, default is Undefined, optional
         The type of disk which should be used for the Operating System. Possible values are Ephemeral and Managed. Defaults to Managed. temporary_name_for_rotation must be specified when attempting a change.
     osSku : str, default is Undefined, optional
-        Specifies the OS SKU used by the agent pool. Possible values are AzureLinux, Ubuntu, Windows2019 and Windows2022. If not specified, the default is Ubuntu if OSType=Linux or Windows2019 if OSType=Windows. And the default Windows OSSKU will be changed to Windows2022 after Windows2019 is deprecated. Changing this from AzureLinux or Ubuntu to AzureLinux or Ubuntu will not replace the resource, otherwise temporary_name_for_rotation must be specified when attempting a change.
+        Specifies the OS SKU used by the agent pool. Possible values are AzureLinux, AzureLinux3, Ubuntu, Ubuntu2204, Windows2019 and Windows2022. If not specified, the default is Ubuntu if OSType=Linux or Windows2019 if OSType=Windows. And the default Windows OSSKU will be changed to Windows2022 after Windows2019 is deprecated. Changing this from AzureLinux or Ubuntu to AzureLinux or Ubuntu will not replace the resource, otherwise temporary_name_for_rotation must be specified when attempting a change.
     podSubnetId : str, default is Undefined, optional
         The ID of the Subnet where the pods in the default Node Pool should exist.
     proximityPlacementGroupId : str, default is Undefined, optional
@@ -5187,6 +5589,8 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterStatusAtProviderDe
     capacityReservationGroupId?: str
 
     fipsEnabled?: bool
+
+    gpuDriver?: str
 
     gpuInstance?: str
 
@@ -5315,16 +5719,20 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterStatusAtProviderDe
         Specifies the size of the swap file on each node in MB.
     sysctlConfig : ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterStatusAtProviderDefaultNodePoolLinuxOsConfigSysctlConfig, default is Undefined, optional
         sysctl config
+    transparentHugePage : str, default is Undefined, optional
+        Specifies the Transparent Huge Page configuration. Possible values are always, madvise and never.
     transparentHugePageDefrag : str, default is Undefined, optional
         specifies the defrag configuration for Transparent Huge Page. Possible values are always, defer, defer+madvise, madvise and never.
     transparentHugePageEnabled : str, default is Undefined, optional
-        Specifies the Transparent Huge Page enabled configuration. Possible values are always, madvise and never.
+        transparent huge page enabled
     """
 
 
     swapFileSizeMb?: float
 
     sysctlConfig?: ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterStatusAtProviderDefaultNodePoolLinuxOsConfigSysctlConfig
+
+    transparentHugePage?: str
 
     transparentHugePageDefrag?: str
 
@@ -5512,7 +5920,9 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterStatusAtProviderDe
     maxSurge : str, default is Undefined, optional
         The maximum number or percentage of nodes which will be added to the Node Pool size during an upgrade.
     nodeSoakDurationInMinutes : float, default is Undefined, optional
-        The amount of time in minutes to wait after draining a node and before reimaging and moving on to next node. Defaults to 0.
+        The amount of time in minutes to wait after draining a node and before reimaging and moving on to next node.
+    undrainableNodeBehavior : str, default is Undefined, optional
+        Specifies the action when a node is undrainable during upgrade. Possible values are Cordon and Schedule. Unsetting this after configuring it will force a new resource to be created.
     """
 
 
@@ -5521,6 +5931,8 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterStatusAtProviderDe
     maxSurge?: str
 
     nodeSoakDurationInMinutes?: float
+
+    undrainableNodeBehavior?: str
 
 
 schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterStatusAtProviderHTTPProxyConfig:
@@ -5792,7 +6204,7 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterStatusAtProviderMa
     duration : float, default is Undefined, optional
         The duration of the window for maintenance to run in hours. Possible options are between 4 to 24.
     frequency : str, default is Undefined, optional
-        Frequency of maintenance. Possible options are Weekly, AbsoluteMonthly and RelativeMonthly.
+        Frequency of maintenance. Possible options are Daily, Weekly, AbsoluteMonthly and RelativeMonthly.
     interval : float, default is Undefined, optional
         The interval for maintenance runs. Depending on the frequency this interval is week or month based.
     notAllowed : [ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterStatusAtProviderMaintenanceWindowAutoUpgradeNotAllowedItems0], default is Undefined, optional
@@ -5972,6 +6384,8 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterStatusAtProviderNe
 
     Attributes
     ----------
+    advancedNetworking : ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterStatusAtProviderNetworkProfileAdvancedNetworking, default is Undefined, optional
+        advanced networking
     dnsServiceIp : str, default is Undefined, optional
         IP address within the Kubernetes service address range that will be used by cluster service discovery (kube-dns). Changing this forces a new resource to be created.
     ipVersions : [str], default is Undefined, optional
@@ -5993,7 +6407,7 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterStatusAtProviderNe
     networkPolicy : str, default is Undefined, optional
         Sets up network policy to be used with Azure CNI. Network policy allows us to control the traffic flow between pods. Currently supported values are calico, azure and cilium.
     outboundType : str, default is Undefined, optional
-        The outbound (egress) routing method which should be used for this Kubernetes Cluster. Possible values are loadBalancer, userDefinedRouting, managedNATGateway and userAssignedNATGateway. Defaults to loadBalancer. More information on supported migration paths for outbound_type can be found in this documentation.
+        The outbound (egress) routing method which should be used for this Kubernetes Cluster. Possible values are loadBalancer, userDefinedRouting, managedNATGateway, userAssignedNATGateway and none. Defaults to loadBalancer.
     podCidr : str, default is Undefined, optional
         The CIDR to use for pod IP addresses. This field can only be set when network_plugin is set to kubenet or network_plugin_mode is set to overlay. Changing this forces a new resource to be created.
     podCidrs : [str], default is Undefined, optional
@@ -6004,6 +6418,8 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterStatusAtProviderNe
         A list of CIDRs to use for Kubernetes services. For single-stack networking a single IPv4 CIDR is expected. For dual-stack networking an IPv4 and IPv6 CIDR are expected. Changing this forces a new resource to be created.
     """
 
+
+    advancedNetworking?: ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterStatusAtProviderNetworkProfileAdvancedNetworking
 
     dnsServiceIp?: str
 
@@ -6034,6 +6450,24 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterStatusAtProviderNe
     serviceCidr?: str
 
     serviceCidrs?: [str]
+
+
+schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterStatusAtProviderNetworkProfileAdvancedNetworking:
+    r"""
+    An advanced_networking block as defined below. This can only be specified when network_plugin is set to azure and network_data_plane is set to cilium.
+
+    Attributes
+    ----------
+    observabilityEnabled : bool, default is Undefined, optional
+        Is observability enabled? Defaults to false.
+    securityEnabled : bool, default is Undefined, optional
+        Is security enabled? Defaults to false.
+    """
+
+
+    observabilityEnabled?: bool
+
+    securityEnabled?: bool
 
 
 schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterStatusAtProviderNetworkProfileLoadBalancerProfile:
@@ -6159,7 +6593,7 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterStatusAtProviderSe
     mode : str, default is Undefined, optional
         The mode of the service mesh. Possible value is Istio.
     revisions : [str], default is Undefined, optional
-        Specify 1 or 2 Istio control plane revisions for managing minor upgrades using the canary upgrade process. For example, create the resource with revisions set to ["asm-1-20"], or leave it empty (the revisions will only be known after apply). To start the canary upgrade, change revisions to ["asm-1-20", "asm-1-21"]. To roll back the canary upgrade, revert to ["asm-1-20"]. To confirm the upgrade, change to ["asm-1-21"].
+        Specify 1 or 2 Istio control plane revisions for managing minor upgrades using the canary upgrade process. For example, create the resource with revisions set to ["asm-1-25"], or leave it empty (the revisions will only be known after apply). To start the canary upgrade, change revisions to ["asm-1-25", "asm-1-26"]. To roll back the canary upgrade, revert to ["asm-1-25"]. To confirm the upgrade, change to ["asm-1-26"].
     """
 
 
@@ -6268,12 +6702,16 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterStatusAtProviderWe
 
     Attributes
     ----------
+    defaultNginxController : str, default is Undefined, optional
+        Specifies the ingress type for the default NginxIngressController custom resource. The allowed values are None, Internal, External and AnnotationControlled. Defaults to AnnotationControlled.
     dnsZoneIds : [str], default is Undefined, optional
         Specifies the list of the DNS Zone IDs in which DNS entries are created for applications deployed to the cluster when Web App Routing is enabled. If not using Bring-Your-Own DNS zones this property should be set to an empty list.
     webAppRoutingIdentity : [ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterStatusAtProviderWebAppRoutingWebAppRoutingIdentityItems0], default is Undefined, optional
         A web_app_routing_identity block is exported. The exported attributes are defined below.
     """
 
+
+    defaultNginxController?: str
 
     dnsZoneIds?: [str]
 

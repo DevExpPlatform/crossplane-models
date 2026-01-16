@@ -66,8 +66,6 @@ schema Ec2AwsUpboundIoV1beta1EBSVolumeSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : Ec2AwsUpboundIoV1beta1EBSVolumeSpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : Ec2AwsUpboundIoV1beta1EBSVolumeSpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : Ec2AwsUpboundIoV1beta1EBSVolumeSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -83,8 +81,6 @@ schema Ec2AwsUpboundIoV1beta1EBSVolumeSpec:
 
     providerConfigRef?: Ec2AwsUpboundIoV1beta1EBSVolumeSpecProviderConfigRef
 
-    publishConnectionDetailsTo?: Ec2AwsUpboundIoV1beta1EBSVolumeSpecPublishConnectionDetailsTo
-
     writeConnectionSecretToRef?: Ec2AwsUpboundIoV1beta1EBSVolumeSpecWriteConnectionSecretToRef
 
 
@@ -95,15 +91,15 @@ schema Ec2AwsUpboundIoV1beta1EBSVolumeSpecForProvider:
     Attributes
     ----------
     availabilityZone : str, default is Undefined, optional
-        The AZ where the EBS volume will exist.
+        Availability zone where the EBS volume will exist.
     encrypted : bool, default is Undefined, optional
         If true, the disk will be encrypted.
     finalSnapshot : bool, default is Undefined, optional
         If true, snapshot will be created before volume deletion. Any tags on the volume will be migrated to the snapshot. By default set to false
     iops : float, default is Undefined, optional
-        The amount of IOPS to provision for the disk. Only valid for type of io1, io2 or gp3.
+        Amount of IOPS to provision for the disk. Only valid for type of io1, io2 or gp3.
     kmsKeyId : str, default is Undefined, optional
-        The ARN for the KMS encryption key. When specifying kms_key_id, encrypted needs to be set to true.
+        ARN for the KMS encryption key. When specifying kms_key_id, encrypted needs to be set to true.
     kmsKeyIdRef : Ec2AwsUpboundIoV1beta1EBSVolumeSpecForProviderKmsKeyIDRef, default is Undefined, optional
         kms key Id ref
     kmsKeyIdSelector : Ec2AwsUpboundIoV1beta1EBSVolumeSpecForProviderKmsKeyIDSelector, default is Undefined, optional
@@ -111,19 +107,22 @@ schema Ec2AwsUpboundIoV1beta1EBSVolumeSpecForProvider:
     multiAttachEnabled : bool, default is Undefined, optional
         Specifies whether to enable Amazon EBS Multi-Attach. Multi-Attach is supported on io1 and io2 volumes.
     outpostArn : str, default is Undefined, optional
-        The Amazon Resource Name (ARN) of the Outpost.
+        Amazon Resource Name (ARN) of the Outpost.
     region : str, default is Undefined, required
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
     size : float, default is Undefined, optional
-        The size of the drive in GiBs.
+        Size of the drive in GiBs.
     snapshotId : str, default is Undefined, optional
         A snapshot to base the EBS volume off of.
     tags : {str:str}, default is Undefined, optional
         Key-value map of resource tags.
     throughput : float, default is Undefined, optional
-        The throughput that the volume supports, in MiB/s. Only valid for type of gp3.
+        Throughput that the volume supports, in MiB/s. Only valid for type of gp3.
     $type : str, default is Undefined, optional
-        The type of EBS volume. Can be standard, gp2, gp3, io1, io2, sc1 or st1 (Default: gp2).
+        Type of EBS volume. Can be standard, gp2, gp3, io1, io2, sc1 or st1 (Default: gp2).
+    volumeInitializationRate : float, default is Undefined, optional
+        EBS provisioned rate for volume initialization, in MiB/s, at which to download the snapshot blocks from Amazon S3 to the volume. This argument can only be set if snapshot_id is specified.
     """
 
 
@@ -156,6 +155,8 @@ schema Ec2AwsUpboundIoV1beta1EBSVolumeSpecForProvider:
     throughput?: float
 
     $type?: str
+
+    volumeInitializationRate?: float
 
 
 schema Ec2AwsUpboundIoV1beta1EBSVolumeSpecForProviderKmsKeyIDRef:
@@ -263,15 +264,15 @@ schema Ec2AwsUpboundIoV1beta1EBSVolumeSpecInitProvider:
     Attributes
     ----------
     availabilityZone : str, default is Undefined, optional
-        The AZ where the EBS volume will exist.
+        Availability zone where the EBS volume will exist.
     encrypted : bool, default is Undefined, optional
         If true, the disk will be encrypted.
     finalSnapshot : bool, default is Undefined, optional
         If true, snapshot will be created before volume deletion. Any tags on the volume will be migrated to the snapshot. By default set to false
     iops : float, default is Undefined, optional
-        The amount of IOPS to provision for the disk. Only valid for type of io1, io2 or gp3.
+        Amount of IOPS to provision for the disk. Only valid for type of io1, io2 or gp3.
     kmsKeyId : str, default is Undefined, optional
-        The ARN for the KMS encryption key. When specifying kms_key_id, encrypted needs to be set to true.
+        ARN for the KMS encryption key. When specifying kms_key_id, encrypted needs to be set to true.
     kmsKeyIdRef : Ec2AwsUpboundIoV1beta1EBSVolumeSpecInitProviderKmsKeyIDRef, default is Undefined, optional
         kms key Id ref
     kmsKeyIdSelector : Ec2AwsUpboundIoV1beta1EBSVolumeSpecInitProviderKmsKeyIDSelector, default is Undefined, optional
@@ -279,17 +280,19 @@ schema Ec2AwsUpboundIoV1beta1EBSVolumeSpecInitProvider:
     multiAttachEnabled : bool, default is Undefined, optional
         Specifies whether to enable Amazon EBS Multi-Attach. Multi-Attach is supported on io1 and io2 volumes.
     outpostArn : str, default is Undefined, optional
-        The Amazon Resource Name (ARN) of the Outpost.
+        Amazon Resource Name (ARN) of the Outpost.
     size : float, default is Undefined, optional
-        The size of the drive in GiBs.
+        Size of the drive in GiBs.
     snapshotId : str, default is Undefined, optional
         A snapshot to base the EBS volume off of.
     tags : {str:str}, default is Undefined, optional
         Key-value map of resource tags.
     throughput : float, default is Undefined, optional
-        The throughput that the volume supports, in MiB/s. Only valid for type of gp3.
+        Throughput that the volume supports, in MiB/s. Only valid for type of gp3.
     $type : str, default is Undefined, optional
-        The type of EBS volume. Can be standard, gp2, gp3, io1, io2, sc1 or st1 (Default: gp2).
+        Type of EBS volume. Can be standard, gp2, gp3, io1, io2, sc1 or st1 (Default: gp2).
+    volumeInitializationRate : float, default is Undefined, optional
+        EBS provisioned rate for volume initialization, in MiB/s, at which to download the snapshot blocks from Amazon S3 to the volume. This argument can only be set if snapshot_id is specified.
     """
 
 
@@ -320,6 +323,8 @@ schema Ec2AwsUpboundIoV1beta1EBSVolumeSpecInitProvider:
     throughput?: float
 
     $type?: str
+
+    volumeInitializationRate?: float
 
 
 schema Ec2AwsUpboundIoV1beta1EBSVolumeSpecInitProviderKmsKeyIDRef:
@@ -455,112 +460,12 @@ schema Ec2AwsUpboundIoV1beta1EBSVolumeSpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
-schema Ec2AwsUpboundIoV1beta1EBSVolumeSpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : Ec2AwsUpboundIoV1beta1EBSVolumeSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : Ec2AwsUpboundIoV1beta1EBSVolumeSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: Ec2AwsUpboundIoV1beta1EBSVolumeSpecPublishConnectionDetailsToConfigRef
-
-    metadata?: Ec2AwsUpboundIoV1beta1EBSVolumeSpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema Ec2AwsUpboundIoV1beta1EBSVolumeSpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : Ec2AwsUpboundIoV1beta1EBSVolumeSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: Ec2AwsUpboundIoV1beta1EBSVolumeSpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema Ec2AwsUpboundIoV1beta1EBSVolumeSpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema Ec2AwsUpboundIoV1beta1EBSVolumeSpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema Ec2AwsUpboundIoV1beta1EBSVolumeSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------
@@ -607,25 +512,30 @@ schema Ec2AwsUpboundIoV1beta1EBSVolumeStatusAtProvider:
     Attributes
     ----------
     arn : str, default is Undefined, optional
-        The volume ARN (e.g., arn:aws:ec2:us-east-1:123456789012:volume/vol-59fcb34e).
+        Volume ARN (e.g., arn:aws:ec2:us-east-1:123456789012:volume/vol-59fcb34e).
     availabilityZone : str, default is Undefined, optional
-        The AZ where the EBS volume will exist.
+        Availability zone where the EBS volume will exist.
+    createTime : str, default is Undefined, optional
+        Timestamp when volume creation was initiated.
     encrypted : bool, default is Undefined, optional
         If true, the disk will be encrypted.
     finalSnapshot : bool, default is Undefined, optional
         If true, snapshot will be created before volume deletion. Any tags on the volume will be migrated to the snapshot. By default set to false
     id : str, default is Undefined, optional
-        The volume ID (e.g., vol-59fcb34e).
+        Volume ID (e.g., vol-59fcb34e).
     iops : float, default is Undefined, optional
-        The amount of IOPS to provision for the disk. Only valid for type of io1, io2 or gp3.
+        Amount of IOPS to provision for the disk. Only valid for type of io1, io2 or gp3.
     kmsKeyId : str, default is Undefined, optional
-        The ARN for the KMS encryption key. When specifying kms_key_id, encrypted needs to be set to true.
+        ARN for the KMS encryption key. When specifying kms_key_id, encrypted needs to be set to true.
     multiAttachEnabled : bool, default is Undefined, optional
         Specifies whether to enable Amazon EBS Multi-Attach. Multi-Attach is supported on io1 and io2 volumes.
     outpostArn : str, default is Undefined, optional
-        The Amazon Resource Name (ARN) of the Outpost.
+        Amazon Resource Name (ARN) of the Outpost.
+    region : str, default is Undefined, optional
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
+        Region is the region you'd like your resource to be created in.
     size : float, default is Undefined, optional
-        The size of the drive in GiBs.
+        Size of the drive in GiBs.
     snapshotId : str, default is Undefined, optional
         A snapshot to base the EBS volume off of.
     tags : {str:str}, default is Undefined, optional
@@ -633,15 +543,19 @@ schema Ec2AwsUpboundIoV1beta1EBSVolumeStatusAtProvider:
     tagsAll : {str:str}, default is Undefined, optional
         A map of tags assigned to the resource, including those inherited from the provider default_tags configuration block.
     throughput : float, default is Undefined, optional
-        The throughput that the volume supports, in MiB/s. Only valid for type of gp3.
+        Throughput that the volume supports, in MiB/s. Only valid for type of gp3.
     $type : str, default is Undefined, optional
-        The type of EBS volume. Can be standard, gp2, gp3, io1, io2, sc1 or st1 (Default: gp2).
+        Type of EBS volume. Can be standard, gp2, gp3, io1, io2, sc1 or st1 (Default: gp2).
+    volumeInitializationRate : float, default is Undefined, optional
+        EBS provisioned rate for volume initialization, in MiB/s, at which to download the snapshot blocks from Amazon S3 to the volume. This argument can only be set if snapshot_id is specified.
     """
 
 
     arn?: str
 
     availabilityZone?: str
+
+    createTime?: str
 
     encrypted?: bool
 
@@ -657,6 +571,8 @@ schema Ec2AwsUpboundIoV1beta1EBSVolumeStatusAtProvider:
 
     outpostArn?: str
 
+    region?: str
+
     size?: float
 
     snapshotId?: str
@@ -668,6 +584,8 @@ schema Ec2AwsUpboundIoV1beta1EBSVolumeStatusAtProvider:
     throughput?: float
 
     $type?: str
+
+    volumeInitializationRate?: float
 
 
 schema Ec2AwsUpboundIoV1beta1EBSVolumeStatusConditionsItems0:

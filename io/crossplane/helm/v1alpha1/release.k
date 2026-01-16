@@ -64,6 +64,8 @@ schema HelmCrossplaneIoV1alpha1ReleaseSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : HelmCrossplaneIoV1alpha1ReleaseSpecProviderConfigRef, default is Undefined, optional
         provider config ref
+    publishConnectionDetailsTo : HelmCrossplaneIoV1alpha1ReleaseSpecPublishConnectionDetailsTo, default is Undefined, optional
+        publish connection details to
     rollbackLimit : int, default is Undefined, optional
         RollbackRetriesLimit is max number of attempts to retry Helm deployment by rolling back the release.
     writeConnectionSecretToRef : HelmCrossplaneIoV1alpha1ReleaseSpecWriteConnectionSecretToRef, default is Undefined, optional
@@ -78,6 +80,8 @@ schema HelmCrossplaneIoV1alpha1ReleaseSpec:
     managementPolicies?: [str] = ["*"]
 
     providerConfigRef?: HelmCrossplaneIoV1alpha1ReleaseSpecProviderConfigRef
+
+    publishConnectionDetailsTo?: HelmCrossplaneIoV1alpha1ReleaseSpecPublishConnectionDetailsTo
 
     rollbackLimit?: int
 
@@ -442,12 +446,112 @@ schema HelmCrossplaneIoV1alpha1ReleaseSpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
+schema HelmCrossplaneIoV1alpha1ReleaseSpecPublishConnectionDetailsTo:
+    r"""
+    PublishConnectionDetailsTo specifies the connection secret config which
+    contains a name, metadata and a reference to secret store config to
+    which any connection details for this managed resource should be written.
+    Connection details frequently include the endpoint, username,
+    and password required to connect to the managed resource.
+
+    Attributes
+    ----------
+    configRef : HelmCrossplaneIoV1alpha1ReleaseSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
+        config ref
+    metadata : HelmCrossplaneIoV1alpha1ReleaseSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
+        metadata
+    name : str, default is Undefined, required
+        Name is the name of the connection secret.
+    """
+
+
+    configRef?: HelmCrossplaneIoV1alpha1ReleaseSpecPublishConnectionDetailsToConfigRef
+
+    metadata?: HelmCrossplaneIoV1alpha1ReleaseSpecPublishConnectionDetailsToMetadata
+
+    name: str
+
+
+schema HelmCrossplaneIoV1alpha1ReleaseSpecPublishConnectionDetailsToConfigRef:
+    r"""
+    SecretStoreConfigRef specifies which secret store config should be used
+    for this ConnectionSecret.
+
+    Attributes
+    ----------
+    name : str, default is Undefined, required
+        Name of the referenced object.
+    policy : HelmCrossplaneIoV1alpha1ReleaseSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    name: str
+
+    policy?: HelmCrossplaneIoV1alpha1ReleaseSpecPublishConnectionDetailsToConfigRefPolicy
+
+
+schema HelmCrossplaneIoV1alpha1ReleaseSpecPublishConnectionDetailsToConfigRefPolicy:
+    r"""
+    Policies for referencing.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
+schema HelmCrossplaneIoV1alpha1ReleaseSpecPublishConnectionDetailsToMetadata:
+    r"""
+    Metadata is the metadata for connection secret.
+
+    Attributes
+    ----------
+    annotations : {str:str}, default is Undefined, optional
+        Annotations are the annotations to be added to connection secret.
+        - For Kubernetes secrets, this will be used as "metadata.annotations".
+        - It is up to Secret Store implementation for others store types.
+    labels : {str:str}, default is Undefined, optional
+        Labels are the labels/tags to be added to connection secret.
+        - For Kubernetes secrets, this will be used as "metadata.labels".
+        - It is up to Secret Store implementation for others store types.
+    $type : str, default is Undefined, optional
+        Type is the SecretType for the connection secret.
+        - Only valid for Kubernetes Secret Stores.
+    """
+
+
+    annotations?: {str:str}
+
+    labels?: {str:str}
+
+    $type?: str
+
+
 schema HelmCrossplaneIoV1alpha1ReleaseSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
+    This field is planned to be replaced in a future release in favor of
+    PublishConnectionDetailsTo. Currently, both could be set independently
+    and connection details would be published to both without affecting
+    each other.
 
     Attributes
     ----------

@@ -84,6 +84,8 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterNodePoolSpecForPro
         The Eviction Policy which should be used for Virtual Machines within the Virtual Machine Scale Set powering this Node Pool. Possible values are Deallocate and Delete. Changing this forces a new resource to be created.
     fipsEnabled : bool, default is Undefined, optional
         Should the nodes in this Node Pool have Federal Information Processing Standard enabled? Changing this property requires specifying temporary_name_for_rotation.
+    gpuDriver : str, default is Undefined, optional
+        Specifies whether to install the GPU Driver for the nodes. Possible values are Install and None. Changing this forces a new resource to be created.
     gpuInstance : str, default is Undefined, optional
         Specifies the GPU MIG instance profile for supported GPU VM SKU. The allowed values are MIG1g, MIG2g, MIG3g, MIG4g and MIG7g. Changing this forces a new resource to be created.
     hostEncryptionEnabled : bool, default is Undefined, optional
@@ -129,7 +131,7 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterNodePoolSpecForPro
     osDiskType : str, default is Undefined, optional
         The type of disk which should be used for the Operating System. Possible values are Ephemeral and Managed. Defaults to Managed. Changing this property requires specifying temporary_name_for_rotation.
     osSku : str, default is Undefined, optional
-        Specifies the OS SKU used by the agent pool. Possible values are AzureLinux, Ubuntu, Windows2019 and Windows2022. If not specified, the default is Ubuntu if OSType=Linux or Windows2019 if OSType=Windows. And the default Windows OSSKU will be changed to Windows2022 after Windows2019 is deprecated. Changing this from AzureLinux or Ubuntu to AzureLinux or Ubuntu will not replace the resource, otherwise it forces a new resource to be created.
+        Specifies the OS SKU used by the agent pool. Possible values are AzureLinux, AzureLinux3, Ubuntu, Ubuntu2204, Windows2019 and Windows2022. If not specified, the default is Ubuntu if OSType=Linux or Windows2019 if OSType=Windows. And the default Windows OSSKU will be changed to Windows2022 after Windows2019 is deprecated. Changing this from AzureLinux or Ubuntu to AzureLinux or Ubuntu will not replace the resource, otherwise it forces a new resource to be created.
     osType : str, default is Undefined, optional
         The Operating System which should be used for this Node Pool. Changing this forces a new resource to be created. Possible values are Linux and Windows. Defaults to Linux.
     podSubnetId : str, default is Undefined, optional
@@ -180,6 +182,8 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterNodePoolSpecForPro
     evictionPolicy?: str
 
     fipsEnabled?: bool
+
+    gpuDriver?: str
 
     gpuInstance?: str
 
@@ -425,16 +429,20 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterNodePoolSpecForPro
         Specifies the size of swap file on each node in MB.
     sysctlConfig : ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterNodePoolSpecForProviderLinuxOsConfigSysctlConfig, default is Undefined, optional
         sysctl config
+    transparentHugePage : str, default is Undefined, optional
+        Specifies the Transparent Huge Page configuration. Possible values are always, madvise and never.
     transparentHugePageDefrag : str, default is Undefined, optional
         specifies the defrag configuration for Transparent Huge Page. Possible values are always, defer, defer+madvise, madvise and never.
     transparentHugePageEnabled : str, default is Undefined, optional
-        Specifies the Transparent Huge Page enabled configuration. Possible values are always, madvise and never.
+        transparent huge page enabled
     """
 
 
     swapFileSizeMb?: float
 
     sysctlConfig?: ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterNodePoolSpecForProviderLinuxOsConfigSysctlConfig
+
+    transparentHugePage?: str
 
     transparentHugePageDefrag?: str
 
@@ -718,8 +726,12 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterNodePoolSpecForPro
         The amount of time in minutes to wait on eviction of pods and graceful termination per node. This eviction wait time honors waiting on pod disruption budgets. If this time is exceeded, the upgrade fails. Unsetting this after configuring it will force a new resource to be created.
     maxSurge : str, default is Undefined, optional
         The maximum number or percentage of nodes which will be added to the Node Pool size during an upgrade.
+    maxUnavailable : str, default is Undefined, optional
+        The maximum number or percentage of nodes which can be unavailable during the upgrade.
     nodeSoakDurationInMinutes : float, default is Undefined, optional
         The amount of time in minutes to wait after draining a node and before reimaging and moving on to next node.
+    undrainableNodeBehavior : str, default is Undefined, optional
+        Specifies the action when a node is undrainable during upgrade. Possible values are Cordon and Schedule. Unsetting this after configuring it will force a new resource to be created.
     """
 
 
@@ -727,7 +739,11 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterNodePoolSpecForPro
 
     maxSurge?: str
 
+    maxUnavailable?: str
+
     nodeSoakDurationInMinutes?: float
+
+    undrainableNodeBehavior?: str
 
 
 schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterNodePoolSpecForProviderVnetSubnetIDRef:
@@ -864,6 +880,8 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterNodePoolSpecInitPr
         The Eviction Policy which should be used for Virtual Machines within the Virtual Machine Scale Set powering this Node Pool. Possible values are Deallocate and Delete. Changing this forces a new resource to be created.
     fipsEnabled : bool, default is Undefined, optional
         Should the nodes in this Node Pool have Federal Information Processing Standard enabled? Changing this property requires specifying temporary_name_for_rotation.
+    gpuDriver : str, default is Undefined, optional
+        Specifies whether to install the GPU Driver for the nodes. Possible values are Install and None. Changing this forces a new resource to be created.
     gpuInstance : str, default is Undefined, optional
         Specifies the GPU MIG instance profile for supported GPU VM SKU. The allowed values are MIG1g, MIG2g, MIG3g, MIG4g and MIG7g. Changing this forces a new resource to be created.
     hostEncryptionEnabled : bool, default is Undefined, optional
@@ -903,7 +921,7 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterNodePoolSpecInitPr
     osDiskType : str, default is Undefined, optional
         The type of disk which should be used for the Operating System. Possible values are Ephemeral and Managed. Defaults to Managed. Changing this property requires specifying temporary_name_for_rotation.
     osSku : str, default is Undefined, optional
-        Specifies the OS SKU used by the agent pool. Possible values are AzureLinux, Ubuntu, Windows2019 and Windows2022. If not specified, the default is Ubuntu if OSType=Linux or Windows2019 if OSType=Windows. And the default Windows OSSKU will be changed to Windows2022 after Windows2019 is deprecated. Changing this from AzureLinux or Ubuntu to AzureLinux or Ubuntu will not replace the resource, otherwise it forces a new resource to be created.
+        Specifies the OS SKU used by the agent pool. Possible values are AzureLinux, AzureLinux3, Ubuntu, Ubuntu2204, Windows2019 and Windows2022. If not specified, the default is Ubuntu if OSType=Linux or Windows2019 if OSType=Windows. And the default Windows OSSKU will be changed to Windows2022 after Windows2019 is deprecated. Changing this from AzureLinux or Ubuntu to AzureLinux or Ubuntu will not replace the resource, otherwise it forces a new resource to be created.
     osType : str, default is Undefined, optional
         The Operating System which should be used for this Node Pool. Changing this forces a new resource to be created. Possible values are Linux and Windows. Defaults to Linux.
     podSubnetId : str, default is Undefined, optional
@@ -954,6 +972,8 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterNodePoolSpecInitPr
     evictionPolicy?: str
 
     fipsEnabled?: bool
+
+    gpuDriver?: str
 
     gpuInstance?: str
 
@@ -1096,16 +1116,20 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterNodePoolSpecInitPr
         Specifies the size of swap file on each node in MB.
     sysctlConfig : ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterNodePoolSpecInitProviderLinuxOsConfigSysctlConfig, default is Undefined, optional
         sysctl config
+    transparentHugePage : str, default is Undefined, optional
+        Specifies the Transparent Huge Page configuration. Possible values are always, madvise and never.
     transparentHugePageDefrag : str, default is Undefined, optional
         specifies the defrag configuration for Transparent Huge Page. Possible values are always, defer, defer+madvise, madvise and never.
     transparentHugePageEnabled : str, default is Undefined, optional
-        Specifies the Transparent Huge Page enabled configuration. Possible values are always, madvise and never.
+        transparent huge page enabled
     """
 
 
     swapFileSizeMb?: float
 
     sysctlConfig?: ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterNodePoolSpecInitProviderLinuxOsConfigSysctlConfig
+
+    transparentHugePage?: str
 
     transparentHugePageDefrag?: str
 
@@ -1389,8 +1413,12 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterNodePoolSpecInitPr
         The amount of time in minutes to wait on eviction of pods and graceful termination per node. This eviction wait time honors waiting on pod disruption budgets. If this time is exceeded, the upgrade fails. Unsetting this after configuring it will force a new resource to be created.
     maxSurge : str, default is Undefined, optional
         The maximum number or percentage of nodes which will be added to the Node Pool size during an upgrade.
+    maxUnavailable : str, default is Undefined, optional
+        The maximum number or percentage of nodes which can be unavailable during the upgrade.
     nodeSoakDurationInMinutes : float, default is Undefined, optional
         The amount of time in minutes to wait after draining a node and before reimaging and moving on to next node.
+    undrainableNodeBehavior : str, default is Undefined, optional
+        Specifies the action when a node is undrainable during upgrade. Possible values are Cordon and Schedule. Unsetting this after configuring it will force a new resource to be created.
     """
 
 
@@ -1398,7 +1426,11 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterNodePoolSpecInitPr
 
     maxSurge?: str
 
+    maxUnavailable?: str
+
     nodeSoakDurationInMinutes?: float
+
+    undrainableNodeBehavior?: str
 
 
 schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterNodePoolSpecInitProviderVnetSubnetIDRef:
@@ -1587,6 +1619,8 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterNodePoolStatusAtPr
         The Eviction Policy which should be used for Virtual Machines within the Virtual Machine Scale Set powering this Node Pool. Possible values are Deallocate and Delete. Changing this forces a new resource to be created.
     fipsEnabled : bool, default is Undefined, optional
         Should the nodes in this Node Pool have Federal Information Processing Standard enabled? Changing this property requires specifying temporary_name_for_rotation.
+    gpuDriver : str, default is Undefined, optional
+        Specifies whether to install the GPU Driver for the nodes. Possible values are Install and None. Changing this forces a new resource to be created.
     gpuInstance : str, default is Undefined, optional
         Specifies the GPU MIG instance profile for supported GPU VM SKU. The allowed values are MIG1g, MIG2g, MIG3g, MIG4g and MIG7g. Changing this forces a new resource to be created.
     hostEncryptionEnabled : bool, default is Undefined, optional
@@ -1630,7 +1664,7 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterNodePoolStatusAtPr
     osDiskType : str, default is Undefined, optional
         The type of disk which should be used for the Operating System. Possible values are Ephemeral and Managed. Defaults to Managed. Changing this property requires specifying temporary_name_for_rotation.
     osSku : str, default is Undefined, optional
-        Specifies the OS SKU used by the agent pool. Possible values are AzureLinux, Ubuntu, Windows2019 and Windows2022. If not specified, the default is Ubuntu if OSType=Linux or Windows2019 if OSType=Windows. And the default Windows OSSKU will be changed to Windows2022 after Windows2019 is deprecated. Changing this from AzureLinux or Ubuntu to AzureLinux or Ubuntu will not replace the resource, otherwise it forces a new resource to be created.
+        Specifies the OS SKU used by the agent pool. Possible values are AzureLinux, AzureLinux3, Ubuntu, Ubuntu2204, Windows2019 and Windows2022. If not specified, the default is Ubuntu if OSType=Linux or Windows2019 if OSType=Windows. And the default Windows OSSKU will be changed to Windows2022 after Windows2019 is deprecated. Changing this from AzureLinux or Ubuntu to AzureLinux or Ubuntu will not replace the resource, otherwise it forces a new resource to be created.
     osType : str, default is Undefined, optional
         The Operating System which should be used for this Node Pool. Changing this forces a new resource to be created. Possible values are Linux and Windows. Defaults to Linux.
     podSubnetId : str, default is Undefined, optional
@@ -1673,6 +1707,8 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterNodePoolStatusAtPr
     evictionPolicy?: str
 
     fipsEnabled?: bool
+
+    gpuDriver?: str
 
     gpuInstance?: str
 
@@ -1811,16 +1847,20 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterNodePoolStatusAtPr
         Specifies the size of swap file on each node in MB.
     sysctlConfig : ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterNodePoolStatusAtProviderLinuxOsConfigSysctlConfig, default is Undefined, optional
         sysctl config
+    transparentHugePage : str, default is Undefined, optional
+        Specifies the Transparent Huge Page configuration. Possible values are always, madvise and never.
     transparentHugePageDefrag : str, default is Undefined, optional
         specifies the defrag configuration for Transparent Huge Page. Possible values are always, defer, defer+madvise, madvise and never.
     transparentHugePageEnabled : str, default is Undefined, optional
-        Specifies the Transparent Huge Page enabled configuration. Possible values are always, madvise and never.
+        transparent huge page enabled
     """
 
 
     swapFileSizeMb?: float
 
     sysctlConfig?: ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterNodePoolStatusAtProviderLinuxOsConfigSysctlConfig
+
+    transparentHugePage?: str
 
     transparentHugePageDefrag?: str
 
@@ -2007,8 +2047,12 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterNodePoolStatusAtPr
         The amount of time in minutes to wait on eviction of pods and graceful termination per node. This eviction wait time honors waiting on pod disruption budgets. If this time is exceeded, the upgrade fails. Unsetting this after configuring it will force a new resource to be created.
     maxSurge : str, default is Undefined, optional
         The maximum number or percentage of nodes which will be added to the Node Pool size during an upgrade.
+    maxUnavailable : str, default is Undefined, optional
+        The maximum number or percentage of nodes which can be unavailable during the upgrade.
     nodeSoakDurationInMinutes : float, default is Undefined, optional
         The amount of time in minutes to wait after draining a node and before reimaging and moving on to next node.
+    undrainableNodeBehavior : str, default is Undefined, optional
+        Specifies the action when a node is undrainable during upgrade. Possible values are Cordon and Schedule. Unsetting this after configuring it will force a new resource to be created.
     """
 
 
@@ -2016,7 +2060,11 @@ schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterNodePoolStatusAtPr
 
     maxSurge?: str
 
+    maxUnavailable?: str
+
     nodeSoakDurationInMinutes?: float
+
+    undrainableNodeBehavior?: str
 
 
 schema ContainerserviceAzuremUpboundIoV1beta1KubernetesClusterNodePoolStatusAtProviderWindowsProfile:

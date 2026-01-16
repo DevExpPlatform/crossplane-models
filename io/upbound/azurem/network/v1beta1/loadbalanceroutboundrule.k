@@ -85,7 +85,7 @@ schema NetworkAzuremUpboundIoV1beta1LoadBalancerOutboundRuleSpecForProvider:
     backendAddressPoolIdSelector : NetworkAzuremUpboundIoV1beta1LoadBalancerOutboundRuleSpecForProviderBackendAddressPoolIDSelector, default is Undefined, optional
         backend address pool Id selector
     enableTcpReset : bool, default is Undefined, optional
-        Receive bidirectional TCP Reset on TCP flow idle timeout or unexpected connection termination. This element is only used when the protocol is set to TCP.
+        enable Tcp reset
     frontendIpConfiguration : [NetworkAzuremUpboundIoV1beta1LoadBalancerOutboundRuleSpecForProviderFrontendIPConfigurationItems0], default is Undefined, optional
         One or more frontend_ip_configuration blocks as defined below.
     idleTimeoutInMinutes : float, default is Undefined, optional
@@ -98,6 +98,8 @@ schema NetworkAzuremUpboundIoV1beta1LoadBalancerOutboundRuleSpecForProvider:
         loadbalancer Id selector
     $protocol : str, default is Undefined, optional
         The transport protocol for the external endpoint. Possible values are Udp, Tcp or All.
+    tcpResetEnabled : bool, default is Undefined, optional
+        Receive bidirectional TCP Reset on TCP flow idle timeout or unexpected connection termination. This element is only used when the protocol is set to TCP.
     """
 
 
@@ -122,6 +124,8 @@ schema NetworkAzuremUpboundIoV1beta1LoadBalancerOutboundRuleSpecForProvider:
     loadbalancerIdSelector?: NetworkAzuremUpboundIoV1beta1LoadBalancerOutboundRuleSpecForProviderLoadbalancerIDSelector
 
     $protocol?: str
+
+    tcpResetEnabled?: bool
 
 
 schema NetworkAzuremUpboundIoV1beta1LoadBalancerOutboundRuleSpecForProviderBackendAddressPoolIDRef:
@@ -356,13 +360,15 @@ schema NetworkAzuremUpboundIoV1beta1LoadBalancerOutboundRuleSpecInitProvider:
     backendAddressPoolIdSelector : NetworkAzuremUpboundIoV1beta1LoadBalancerOutboundRuleSpecInitProviderBackendAddressPoolIDSelector, default is Undefined, optional
         backend address pool Id selector
     enableTcpReset : bool, default is Undefined, optional
-        Receive bidirectional TCP Reset on TCP flow idle timeout or unexpected connection termination. This element is only used when the protocol is set to TCP.
+        enable Tcp reset
     frontendIpConfiguration : [NetworkAzuremUpboundIoV1beta1LoadBalancerOutboundRuleSpecInitProviderFrontendIPConfigurationItems0], default is Undefined, optional
         One or more frontend_ip_configuration blocks as defined below.
     idleTimeoutInMinutes : float, default is Undefined, optional
         The timeout for the TCP idle connection Defaults to 4.
     $protocol : str, default is Undefined, optional
         The transport protocol for the external endpoint. Possible values are Udp, Tcp or All.
+    tcpResetEnabled : bool, default is Undefined, optional
+        Receive bidirectional TCP Reset on TCP flow idle timeout or unexpected connection termination. This element is only used when the protocol is set to TCP.
     """
 
 
@@ -381,6 +387,8 @@ schema NetworkAzuremUpboundIoV1beta1LoadBalancerOutboundRuleSpecInitProvider:
     idleTimeoutInMinutes?: float
 
     $protocol?: str
+
+    tcpResetEnabled?: bool
 
 
 schema NetworkAzuremUpboundIoV1beta1LoadBalancerOutboundRuleSpecInitProviderBackendAddressPoolIDRef:
@@ -566,7 +574,7 @@ schema NetworkAzuremUpboundIoV1beta1LoadBalancerOutboundRuleStatusAtProvider:
     backendAddressPoolId : str, default is Undefined, optional
         The ID of the Backend Address Pool. Outbound traffic is randomly load balanced across IPs in the backend IPs.
     enableTcpReset : bool, default is Undefined, optional
-        Receive bidirectional TCP Reset on TCP flow idle timeout or unexpected connection termination. This element is only used when the protocol is set to TCP.
+        enable Tcp reset
     frontendIpConfiguration : [NetworkAzuremUpboundIoV1beta1LoadBalancerOutboundRuleStatusAtProviderFrontendIPConfigurationItems0], default is Undefined, optional
         One or more frontend_ip_configuration blocks as defined below.
     id : str, default is Undefined, optional
@@ -577,6 +585,8 @@ schema NetworkAzuremUpboundIoV1beta1LoadBalancerOutboundRuleStatusAtProvider:
         The ID of the Load Balancer in which to create the Outbound Rule. Changing this forces a new resource to be created.
     $protocol : str, default is Undefined, optional
         The transport protocol for the external endpoint. Possible values are Udp, Tcp or All.
+    tcpResetEnabled : bool, default is Undefined, optional
+        Receive bidirectional TCP Reset on TCP flow idle timeout or unexpected connection termination. This element is only used when the protocol is set to TCP.
     """
 
 
@@ -595,6 +605,8 @@ schema NetworkAzuremUpboundIoV1beta1LoadBalancerOutboundRuleStatusAtProvider:
     loadbalancerId?: str
 
     $protocol?: str
+
+    tcpResetEnabled?: bool
 
 
 schema NetworkAzuremUpboundIoV1beta1LoadBalancerOutboundRuleStatusAtProviderFrontendIPConfigurationItems0:

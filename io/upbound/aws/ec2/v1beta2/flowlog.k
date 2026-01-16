@@ -66,8 +66,6 @@ schema Ec2AwsUpboundIoV1beta2FlowLogSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : Ec2AwsUpboundIoV1beta2FlowLogSpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : Ec2AwsUpboundIoV1beta2FlowLogSpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : Ec2AwsUpboundIoV1beta2FlowLogSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -83,8 +81,6 @@ schema Ec2AwsUpboundIoV1beta2FlowLogSpec:
 
     providerConfigRef?: Ec2AwsUpboundIoV1beta2FlowLogSpecProviderConfigRef
 
-    publishConnectionDetailsTo?: Ec2AwsUpboundIoV1beta2FlowLogSpecPublishConnectionDetailsTo
-
     writeConnectionSecretToRef?: Ec2AwsUpboundIoV1beta2FlowLogSpecWriteConnectionSecretToRef
 
 
@@ -95,38 +91,40 @@ schema Ec2AwsUpboundIoV1beta2FlowLogSpecForProvider:
     Attributes
     ----------
     deliverCrossAccountRole : str, default is Undefined, optional
-        ARN of the IAM role that allows Amazon EC2 to publish flow logs across accounts.
+        ARN of the IAM role in the destination account used for cross-account delivery of flow logs.
+    deliverCrossAccountRoleRef : Ec2AwsUpboundIoV1beta2FlowLogSpecForProviderDeliverCrossAccountRoleRef, default is Undefined, optional
+        deliver cross account role ref
+    deliverCrossAccountRoleSelector : Ec2AwsUpboundIoV1beta2FlowLogSpecForProviderDeliverCrossAccountRoleSelector, default is Undefined, optional
+        deliver cross account role selector
     destinationOptions : Ec2AwsUpboundIoV1beta2FlowLogSpecForProviderDestinationOptions, default is Undefined, optional
         destination options
     eniId : str, default is Undefined, optional
-        Elastic Network Interface ID to attach to
+        Elastic Network Interface ID to attach to.
     iamRoleArn : str, default is Undefined, optional
-        The ARN for the IAM role that's used to post flow logs to a CloudWatch Logs log group
+        ARN of the IAM role used to post flow logs. Corresponds to DeliverLogsPermissionArn in the AWS API.
     iamRoleArnRef : Ec2AwsUpboundIoV1beta2FlowLogSpecForProviderIamRoleArnRef, default is Undefined, optional
         iam role arn ref
     iamRoleArnSelector : Ec2AwsUpboundIoV1beta2FlowLogSpecForProviderIamRoleArnSelector, default is Undefined, optional
         iam role arn selector
     logDestination : str, default is Undefined, optional
-        The ARN of the logging destination. Either log_destination or log_group_name must be set.
+        ARN of the logging destination.
     logDestinationRef : Ec2AwsUpboundIoV1beta2FlowLogSpecForProviderLogDestinationRef, default is Undefined, optional
         log destination ref
     logDestinationSelector : Ec2AwsUpboundIoV1beta2FlowLogSpecForProviderLogDestinationSelector, default is Undefined, optional
         log destination selector
     logDestinationType : str, default is Undefined, optional
-        The type of the logging destination. Valid values: cloud-watch-logs, s3, kinesis-data-firehose. Default: cloud-watch-logs.
+        Logging destination type. Valid values: cloud-watch-logs, s3, kinesis-data-firehose. Default: cloud-watch-logs.
     logFormat : str, default is Undefined, optional
         The fields to include in the flow log record. Accepted format example: "$${interface-id} $${srcaddr} $${dstaddr} $${srcport} $${dstport}".
-    logGroupName : str, default is Undefined, optional
-        Deprecated: Use log_destination instead. The name of the CloudWatch log group. Either log_group_name or log_destination must be set.
     maxAggregationInterval : float, default is Undefined, optional
-        The maximum interval of time
-        during which a flow of packets is captured and aggregated into a flow
-        log record. Valid Values: 60 seconds (1 minute) or 600 seconds (10
-        minutes). Default: 600. When transit_gateway_id or transit_gateway_attachment_id is specified, max_aggregation_interval must be 60 seconds (1 minute).
+        The maximum interval of time during which a flow of packets is captured and aggregated into a flow log record.
+        Valid Values: 60 seconds (1 minute) or 600 seconds (10 minutes). Default: 600.
+        When transit_gateway_id or transit_gateway_attachment_id is specified, max_aggregation_interval must be 60 seconds (1 minute).
     region : str, default is Undefined, required
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
     subnetId : str, default is Undefined, optional
-        Subnet ID to attach to
+        Subnet ID to attach to.
     subnetIdRef : Ec2AwsUpboundIoV1beta2FlowLogSpecForProviderSubnetIDRef, default is Undefined, optional
         subnet Id ref
     subnetIdSelector : Ec2AwsUpboundIoV1beta2FlowLogSpecForProviderSubnetIDSelector, default is Undefined, optional
@@ -136,11 +134,11 @@ schema Ec2AwsUpboundIoV1beta2FlowLogSpecForProvider:
     trafficType : str, default is Undefined, optional
         The type of traffic to capture. Valid values: ACCEPT,REJECT, ALL.
     transitGatewayAttachmentId : str, default is Undefined, optional
-        Transit Gateway Attachment ID to attach to
+        Transit Gateway Attachment ID to attach to.
     transitGatewayId : str, default is Undefined, optional
-        Transit Gateway ID to attach to
+        Transit Gateway ID to attach to.
     vpcId : str, default is Undefined, optional
-        VPC ID to attach to
+        VPC ID to attach to.
     vpcIdRef : Ec2AwsUpboundIoV1beta2FlowLogSpecForProviderVpcIDRef, default is Undefined, optional
         vpc Id ref
     vpcIdSelector : Ec2AwsUpboundIoV1beta2FlowLogSpecForProviderVpcIDSelector, default is Undefined, optional
@@ -149,6 +147,10 @@ schema Ec2AwsUpboundIoV1beta2FlowLogSpecForProvider:
 
 
     deliverCrossAccountRole?: str
+
+    deliverCrossAccountRoleRef?: Ec2AwsUpboundIoV1beta2FlowLogSpecForProviderDeliverCrossAccountRoleRef
+
+    deliverCrossAccountRoleSelector?: Ec2AwsUpboundIoV1beta2FlowLogSpecForProviderDeliverCrossAccountRoleSelector
 
     destinationOptions?: Ec2AwsUpboundIoV1beta2FlowLogSpecForProviderDestinationOptions
 
@@ -169,8 +171,6 @@ schema Ec2AwsUpboundIoV1beta2FlowLogSpecForProvider:
     logDestinationType?: str
 
     logFormat?: str
-
-    logGroupName?: str
 
     maxAggregationInterval?: float
 
@@ -197,6 +197,95 @@ schema Ec2AwsUpboundIoV1beta2FlowLogSpecForProvider:
     vpcIdSelector?: Ec2AwsUpboundIoV1beta2FlowLogSpecForProviderVpcIDSelector
 
 
+schema Ec2AwsUpboundIoV1beta2FlowLogSpecForProviderDeliverCrossAccountRoleRef:
+    r"""
+    Reference to a Role in iam to populate deliverCrossAccountRole.
+
+    Attributes
+    ----------
+    name : str, default is Undefined, required
+        Name of the referenced object.
+    policy : Ec2AwsUpboundIoV1beta2FlowLogSpecForProviderDeliverCrossAccountRoleRefPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    name: str
+
+    policy?: Ec2AwsUpboundIoV1beta2FlowLogSpecForProviderDeliverCrossAccountRoleRefPolicy
+
+
+schema Ec2AwsUpboundIoV1beta2FlowLogSpecForProviderDeliverCrossAccountRoleRefPolicy:
+    r"""
+    Policies for referencing.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
+schema Ec2AwsUpboundIoV1beta2FlowLogSpecForProviderDeliverCrossAccountRoleSelector:
+    r"""
+    Selector for a Role in iam to populate deliverCrossAccountRole.
+
+    Attributes
+    ----------
+    matchControllerRef : bool, default is Undefined, optional
+        MatchControllerRef ensures an object with the same controller reference
+        as the selecting object is selected.
+    matchLabels : {str:str}, default is Undefined, optional
+        MatchLabels ensures an object with matching labels is selected.
+    policy : Ec2AwsUpboundIoV1beta2FlowLogSpecForProviderDeliverCrossAccountRoleSelectorPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    matchControllerRef?: bool
+
+    matchLabels?: {str:str}
+
+    policy?: Ec2AwsUpboundIoV1beta2FlowLogSpecForProviderDeliverCrossAccountRoleSelectorPolicy
+
+
+schema Ec2AwsUpboundIoV1beta2FlowLogSpecForProviderDeliverCrossAccountRoleSelectorPolicy:
+    r"""
+    Policies for selection.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
 schema Ec2AwsUpboundIoV1beta2FlowLogSpecForProviderDestinationOptions:
     r"""
     Describes the destination options for a flow log. More details below.
@@ -204,7 +293,7 @@ schema Ec2AwsUpboundIoV1beta2FlowLogSpecForProviderDestinationOptions:
     Attributes
     ----------
     fileFormat : str, default is Undefined, optional
-        The format for the flow log. Default value: plain-text. Valid values: plain-text, parquet.
+        File format for the flow log. Default value: plain-text. Valid values: plain-text, parquet.
     hiveCompatiblePartitions : bool, default is Undefined, optional
         Indicates whether to use Hive-compatible prefixes for flow logs stored in Amazon S3. Default value: false.
     perHourPartition : bool, default is Undefined, optional
@@ -591,36 +680,37 @@ schema Ec2AwsUpboundIoV1beta2FlowLogSpecInitProvider:
     Attributes
     ----------
     deliverCrossAccountRole : str, default is Undefined, optional
-        ARN of the IAM role that allows Amazon EC2 to publish flow logs across accounts.
+        ARN of the IAM role in the destination account used for cross-account delivery of flow logs.
+    deliverCrossAccountRoleRef : Ec2AwsUpboundIoV1beta2FlowLogSpecInitProviderDeliverCrossAccountRoleRef, default is Undefined, optional
+        deliver cross account role ref
+    deliverCrossAccountRoleSelector : Ec2AwsUpboundIoV1beta2FlowLogSpecInitProviderDeliverCrossAccountRoleSelector, default is Undefined, optional
+        deliver cross account role selector
     destinationOptions : Ec2AwsUpboundIoV1beta2FlowLogSpecInitProviderDestinationOptions, default is Undefined, optional
         destination options
     eniId : str, default is Undefined, optional
-        Elastic Network Interface ID to attach to
+        Elastic Network Interface ID to attach to.
     iamRoleArn : str, default is Undefined, optional
-        The ARN for the IAM role that's used to post flow logs to a CloudWatch Logs log group
+        ARN of the IAM role used to post flow logs. Corresponds to DeliverLogsPermissionArn in the AWS API.
     iamRoleArnRef : Ec2AwsUpboundIoV1beta2FlowLogSpecInitProviderIamRoleArnRef, default is Undefined, optional
         iam role arn ref
     iamRoleArnSelector : Ec2AwsUpboundIoV1beta2FlowLogSpecInitProviderIamRoleArnSelector, default is Undefined, optional
         iam role arn selector
     logDestination : str, default is Undefined, optional
-        The ARN of the logging destination. Either log_destination or log_group_name must be set.
+        ARN of the logging destination.
     logDestinationRef : Ec2AwsUpboundIoV1beta2FlowLogSpecInitProviderLogDestinationRef, default is Undefined, optional
         log destination ref
     logDestinationSelector : Ec2AwsUpboundIoV1beta2FlowLogSpecInitProviderLogDestinationSelector, default is Undefined, optional
         log destination selector
     logDestinationType : str, default is Undefined, optional
-        The type of the logging destination. Valid values: cloud-watch-logs, s3, kinesis-data-firehose. Default: cloud-watch-logs.
+        Logging destination type. Valid values: cloud-watch-logs, s3, kinesis-data-firehose. Default: cloud-watch-logs.
     logFormat : str, default is Undefined, optional
         The fields to include in the flow log record. Accepted format example: "$${interface-id} $${srcaddr} $${dstaddr} $${srcport} $${dstport}".
-    logGroupName : str, default is Undefined, optional
-        Deprecated: Use log_destination instead. The name of the CloudWatch log group. Either log_group_name or log_destination must be set.
     maxAggregationInterval : float, default is Undefined, optional
-        The maximum interval of time
-        during which a flow of packets is captured and aggregated into a flow
-        log record. Valid Values: 60 seconds (1 minute) or 600 seconds (10
-        minutes). Default: 600. When transit_gateway_id or transit_gateway_attachment_id is specified, max_aggregation_interval must be 60 seconds (1 minute).
+        The maximum interval of time during which a flow of packets is captured and aggregated into a flow log record.
+        Valid Values: 60 seconds (1 minute) or 600 seconds (10 minutes). Default: 600.
+        When transit_gateway_id or transit_gateway_attachment_id is specified, max_aggregation_interval must be 60 seconds (1 minute).
     subnetId : str, default is Undefined, optional
-        Subnet ID to attach to
+        Subnet ID to attach to.
     subnetIdRef : Ec2AwsUpboundIoV1beta2FlowLogSpecInitProviderSubnetIDRef, default is Undefined, optional
         subnet Id ref
     subnetIdSelector : Ec2AwsUpboundIoV1beta2FlowLogSpecInitProviderSubnetIDSelector, default is Undefined, optional
@@ -630,11 +720,11 @@ schema Ec2AwsUpboundIoV1beta2FlowLogSpecInitProvider:
     trafficType : str, default is Undefined, optional
         The type of traffic to capture. Valid values: ACCEPT,REJECT, ALL.
     transitGatewayAttachmentId : str, default is Undefined, optional
-        Transit Gateway Attachment ID to attach to
+        Transit Gateway Attachment ID to attach to.
     transitGatewayId : str, default is Undefined, optional
-        Transit Gateway ID to attach to
+        Transit Gateway ID to attach to.
     vpcId : str, default is Undefined, optional
-        VPC ID to attach to
+        VPC ID to attach to.
     vpcIdRef : Ec2AwsUpboundIoV1beta2FlowLogSpecInitProviderVpcIDRef, default is Undefined, optional
         vpc Id ref
     vpcIdSelector : Ec2AwsUpboundIoV1beta2FlowLogSpecInitProviderVpcIDSelector, default is Undefined, optional
@@ -643,6 +733,10 @@ schema Ec2AwsUpboundIoV1beta2FlowLogSpecInitProvider:
 
 
     deliverCrossAccountRole?: str
+
+    deliverCrossAccountRoleRef?: Ec2AwsUpboundIoV1beta2FlowLogSpecInitProviderDeliverCrossAccountRoleRef
+
+    deliverCrossAccountRoleSelector?: Ec2AwsUpboundIoV1beta2FlowLogSpecInitProviderDeliverCrossAccountRoleSelector
 
     destinationOptions?: Ec2AwsUpboundIoV1beta2FlowLogSpecInitProviderDestinationOptions
 
@@ -663,8 +757,6 @@ schema Ec2AwsUpboundIoV1beta2FlowLogSpecInitProvider:
     logDestinationType?: str
 
     logFormat?: str
-
-    logGroupName?: str
 
     maxAggregationInterval?: float
 
@@ -689,6 +781,95 @@ schema Ec2AwsUpboundIoV1beta2FlowLogSpecInitProvider:
     vpcIdSelector?: Ec2AwsUpboundIoV1beta2FlowLogSpecInitProviderVpcIDSelector
 
 
+schema Ec2AwsUpboundIoV1beta2FlowLogSpecInitProviderDeliverCrossAccountRoleRef:
+    r"""
+    Reference to a Role in iam to populate deliverCrossAccountRole.
+
+    Attributes
+    ----------
+    name : str, default is Undefined, required
+        Name of the referenced object.
+    policy : Ec2AwsUpboundIoV1beta2FlowLogSpecInitProviderDeliverCrossAccountRoleRefPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    name: str
+
+    policy?: Ec2AwsUpboundIoV1beta2FlowLogSpecInitProviderDeliverCrossAccountRoleRefPolicy
+
+
+schema Ec2AwsUpboundIoV1beta2FlowLogSpecInitProviderDeliverCrossAccountRoleRefPolicy:
+    r"""
+    Policies for referencing.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
+schema Ec2AwsUpboundIoV1beta2FlowLogSpecInitProviderDeliverCrossAccountRoleSelector:
+    r"""
+    Selector for a Role in iam to populate deliverCrossAccountRole.
+
+    Attributes
+    ----------
+    matchControllerRef : bool, default is Undefined, optional
+        MatchControllerRef ensures an object with the same controller reference
+        as the selecting object is selected.
+    matchLabels : {str:str}, default is Undefined, optional
+        MatchLabels ensures an object with matching labels is selected.
+    policy : Ec2AwsUpboundIoV1beta2FlowLogSpecInitProviderDeliverCrossAccountRoleSelectorPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    matchControllerRef?: bool
+
+    matchLabels?: {str:str}
+
+    policy?: Ec2AwsUpboundIoV1beta2FlowLogSpecInitProviderDeliverCrossAccountRoleSelectorPolicy
+
+
+schema Ec2AwsUpboundIoV1beta2FlowLogSpecInitProviderDeliverCrossAccountRoleSelectorPolicy:
+    r"""
+    Policies for selection.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
 schema Ec2AwsUpboundIoV1beta2FlowLogSpecInitProviderDestinationOptions:
     r"""
     Describes the destination options for a flow log. More details below.
@@ -696,7 +877,7 @@ schema Ec2AwsUpboundIoV1beta2FlowLogSpecInitProviderDestinationOptions:
     Attributes
     ----------
     fileFormat : str, default is Undefined, optional
-        The format for the flow log. Default value: plain-text. Valid values: plain-text, parquet.
+        File format for the flow log. Default value: plain-text. Valid values: plain-text, parquet.
     hiveCompatiblePartitions : bool, default is Undefined, optional
         Indicates whether to use Hive-compatible prefixes for flow logs stored in Amazon S3. Default value: false.
     perHourPartition : bool, default is Undefined, optional
@@ -1111,112 +1292,12 @@ schema Ec2AwsUpboundIoV1beta2FlowLogSpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
-schema Ec2AwsUpboundIoV1beta2FlowLogSpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : Ec2AwsUpboundIoV1beta2FlowLogSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : Ec2AwsUpboundIoV1beta2FlowLogSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: Ec2AwsUpboundIoV1beta2FlowLogSpecPublishConnectionDetailsToConfigRef
-
-    metadata?: Ec2AwsUpboundIoV1beta2FlowLogSpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema Ec2AwsUpboundIoV1beta2FlowLogSpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : Ec2AwsUpboundIoV1beta2FlowLogSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: Ec2AwsUpboundIoV1beta2FlowLogSpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema Ec2AwsUpboundIoV1beta2FlowLogSpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema Ec2AwsUpboundIoV1beta2FlowLogSpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema Ec2AwsUpboundIoV1beta2FlowLogSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------
@@ -1263,32 +1344,32 @@ schema Ec2AwsUpboundIoV1beta2FlowLogStatusAtProvider:
     Attributes
     ----------
     arn : str, default is Undefined, optional
-        The ARN of the Flow Log.
+        ARN of the Flow Log.
     deliverCrossAccountRole : str, default is Undefined, optional
-        ARN of the IAM role that allows Amazon EC2 to publish flow logs across accounts.
+        ARN of the IAM role in the destination account used for cross-account delivery of flow logs.
     destinationOptions : Ec2AwsUpboundIoV1beta2FlowLogStatusAtProviderDestinationOptions, default is Undefined, optional
         destination options
     eniId : str, default is Undefined, optional
-        Elastic Network Interface ID to attach to
+        Elastic Network Interface ID to attach to.
     iamRoleArn : str, default is Undefined, optional
-        The ARN for the IAM role that's used to post flow logs to a CloudWatch Logs log group
+        ARN of the IAM role used to post flow logs. Corresponds to DeliverLogsPermissionArn in the AWS API.
     id : str, default is Undefined, optional
-        The Flow Log ID
+        Flow Log ID.
     logDestination : str, default is Undefined, optional
-        The ARN of the logging destination. Either log_destination or log_group_name must be set.
+        ARN of the logging destination.
     logDestinationType : str, default is Undefined, optional
-        The type of the logging destination. Valid values: cloud-watch-logs, s3, kinesis-data-firehose. Default: cloud-watch-logs.
+        Logging destination type. Valid values: cloud-watch-logs, s3, kinesis-data-firehose. Default: cloud-watch-logs.
     logFormat : str, default is Undefined, optional
         The fields to include in the flow log record. Accepted format example: "$${interface-id} $${srcaddr} $${dstaddr} $${srcport} $${dstport}".
-    logGroupName : str, default is Undefined, optional
-        Deprecated: Use log_destination instead. The name of the CloudWatch log group. Either log_group_name or log_destination must be set.
     maxAggregationInterval : float, default is Undefined, optional
-        The maximum interval of time
-        during which a flow of packets is captured and aggregated into a flow
-        log record. Valid Values: 60 seconds (1 minute) or 600 seconds (10
-        minutes). Default: 600. When transit_gateway_id or transit_gateway_attachment_id is specified, max_aggregation_interval must be 60 seconds (1 minute).
+        The maximum interval of time during which a flow of packets is captured and aggregated into a flow log record.
+        Valid Values: 60 seconds (1 minute) or 600 seconds (10 minutes). Default: 600.
+        When transit_gateway_id or transit_gateway_attachment_id is specified, max_aggregation_interval must be 60 seconds (1 minute).
+    region : str, default is Undefined, optional
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
+        Region is the region you'd like your resource to be created in.
     subnetId : str, default is Undefined, optional
-        Subnet ID to attach to
+        Subnet ID to attach to.
     tags : {str:str}, default is Undefined, optional
         Key-value map of resource tags.
     tagsAll : {str:str}, default is Undefined, optional
@@ -1296,11 +1377,11 @@ schema Ec2AwsUpboundIoV1beta2FlowLogStatusAtProvider:
     trafficType : str, default is Undefined, optional
         The type of traffic to capture. Valid values: ACCEPT,REJECT, ALL.
     transitGatewayAttachmentId : str, default is Undefined, optional
-        Transit Gateway Attachment ID to attach to
+        Transit Gateway Attachment ID to attach to.
     transitGatewayId : str, default is Undefined, optional
-        Transit Gateway ID to attach to
+        Transit Gateway ID to attach to.
     vpcId : str, default is Undefined, optional
-        VPC ID to attach to
+        VPC ID to attach to.
     """
 
 
@@ -1322,9 +1403,9 @@ schema Ec2AwsUpboundIoV1beta2FlowLogStatusAtProvider:
 
     logFormat?: str
 
-    logGroupName?: str
-
     maxAggregationInterval?: float
+
+    region?: str
 
     subnetId?: str
 
@@ -1348,7 +1429,7 @@ schema Ec2AwsUpboundIoV1beta2FlowLogStatusAtProviderDestinationOptions:
     Attributes
     ----------
     fileFormat : str, default is Undefined, optional
-        The format for the flow log. Default value: plain-text. Valid values: plain-text, parquet.
+        File format for the flow log. Default value: plain-text. Valid values: plain-text, parquet.
     hiveCompatiblePartitions : bool, default is Undefined, optional
         Indicates whether to use Hive-compatible prefixes for flow logs stored in Amazon S3. Default value: false.
     perHourPartition : bool, default is Undefined, optional

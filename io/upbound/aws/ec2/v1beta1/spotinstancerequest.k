@@ -66,8 +66,6 @@ schema Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -82,8 +80,6 @@ schema Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpec:
     managementPolicies?: [str] = ["*"]
 
     providerConfigRef?: Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecProviderConfigRef
-
-    publishConnectionDetailsTo?: Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecPublishConnectionDetailsTo
 
     writeConnectionSecretToRef?: Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecWriteConnectionSecretToRef
 
@@ -100,18 +96,10 @@ schema Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecForProvider:
         associate public Ip address
     availabilityZone : str, default is Undefined, optional
         availability zone
-    blockDurationMinutes : float, default is Undefined, optional
-        The required duration for the Spot instances, in minutes. This value must be a multiple of 60 (60, 120, 180, 240, 300, or 360).
-        The duration period starts as soon as your Spot instance receives its instance ID. At the end of the duration period, Amazon EC2 marks the Spot instance for termination and provides a Spot instance termination notice, which gives the instance a two-minute warning before it terminates.
-        Note that you can't specify an Availability Zone group or a launch group if you specify a duration.
     capacityReservationSpecification : [Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecForProviderCapacityReservationSpecificationItems0], default is Undefined, optional
         capacity reservation specification
-    cpuCoreCount : float, default is Undefined, optional
-        cpu core count
     cpuOptions : [Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecForProviderCPUOptionsItems0], default is Undefined, optional
         cpu options
-    cpuThreadsPerCore : float, default is Undefined, optional
-        cpu threads per core
     creditSpecification : [Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecForProviderCreditSpecificationItems0], default is Undefined, optional
         credit specification
     disableApiStop : bool, default is Undefined, optional
@@ -128,6 +116,8 @@ schema Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecForProvider:
         enclave options
     ephemeralBlockDevice : [Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecForProviderEphemeralBlockDeviceItems0], default is Undefined, optional
         ephemeral block device
+    forceDestroy : bool, default is Undefined, optional
+        force destroy
     getPasswordData : bool, default is Undefined, optional
         get password data
     hibernation : bool, default is Undefined, optional
@@ -165,6 +155,8 @@ schema Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecForProvider:
         network interface
     placementGroup : str, default is Undefined, optional
         placement group
+    placementGroupId : str, default is Undefined, optional
+        The Spot Instance Request ID.
     placementPartitionNumber : float, default is Undefined, optional
         placement partition number
     privateDnsNameOptions : [Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecForProviderPrivateDNSNameOptionsItems0], default is Undefined, optional
@@ -172,6 +164,7 @@ schema Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecForProvider:
     privateIp : str, default is Undefined, optional
         The private IP address assigned to the instance
     region : str, default is Undefined, required
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
     rootBlockDevice : [Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecForProviderRootBlockDeviceItems0], default is Undefined, optional
         root block device
@@ -225,15 +218,9 @@ schema Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecForProvider:
 
     availabilityZone?: str
 
-    blockDurationMinutes?: float
-
     capacityReservationSpecification?: [Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecForProviderCapacityReservationSpecificationItems0]
 
-    cpuCoreCount?: float
-
     cpuOptions?: [Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecForProviderCPUOptionsItems0]
-
-    cpuThreadsPerCore?: float
 
     creditSpecification?: [Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecForProviderCreditSpecificationItems0]
 
@@ -250,6 +237,8 @@ schema Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecForProvider:
     enclaveOptions?: [Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecForProviderEnclaveOptionsItems0]
 
     ephemeralBlockDevice?: [Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecForProviderEphemeralBlockDeviceItems0]
+
+    forceDestroy?: bool
 
     getPasswordData?: bool
 
@@ -286,6 +275,8 @@ schema Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecForProvider:
     networkInterface?: [Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecForProviderNetworkInterfaceItems0]
 
     placementGroup?: str
+
+    placementGroupId?: str
 
     placementPartitionNumber?: float
 
@@ -576,8 +567,6 @@ schema Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecForProviderNetworkInterfaceI
         delete on termination
     deviceIndex : float, default is Undefined, optional
         device index
-    networkCardIndex : float, default is Undefined, optional
-        network card index
     networkInterfaceId : str, default is Undefined, optional
         The Spot Instance Request ID.
     """
@@ -586,8 +575,6 @@ schema Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecForProviderNetworkInterfaceI
     deleteOnTermination?: bool
 
     deviceIndex?: float
-
-    networkCardIndex?: float
 
     networkInterfaceId?: str
 
@@ -859,18 +846,10 @@ schema Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecInitProvider:
         associate public Ip address
     availabilityZone : str, default is Undefined, optional
         availability zone
-    blockDurationMinutes : float, default is Undefined, optional
-        The required duration for the Spot instances, in minutes. This value must be a multiple of 60 (60, 120, 180, 240, 300, or 360).
-        The duration period starts as soon as your Spot instance receives its instance ID. At the end of the duration period, Amazon EC2 marks the Spot instance for termination and provides a Spot instance termination notice, which gives the instance a two-minute warning before it terminates.
-        Note that you can't specify an Availability Zone group or a launch group if you specify a duration.
     capacityReservationSpecification : [Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecInitProviderCapacityReservationSpecificationItems0], default is Undefined, optional
         capacity reservation specification
-    cpuCoreCount : float, default is Undefined, optional
-        cpu core count
     cpuOptions : [Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecInitProviderCPUOptionsItems0], default is Undefined, optional
         cpu options
-    cpuThreadsPerCore : float, default is Undefined, optional
-        cpu threads per core
     creditSpecification : [Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecInitProviderCreditSpecificationItems0], default is Undefined, optional
         credit specification
     disableApiStop : bool, default is Undefined, optional
@@ -887,6 +866,8 @@ schema Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecInitProvider:
         enclave options
     ephemeralBlockDevice : [Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecInitProviderEphemeralBlockDeviceItems0], default is Undefined, optional
         ephemeral block device
+    forceDestroy : bool, default is Undefined, optional
+        force destroy
     getPasswordData : bool, default is Undefined, optional
         get password data
     hibernation : bool, default is Undefined, optional
@@ -924,6 +905,8 @@ schema Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecInitProvider:
         network interface
     placementGroup : str, default is Undefined, optional
         placement group
+    placementGroupId : str, default is Undefined, optional
+        The Spot Instance Request ID.
     placementPartitionNumber : float, default is Undefined, optional
         placement partition number
     privateDnsNameOptions : [Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecInitProviderPrivateDNSNameOptionsItems0], default is Undefined, optional
@@ -982,15 +965,9 @@ schema Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecInitProvider:
 
     availabilityZone?: str
 
-    blockDurationMinutes?: float
-
     capacityReservationSpecification?: [Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecInitProviderCapacityReservationSpecificationItems0]
 
-    cpuCoreCount?: float
-
     cpuOptions?: [Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecInitProviderCPUOptionsItems0]
-
-    cpuThreadsPerCore?: float
 
     creditSpecification?: [Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecInitProviderCreditSpecificationItems0]
 
@@ -1007,6 +984,8 @@ schema Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecInitProvider:
     enclaveOptions?: [Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecInitProviderEnclaveOptionsItems0]
 
     ephemeralBlockDevice?: [Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecInitProviderEphemeralBlockDeviceItems0]
+
+    forceDestroy?: bool
 
     getPasswordData?: bool
 
@@ -1043,6 +1022,8 @@ schema Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecInitProvider:
     networkInterface?: [Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecInitProviderNetworkInterfaceItems0]
 
     placementGroup?: str
+
+    placementGroupId?: str
 
     placementPartitionNumber?: float
 
@@ -1331,8 +1312,6 @@ schema Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecInitProviderNetworkInterface
         delete on termination
     deviceIndex : float, default is Undefined, optional
         device index
-    networkCardIndex : float, default is Undefined, optional
-        network card index
     networkInterfaceId : str, default is Undefined, optional
         The Spot Instance Request ID.
     """
@@ -1341,8 +1320,6 @@ schema Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecInitProviderNetworkInterface
     deleteOnTermination?: bool
 
     deviceIndex?: float
-
-    networkCardIndex?: float
 
     networkInterfaceId?: str
 
@@ -1637,112 +1614,12 @@ schema Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
-schema Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecPublishConnectionDetailsToConfigRef
-
-    metadata?: Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema Ec2AwsUpboundIoV1beta1SpotInstanceRequestSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------
@@ -1796,18 +1673,10 @@ schema Ec2AwsUpboundIoV1beta1SpotInstanceRequestStatusAtProvider:
         associate public Ip address
     availabilityZone : str, default is Undefined, optional
         availability zone
-    blockDurationMinutes : float, default is Undefined, optional
-        The required duration for the Spot instances, in minutes. This value must be a multiple of 60 (60, 120, 180, 240, 300, or 360).
-        The duration period starts as soon as your Spot instance receives its instance ID. At the end of the duration period, Amazon EC2 marks the Spot instance for termination and provides a Spot instance termination notice, which gives the instance a two-minute warning before it terminates.
-        Note that you can't specify an Availability Zone group or a launch group if you specify a duration.
     capacityReservationSpecification : [Ec2AwsUpboundIoV1beta1SpotInstanceRequestStatusAtProviderCapacityReservationSpecificationItems0], default is Undefined, optional
         capacity reservation specification
-    cpuCoreCount : float, default is Undefined, optional
-        cpu core count
     cpuOptions : [Ec2AwsUpboundIoV1beta1SpotInstanceRequestStatusAtProviderCPUOptionsItems0], default is Undefined, optional
         cpu options
-    cpuThreadsPerCore : float, default is Undefined, optional
-        cpu threads per core
     creditSpecification : [Ec2AwsUpboundIoV1beta1SpotInstanceRequestStatusAtProviderCreditSpecificationItems0], default is Undefined, optional
         credit specification
     disableApiStop : bool, default is Undefined, optional
@@ -1824,6 +1693,8 @@ schema Ec2AwsUpboundIoV1beta1SpotInstanceRequestStatusAtProvider:
         enclave options
     ephemeralBlockDevice : [Ec2AwsUpboundIoV1beta1SpotInstanceRequestStatusAtProviderEphemeralBlockDeviceItems0], default is Undefined, optional
         ephemeral block device
+    forceDestroy : bool, default is Undefined, optional
+        force destroy
     getPasswordData : bool, default is Undefined, optional
         get password data
     hibernation : bool, default is Undefined, optional
@@ -1869,8 +1740,12 @@ schema Ec2AwsUpboundIoV1beta1SpotInstanceRequestStatusAtProvider:
         password data
     placementGroup : str, default is Undefined, optional
         placement group
+    placementGroupId : str, default is Undefined, optional
+        The Spot Instance Request ID.
     placementPartitionNumber : float, default is Undefined, optional
         placement partition number
+    primaryNetworkInterface : [Ec2AwsUpboundIoV1beta1SpotInstanceRequestStatusAtProviderPrimaryNetworkInterfaceItems0], default is Undefined, optional
+        primary network interface
     primaryNetworkInterfaceId : str, default is Undefined, optional
         The Spot Instance Request ID.
     privateDns : str, default is Undefined, optional
@@ -1886,6 +1761,9 @@ schema Ec2AwsUpboundIoV1beta1SpotInstanceRequestStatusAtProvider:
         is only available if you've enabled DNS hostnames for your VPC
     publicIp : str, default is Undefined, optional
         The public IP address assigned to the instance, if applicable.
+    region : str, default is Undefined, optional
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
+        Region is the region you'd like your resource to be created in.
     rootBlockDevice : [Ec2AwsUpboundIoV1beta1SpotInstanceRequestStatusAtProviderRootBlockDeviceItems0], default is Undefined, optional
         root block device
     secondaryPrivateIps : [str], default is Undefined, optional
@@ -1945,15 +1823,9 @@ schema Ec2AwsUpboundIoV1beta1SpotInstanceRequestStatusAtProvider:
 
     availabilityZone?: str
 
-    blockDurationMinutes?: float
-
     capacityReservationSpecification?: [Ec2AwsUpboundIoV1beta1SpotInstanceRequestStatusAtProviderCapacityReservationSpecificationItems0]
 
-    cpuCoreCount?: float
-
     cpuOptions?: [Ec2AwsUpboundIoV1beta1SpotInstanceRequestStatusAtProviderCPUOptionsItems0]
-
-    cpuThreadsPerCore?: float
 
     creditSpecification?: [Ec2AwsUpboundIoV1beta1SpotInstanceRequestStatusAtProviderCreditSpecificationItems0]
 
@@ -1970,6 +1842,8 @@ schema Ec2AwsUpboundIoV1beta1SpotInstanceRequestStatusAtProvider:
     enclaveOptions?: [Ec2AwsUpboundIoV1beta1SpotInstanceRequestStatusAtProviderEnclaveOptionsItems0]
 
     ephemeralBlockDevice?: [Ec2AwsUpboundIoV1beta1SpotInstanceRequestStatusAtProviderEphemeralBlockDeviceItems0]
+
+    forceDestroy?: bool
 
     getPasswordData?: bool
 
@@ -2015,7 +1889,11 @@ schema Ec2AwsUpboundIoV1beta1SpotInstanceRequestStatusAtProvider:
 
     placementGroup?: str
 
+    placementGroupId?: str
+
     placementPartitionNumber?: float
+
+    primaryNetworkInterface?: [Ec2AwsUpboundIoV1beta1SpotInstanceRequestStatusAtProviderPrimaryNetworkInterfaceItems0]
 
     primaryNetworkInterfaceId?: str
 
@@ -2028,6 +1906,8 @@ schema Ec2AwsUpboundIoV1beta1SpotInstanceRequestStatusAtProvider:
     publicDns?: str
 
     publicIp?: str
+
+    region?: str
 
     rootBlockDevice?: [Ec2AwsUpboundIoV1beta1SpotInstanceRequestStatusAtProviderRootBlockDeviceItems0]
 
@@ -2326,6 +2206,24 @@ schema Ec2AwsUpboundIoV1beta1SpotInstanceRequestStatusAtProviderNetworkInterface
     deviceIndex?: float
 
     networkCardIndex?: float
+
+    networkInterfaceId?: str
+
+
+schema Ec2AwsUpboundIoV1beta1SpotInstanceRequestStatusAtProviderPrimaryNetworkInterfaceItems0:
+    r"""
+    ec2 aws upbound io v1beta1 spot instance request status at provider primary network interface items0
+
+    Attributes
+    ----------
+    deleteOnTermination : bool, default is Undefined, optional
+        delete on termination
+    networkInterfaceId : str, default is Undefined, optional
+        The Spot Instance Request ID.
+    """
+
+
+    deleteOnTermination?: bool
 
     networkInterfaceId?: str
 

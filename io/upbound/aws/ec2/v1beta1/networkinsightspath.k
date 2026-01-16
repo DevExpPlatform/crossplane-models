@@ -66,8 +66,6 @@ schema Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -83,8 +81,6 @@ schema Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpec:
 
     providerConfigRef?: Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecProviderConfigRef
 
-    publishConnectionDetailsTo?: Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecPublishConnectionDetailsTo
-
     writeConnectionSecretToRef?: Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecWriteConnectionSecretToRef
 
 
@@ -95,7 +91,7 @@ schema Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecForProvider:
     Attributes
     ----------
     destination : str, default is Undefined, optional
-        ID or ARN of the resource which is the destination of the path. Can be an Instance, Internet Gateway, Network Interface, Transit Gateway, VPC Endpoint, VPC Peering Connection or VPN Gateway. If the resource is in another account, you must specify an ARN.
+        ID or ARN of the resource which is the destination of the path. Can be an Instance, Internet Gateway, Network Interface, Transit Gateway, VPC Endpoint, VPC Peering Connection or VPN Gateway. If the resource is in another account, you must specify an ARN. Either the destination argument or the destination_address argument in the filter_at_source block must be specified.
     destinationIp : str, default is Undefined, optional
         IP address of the destination resource.
     destinationPort : float, default is Undefined, optional
@@ -104,9 +100,14 @@ schema Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecForProvider:
         destination ref
     destinationSelector : Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecForProviderDestinationSelector, default is Undefined, optional
         destination selector
+    filterAtDestination : Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecForProviderFilterAtDestination, default is Undefined, optional
+        filter at destination
+    filterAtSource : Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecForProviderFilterAtSource, default is Undefined, optional
+        filter at source
     $protocol : str, default is Undefined, optional
         Protocol to use for analysis. Valid options are tcp or udp.
     region : str, default is Undefined, required
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
     source : str, default is Undefined, optional
         ID or ARN of the resource which is the source of the path. Can be an Instance, Internet Gateway, Network Interface, Transit Gateway, VPC Endpoint, VPC Peering Connection or VPN Gateway. If the resource is in another account, you must specify an ARN.
@@ -130,6 +131,10 @@ schema Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecForProvider:
     destinationRef?: Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecForProviderDestinationRef
 
     destinationSelector?: Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecForProviderDestinationSelector
+
+    filterAtDestination?: Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecForProviderFilterAtDestination
+
+    filterAtSource?: Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecForProviderFilterAtSource
 
     $protocol?: str
 
@@ -233,6 +238,130 @@ schema Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecForProviderDestinationSelect
     resolution?: "Required" | "Optional" = "Required"
 
     resolve?: "Always" | "IfNotPresent"
+
+
+schema Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecForProviderFilterAtDestination:
+    r"""
+    Scopes the analysis to network paths that match specific filters at the destination. If you specify this parameter, you can't specify destination_ip. See below for details.
+
+    Attributes
+    ----------
+    destinationAddress : str, default is Undefined, optional
+        The destination IPv4 address.
+    destinationPortRange : Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecForProviderFilterAtDestinationDestinationPortRange, default is Undefined, optional
+        destination port range
+    sourceAddress : str, default is Undefined, optional
+        IP address of the source resource.
+    sourcePortRange : Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecForProviderFilterAtDestinationSourcePortRange, default is Undefined, optional
+        source port range
+    """
+
+
+    destinationAddress?: str
+
+    destinationPortRange?: Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecForProviderFilterAtDestinationDestinationPortRange
+
+    sourceAddress?: str
+
+    sourcePortRange?: Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecForProviderFilterAtDestinationSourcePortRange
+
+
+schema Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecForProviderFilterAtDestinationDestinationPortRange:
+    r"""
+    The destination port range. See below for details.
+
+    Attributes
+    ----------
+    fromPort : float, default is Undefined, optional
+        The first port in the range.
+    toPort : float, default is Undefined, optional
+        The last port in the range.
+    """
+
+
+    fromPort?: float
+
+    toPort?: float
+
+
+schema Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecForProviderFilterAtDestinationSourcePortRange:
+    r"""
+    The source port range. See below for details.
+
+    Attributes
+    ----------
+    fromPort : float, default is Undefined, optional
+        The first port in the range.
+    toPort : float, default is Undefined, optional
+        The last port in the range.
+    """
+
+
+    fromPort?: float
+
+    toPort?: float
+
+
+schema Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecForProviderFilterAtSource:
+    r"""
+    Scopes the analysis to network paths that match specific filters at the source. If you specify this parameter, you can't specify source_ip or destination_port. See below for details.
+
+    Attributes
+    ----------
+    destinationAddress : str, default is Undefined, optional
+        The destination IPv4 address.
+    destinationPortRange : Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecForProviderFilterAtSourceDestinationPortRange, default is Undefined, optional
+        destination port range
+    sourceAddress : str, default is Undefined, optional
+        IP address of the source resource.
+    sourcePortRange : Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecForProviderFilterAtSourceSourcePortRange, default is Undefined, optional
+        source port range
+    """
+
+
+    destinationAddress?: str
+
+    destinationPortRange?: Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecForProviderFilterAtSourceDestinationPortRange
+
+    sourceAddress?: str
+
+    sourcePortRange?: Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecForProviderFilterAtSourceSourcePortRange
+
+
+schema Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecForProviderFilterAtSourceDestinationPortRange:
+    r"""
+    The destination port range. See below for details.
+
+    Attributes
+    ----------
+    fromPort : float, default is Undefined, optional
+        The first port in the range.
+    toPort : float, default is Undefined, optional
+        The last port in the range.
+    """
+
+
+    fromPort?: float
+
+    toPort?: float
+
+
+schema Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecForProviderFilterAtSourceSourcePortRange:
+    r"""
+    The source port range. See below for details.
+
+    Attributes
+    ----------
+    fromPort : float, default is Undefined, optional
+        The first port in the range.
+    toPort : float, default is Undefined, optional
+        The last port in the range.
+    """
+
+
+    fromPort?: float
+
+    toPort?: float
 
 
 schema Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecForProviderSourceRef:
@@ -340,7 +469,7 @@ schema Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecInitProvider:
     Attributes
     ----------
     destination : str, default is Undefined, optional
-        ID or ARN of the resource which is the destination of the path. Can be an Instance, Internet Gateway, Network Interface, Transit Gateway, VPC Endpoint, VPC Peering Connection or VPN Gateway. If the resource is in another account, you must specify an ARN.
+        ID or ARN of the resource which is the destination of the path. Can be an Instance, Internet Gateway, Network Interface, Transit Gateway, VPC Endpoint, VPC Peering Connection or VPN Gateway. If the resource is in another account, you must specify an ARN. Either the destination argument or the destination_address argument in the filter_at_source block must be specified.
     destinationIp : str, default is Undefined, optional
         IP address of the destination resource.
     destinationPort : float, default is Undefined, optional
@@ -349,6 +478,10 @@ schema Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecInitProvider:
         destination ref
     destinationSelector : Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecInitProviderDestinationSelector, default is Undefined, optional
         destination selector
+    filterAtDestination : Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecInitProviderFilterAtDestination, default is Undefined, optional
+        filter at destination
+    filterAtSource : Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecInitProviderFilterAtSource, default is Undefined, optional
+        filter at source
     $protocol : str, default is Undefined, optional
         Protocol to use for analysis. Valid options are tcp or udp.
     source : str, default is Undefined, optional
@@ -373,6 +506,10 @@ schema Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecInitProvider:
     destinationRef?: Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecInitProviderDestinationRef
 
     destinationSelector?: Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecInitProviderDestinationSelector
+
+    filterAtDestination?: Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecInitProviderFilterAtDestination
+
+    filterAtSource?: Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecInitProviderFilterAtSource
 
     $protocol?: str
 
@@ -474,6 +611,130 @@ schema Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecInitProviderDestinationSelec
     resolution?: "Required" | "Optional" = "Required"
 
     resolve?: "Always" | "IfNotPresent"
+
+
+schema Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecInitProviderFilterAtDestination:
+    r"""
+    Scopes the analysis to network paths that match specific filters at the destination. If you specify this parameter, you can't specify destination_ip. See below for details.
+
+    Attributes
+    ----------
+    destinationAddress : str, default is Undefined, optional
+        The destination IPv4 address.
+    destinationPortRange : Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecInitProviderFilterAtDestinationDestinationPortRange, default is Undefined, optional
+        destination port range
+    sourceAddress : str, default is Undefined, optional
+        IP address of the source resource.
+    sourcePortRange : Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecInitProviderFilterAtDestinationSourcePortRange, default is Undefined, optional
+        source port range
+    """
+
+
+    destinationAddress?: str
+
+    destinationPortRange?: Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecInitProviderFilterAtDestinationDestinationPortRange
+
+    sourceAddress?: str
+
+    sourcePortRange?: Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecInitProviderFilterAtDestinationSourcePortRange
+
+
+schema Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecInitProviderFilterAtDestinationDestinationPortRange:
+    r"""
+    The destination port range. See below for details.
+
+    Attributes
+    ----------
+    fromPort : float, default is Undefined, optional
+        The first port in the range.
+    toPort : float, default is Undefined, optional
+        The last port in the range.
+    """
+
+
+    fromPort?: float
+
+    toPort?: float
+
+
+schema Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecInitProviderFilterAtDestinationSourcePortRange:
+    r"""
+    The source port range. See below for details.
+
+    Attributes
+    ----------
+    fromPort : float, default is Undefined, optional
+        The first port in the range.
+    toPort : float, default is Undefined, optional
+        The last port in the range.
+    """
+
+
+    fromPort?: float
+
+    toPort?: float
+
+
+schema Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecInitProviderFilterAtSource:
+    r"""
+    Scopes the analysis to network paths that match specific filters at the source. If you specify this parameter, you can't specify source_ip or destination_port. See below for details.
+
+    Attributes
+    ----------
+    destinationAddress : str, default is Undefined, optional
+        The destination IPv4 address.
+    destinationPortRange : Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecInitProviderFilterAtSourceDestinationPortRange, default is Undefined, optional
+        destination port range
+    sourceAddress : str, default is Undefined, optional
+        IP address of the source resource.
+    sourcePortRange : Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecInitProviderFilterAtSourceSourcePortRange, default is Undefined, optional
+        source port range
+    """
+
+
+    destinationAddress?: str
+
+    destinationPortRange?: Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecInitProviderFilterAtSourceDestinationPortRange
+
+    sourceAddress?: str
+
+    sourcePortRange?: Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecInitProviderFilterAtSourceSourcePortRange
+
+
+schema Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecInitProviderFilterAtSourceDestinationPortRange:
+    r"""
+    The destination port range. See below for details.
+
+    Attributes
+    ----------
+    fromPort : float, default is Undefined, optional
+        The first port in the range.
+    toPort : float, default is Undefined, optional
+        The last port in the range.
+    """
+
+
+    fromPort?: float
+
+    toPort?: float
+
+
+schema Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecInitProviderFilterAtSourceSourcePortRange:
+    r"""
+    The source port range. See below for details.
+
+    Attributes
+    ----------
+    fromPort : float, default is Undefined, optional
+        The first port in the range.
+    toPort : float, default is Undefined, optional
+        The last port in the range.
+    """
+
+
+    fromPort?: float
+
+    toPort?: float
 
 
 schema Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecInitProviderSourceRef:
@@ -609,112 +870,12 @@ schema Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
-schema Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecPublishConnectionDetailsToConfigRef
-
-    metadata?: Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema Ec2AwsUpboundIoV1beta1NetworkInsightsPathSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------
@@ -763,17 +924,24 @@ schema Ec2AwsUpboundIoV1beta1NetworkInsightsPathStatusAtProvider:
     arn : str, default is Undefined, optional
         ARN of the Network Insights Path.
     destination : str, default is Undefined, optional
-        ID or ARN of the resource which is the destination of the path. Can be an Instance, Internet Gateway, Network Interface, Transit Gateway, VPC Endpoint, VPC Peering Connection or VPN Gateway. If the resource is in another account, you must specify an ARN.
+        ID or ARN of the resource which is the destination of the path. Can be an Instance, Internet Gateway, Network Interface, Transit Gateway, VPC Endpoint, VPC Peering Connection or VPN Gateway. If the resource is in another account, you must specify an ARN. Either the destination argument or the destination_address argument in the filter_at_source block must be specified.
     destinationArn : str, default is Undefined, optional
         ARN of the destination.
     destinationIp : str, default is Undefined, optional
         IP address of the destination resource.
     destinationPort : float, default is Undefined, optional
         Destination port to analyze access to.
+    filterAtDestination : Ec2AwsUpboundIoV1beta1NetworkInsightsPathStatusAtProviderFilterAtDestination, default is Undefined, optional
+        filter at destination
+    filterAtSource : Ec2AwsUpboundIoV1beta1NetworkInsightsPathStatusAtProviderFilterAtSource, default is Undefined, optional
+        filter at source
     id : str, default is Undefined, optional
         ID of the Network Insights Path.
     $protocol : str, default is Undefined, optional
         Protocol to use for analysis. Valid options are tcp or udp.
+    region : str, default is Undefined, optional
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
+        Region is the region you'd like your resource to be created in.
     source : str, default is Undefined, optional
         ID or ARN of the resource which is the source of the path. Can be an Instance, Internet Gateway, Network Interface, Transit Gateway, VPC Endpoint, VPC Peering Connection or VPN Gateway. If the resource is in another account, you must specify an ARN.
     sourceArn : str, default is Undefined, optional
@@ -797,9 +965,15 @@ schema Ec2AwsUpboundIoV1beta1NetworkInsightsPathStatusAtProvider:
 
     destinationPort?: float
 
+    filterAtDestination?: Ec2AwsUpboundIoV1beta1NetworkInsightsPathStatusAtProviderFilterAtDestination
+
+    filterAtSource?: Ec2AwsUpboundIoV1beta1NetworkInsightsPathStatusAtProviderFilterAtSource
+
     id?: str
 
     $protocol?: str
+
+    region?: str
 
     source?: str
 
@@ -810,6 +984,130 @@ schema Ec2AwsUpboundIoV1beta1NetworkInsightsPathStatusAtProvider:
     tags?: {str:str}
 
     tagsAll?: {str:str}
+
+
+schema Ec2AwsUpboundIoV1beta1NetworkInsightsPathStatusAtProviderFilterAtDestination:
+    r"""
+    Scopes the analysis to network paths that match specific filters at the destination. If you specify this parameter, you can't specify destination_ip. See below for details.
+
+    Attributes
+    ----------
+    destinationAddress : str, default is Undefined, optional
+        The destination IPv4 address.
+    destinationPortRange : Ec2AwsUpboundIoV1beta1NetworkInsightsPathStatusAtProviderFilterAtDestinationDestinationPortRange, default is Undefined, optional
+        destination port range
+    sourceAddress : str, default is Undefined, optional
+        IP address of the source resource.
+    sourcePortRange : Ec2AwsUpboundIoV1beta1NetworkInsightsPathStatusAtProviderFilterAtDestinationSourcePortRange, default is Undefined, optional
+        source port range
+    """
+
+
+    destinationAddress?: str
+
+    destinationPortRange?: Ec2AwsUpboundIoV1beta1NetworkInsightsPathStatusAtProviderFilterAtDestinationDestinationPortRange
+
+    sourceAddress?: str
+
+    sourcePortRange?: Ec2AwsUpboundIoV1beta1NetworkInsightsPathStatusAtProviderFilterAtDestinationSourcePortRange
+
+
+schema Ec2AwsUpboundIoV1beta1NetworkInsightsPathStatusAtProviderFilterAtDestinationDestinationPortRange:
+    r"""
+    The destination port range. See below for details.
+
+    Attributes
+    ----------
+    fromPort : float, default is Undefined, optional
+        The first port in the range.
+    toPort : float, default is Undefined, optional
+        The last port in the range.
+    """
+
+
+    fromPort?: float
+
+    toPort?: float
+
+
+schema Ec2AwsUpboundIoV1beta1NetworkInsightsPathStatusAtProviderFilterAtDestinationSourcePortRange:
+    r"""
+    The source port range. See below for details.
+
+    Attributes
+    ----------
+    fromPort : float, default is Undefined, optional
+        The first port in the range.
+    toPort : float, default is Undefined, optional
+        The last port in the range.
+    """
+
+
+    fromPort?: float
+
+    toPort?: float
+
+
+schema Ec2AwsUpboundIoV1beta1NetworkInsightsPathStatusAtProviderFilterAtSource:
+    r"""
+    Scopes the analysis to network paths that match specific filters at the source. If you specify this parameter, you can't specify source_ip or destination_port. See below for details.
+
+    Attributes
+    ----------
+    destinationAddress : str, default is Undefined, optional
+        The destination IPv4 address.
+    destinationPortRange : Ec2AwsUpboundIoV1beta1NetworkInsightsPathStatusAtProviderFilterAtSourceDestinationPortRange, default is Undefined, optional
+        destination port range
+    sourceAddress : str, default is Undefined, optional
+        IP address of the source resource.
+    sourcePortRange : Ec2AwsUpboundIoV1beta1NetworkInsightsPathStatusAtProviderFilterAtSourceSourcePortRange, default is Undefined, optional
+        source port range
+    """
+
+
+    destinationAddress?: str
+
+    destinationPortRange?: Ec2AwsUpboundIoV1beta1NetworkInsightsPathStatusAtProviderFilterAtSourceDestinationPortRange
+
+    sourceAddress?: str
+
+    sourcePortRange?: Ec2AwsUpboundIoV1beta1NetworkInsightsPathStatusAtProviderFilterAtSourceSourcePortRange
+
+
+schema Ec2AwsUpboundIoV1beta1NetworkInsightsPathStatusAtProviderFilterAtSourceDestinationPortRange:
+    r"""
+    The destination port range. See below for details.
+
+    Attributes
+    ----------
+    fromPort : float, default is Undefined, optional
+        The first port in the range.
+    toPort : float, default is Undefined, optional
+        The last port in the range.
+    """
+
+
+    fromPort?: float
+
+    toPort?: float
+
+
+schema Ec2AwsUpboundIoV1beta1NetworkInsightsPathStatusAtProviderFilterAtSourceSourcePortRange:
+    r"""
+    The source port range. See below for details.
+
+    Attributes
+    ----------
+    fromPort : float, default is Undefined, optional
+        The first port in the range.
+    toPort : float, default is Undefined, optional
+        The last port in the range.
+    """
+
+
+    fromPort?: float
+
+    toPort?: float
 
 
 schema Ec2AwsUpboundIoV1beta1NetworkInsightsPathStatusConditionsItems0:

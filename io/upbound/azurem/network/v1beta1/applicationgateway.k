@@ -306,6 +306,8 @@ schema NetworkAzuremUpboundIoV1beta1ApplicationGatewaySpecForProviderBackendHTTP
         connection draining
     cookieBasedAffinity : str, default is Undefined, optional
         Is Cookie-Based Affinity enabled? Possible values are Enabled and Disabled.
+    dedicatedBackendConnectionEnabled : bool, default is Undefined, optional
+        Whether to use a dedicated backend connection. Defaults to false.
     hostName : str, default is Undefined, optional
         Host header to be sent to the backend servers. Cannot be set if pick_host_name_from_backend_address is set to true.
     name : str, default is Undefined, optional
@@ -334,6 +336,8 @@ schema NetworkAzuremUpboundIoV1beta1ApplicationGatewaySpecForProviderBackendHTTP
     connectionDraining?: NetworkAzuremUpboundIoV1beta1ApplicationGatewaySpecForProviderBackendHTTPSettingsItems0ConnectionDraining
 
     cookieBasedAffinity?: str
+
+    dedicatedBackendConnectionEnabled?: bool
 
     hostName?: str
 
@@ -410,6 +414,8 @@ schema NetworkAzuremUpboundIoV1beta1ApplicationGatewaySpecForProviderFrontendIPC
 
     Attributes
     ----------
+    index : str, default is "default", optional
+        This is an injected field with a default value for being able to merge items of the parent object list.
     name : str, default is Undefined, optional
         The name of the Frontend IP Configuration.
     privateIpAddress : str, default is Undefined, optional
@@ -432,6 +438,8 @@ schema NetworkAzuremUpboundIoV1beta1ApplicationGatewaySpecForProviderFrontendIPC
         subnet Id selector
     """
 
+
+    index?: str = "default"
 
     name?: str
 
@@ -672,6 +680,8 @@ schema NetworkAzuremUpboundIoV1beta1ApplicationGatewaySpecForProviderGatewayIPCo
 
     Attributes
     ----------
+    index : str, default is "default", optional
+        This is an injected field with a default value for being able to merge items of the parent object list.
     name : str, default is Undefined, optional
         The Name of this Gateway IP Configuration.
     subnetId : str, default is Undefined, optional
@@ -682,6 +692,8 @@ schema NetworkAzuremUpboundIoV1beta1ApplicationGatewaySpecForProviderGatewayIPCo
         subnet Id selector
     """
 
+
+    index?: str = "default"
 
     name?: str
 
@@ -1448,7 +1460,7 @@ schema NetworkAzuremUpboundIoV1beta1ApplicationGatewaySpecForProviderSku:
     capacity : float, default is Undefined, optional
         The Capacity of the SKU to use for this Application Gateway. When using a V1 SKU this value must be between 1 and 32, and 1 to 125 for a V2 SKU. When using a Basic SKU this property must be between 1 and 2. This property is optional if autoscale_configuration is set.
     name : str, default is Undefined, optional
-        The Name of the SKU to use for this Application Gateway. Possible values are Basic, Standard_v2, and WAF_v2.
+        The Name of the SKU to use for this Application Gateway. Possible values are Basic, Standard_Small, Standard_Medium, Standard_Large, Standard_v2, WAF_Large, WAF_Medium and WAF_v2.
     tier : str, default is Undefined, optional
         The Tier of the SKU to use for this Application Gateway. Possible values are Basic, Standard_v2, and WAF_v2.
     """
@@ -2080,6 +2092,8 @@ schema NetworkAzuremUpboundIoV1beta1ApplicationGatewaySpecInitProviderBackendHTT
         connection draining
     cookieBasedAffinity : str, default is Undefined, optional
         Is Cookie-Based Affinity enabled? Possible values are Enabled and Disabled.
+    dedicatedBackendConnectionEnabled : bool, default is Undefined, optional
+        Whether to use a dedicated backend connection. Defaults to false.
     hostName : str, default is Undefined, optional
         Host header to be sent to the backend servers. Cannot be set if pick_host_name_from_backend_address is set to true.
     name : str, default is Undefined, optional
@@ -2108,6 +2122,8 @@ schema NetworkAzuremUpboundIoV1beta1ApplicationGatewaySpecInitProviderBackendHTT
     connectionDraining?: NetworkAzuremUpboundIoV1beta1ApplicationGatewaySpecInitProviderBackendHTTPSettingsItems0ConnectionDraining
 
     cookieBasedAffinity?: str
+
+    dedicatedBackendConnectionEnabled?: bool
 
     hostName?: str
 
@@ -2184,6 +2200,8 @@ schema NetworkAzuremUpboundIoV1beta1ApplicationGatewaySpecInitProviderFrontendIP
 
     Attributes
     ----------
+    index : str, default is "default", optional
+        This is an injected field with a default value for being able to merge items of the parent object list.
     name : str, default is Undefined, optional
         The name of the Frontend IP Configuration.
     privateIpAddress : str, default is Undefined, optional
@@ -2206,6 +2224,8 @@ schema NetworkAzuremUpboundIoV1beta1ApplicationGatewaySpecInitProviderFrontendIP
         subnet Id selector
     """
 
+
+    index?: str = "default"
 
     name?: str
 
@@ -2446,6 +2466,8 @@ schema NetworkAzuremUpboundIoV1beta1ApplicationGatewaySpecInitProviderGatewayIPC
 
     Attributes
     ----------
+    index : str, default is "default", optional
+        This is an injected field with a default value for being able to merge items of the parent object list.
     name : str, default is Undefined, optional
         The Name of this Gateway IP Configuration.
     subnetId : str, default is Undefined, optional
@@ -2456,6 +2478,8 @@ schema NetworkAzuremUpboundIoV1beta1ApplicationGatewaySpecInitProviderGatewayIPC
         subnet Id selector
     """
 
+
+    index?: str = "default"
 
     name?: str
 
@@ -3125,7 +3149,7 @@ schema NetworkAzuremUpboundIoV1beta1ApplicationGatewaySpecInitProviderSku:
     capacity : float, default is Undefined, optional
         The Capacity of the SKU to use for this Application Gateway. When using a V1 SKU this value must be between 1 and 32, and 1 to 125 for a V2 SKU. When using a Basic SKU this property must be between 1 and 2. This property is optional if autoscale_configuration is set.
     name : str, default is Undefined, optional
-        The Name of the SKU to use for this Application Gateway. Possible values are Basic, Standard_v2, and WAF_v2.
+        The Name of the SKU to use for this Application Gateway. Possible values are Basic, Standard_Small, Standard_Medium, Standard_Large, Standard_v2, WAF_Large, WAF_Medium and WAF_v2.
     tier : str, default is Undefined, optional
         The Tier of the SKU to use for this Application Gateway. Possible values are Basic, Standard_v2, and WAF_v2.
     """
@@ -3807,6 +3831,8 @@ schema NetworkAzuremUpboundIoV1beta1ApplicationGatewayStatusAtProviderBackendHTT
         connection draining
     cookieBasedAffinity : str, default is Undefined, optional
         Is Cookie-Based Affinity enabled? Possible values are Enabled and Disabled.
+    dedicatedBackendConnectionEnabled : bool, default is Undefined, optional
+        Whether to use a dedicated backend connection. Defaults to false.
     hostName : str, default is Undefined, optional
         Host header to be sent to the backend servers. Cannot be set if pick_host_name_from_backend_address is set to true.
     id : str, default is Undefined, optional
@@ -3839,6 +3865,8 @@ schema NetworkAzuremUpboundIoV1beta1ApplicationGatewayStatusAtProviderBackendHTT
     connectionDraining?: NetworkAzuremUpboundIoV1beta1ApplicationGatewayStatusAtProviderBackendHTTPSettingsItems0ConnectionDraining
 
     cookieBasedAffinity?: str
+
+    dedicatedBackendConnectionEnabled?: bool
 
     hostName?: str
 
@@ -3929,6 +3957,8 @@ schema NetworkAzuremUpboundIoV1beta1ApplicationGatewayStatusAtProviderFrontendIP
     ----------
     id : str, default is Undefined, optional
         The ID of the Frontend IP Configuration.
+    index : str, default is "default", optional
+        This is an injected field with a default value for being able to merge items of the parent object list.
     name : str, default is Undefined, optional
         The name of the Frontend IP Configuration.
     privateIpAddress : str, default is Undefined, optional
@@ -3947,6 +3977,8 @@ schema NetworkAzuremUpboundIoV1beta1ApplicationGatewayStatusAtProviderFrontendIP
 
 
     id?: str
+
+    index?: str = "default"
 
     name?: str
 
@@ -3993,6 +4025,8 @@ schema NetworkAzuremUpboundIoV1beta1ApplicationGatewayStatusAtProviderGatewayIPC
     ----------
     id : str, default is Undefined, optional
         The ID of the Gateway IP Configuration.
+    index : str, default is "default", optional
+        This is an injected field with a default value for being able to merge items of the parent object list.
     name : str, default is Undefined, optional
         The Name of this Gateway IP Configuration.
     subnetId : str, default is Undefined, optional
@@ -4001,6 +4035,8 @@ schema NetworkAzuremUpboundIoV1beta1ApplicationGatewayStatusAtProviderGatewayIPC
 
 
     id?: str
+
+    index?: str = "default"
 
     name?: str
 
@@ -4562,7 +4598,7 @@ schema NetworkAzuremUpboundIoV1beta1ApplicationGatewayStatusAtProviderSku:
     capacity : float, default is Undefined, optional
         The Capacity of the SKU to use for this Application Gateway. When using a V1 SKU this value must be between 1 and 32, and 1 to 125 for a V2 SKU. When using a Basic SKU this property must be between 1 and 2. This property is optional if autoscale_configuration is set.
     name : str, default is Undefined, optional
-        The Name of the SKU to use for this Application Gateway. Possible values are Basic, Standard_v2, and WAF_v2.
+        The Name of the SKU to use for this Application Gateway. Possible values are Basic, Standard_Small, Standard_Medium, Standard_Large, Standard_v2, WAF_Large, WAF_Medium and WAF_v2.
     tier : str, default is Undefined, optional
         The Tier of the SKU to use for this Application Gateway. Possible values are Basic, Standard_v2, and WAF_v2.
     """
