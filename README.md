@@ -70,9 +70,21 @@ The project currently includes the following providers:
 
 - AWS DynamoDB (`xpkg.upbound.io/upbound/provider-aws-dynamodb`)
 - AWS EC2 (`xpkg.upbound.io/upbound/provider-aws-ec2`)
-- AWS SES (`xpkg.upbound.io/upbound/provider-aws-ses`)
+- AWS EKS (`xpkg.upbound.io/upbound/provider-aws-eks`)
+- AWS ECR (`xpkg.upbound.io/upbound/provider-aws-ecr`)
+- AWS IAM (`xpkg.upbound.io/upbound/provider-aws-iam`)
 - AWS Route53 (`xpkg.upbound.io/upbound/provider-aws-route53`)
+- AWS SES (`xpkg.upbound.io/upbound/provider-aws-ses`)
+- AWS S3 (`xpkg.upbound.io/upbound/provider-aws-s3`)
+- AWS SQS (`xpkg.upbound.io/upbound/provider-aws-sqs`)
+- AWS CloudWatch Events (`xpkg.upbound.io/upbound/provider-aws-cloudwatchevents`)
+- AWS Secrets Manager (`xpkg.upbound.io/upbound/provider-aws-secretsmanager`)
 - Azure Network (`xpkg.upbound.io/upbound/provider-azure-network`)
+- Azure Container Service (`xpkg.upbound.io/upbound/provider-azure-containerservice`)
+- Helm (`xpkg.upbound.io/upbound/provider-helm`)
+- Kubernetes (`xpkg.upbound.io/upbound/provider-kubernetes`)
+- HTTP (`xpkg.upbound.io/crossplane-contrib/provider-http`)
+- AWS EKS Pod Identity (`xpkg.upbound.io/upbound/configuration-aws-eks-pod-identity`)
 
 ## Contributing
 

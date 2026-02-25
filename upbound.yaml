@@ -65,6 +65,10 @@ spec:
     package: xpkg.upbound.io/upbound/provider-aws-ecr
     version: v2
   - apiVersion: pkg.crossplane.io/v1
+    kind: Provider
+    package: xpkg.upbound.io/upbound/provider-aws-secretsmanager
+    version: v2
+  - apiVersion: pkg.crossplane.io/v1
     kind: Configuration
     package: xpkg.upbound.io/upbound/configuration-aws-eks-pod-identity
     version: v0.8.1
