@@ -141,12 +141,17 @@ schema HelmmCrossplaneIoV1beta1ReleaseSpecForProvider:
         chart
     insecureSkipTLSVerify : bool, default is Undefined, optional
         InsecureSkipTLSVerify skips tls certificate checks for the chart download
+    namespace : str, default is Undefined, optional
+        Namespace to install the release into.
+        The Release Managed Resource's namespace will be used if nothing is set.
     patchesFrom : [HelmmCrossplaneIoV1beta1ReleaseSpecForProviderPatchesFromItems0], default is Undefined, optional
         PatchesFrom describe patches to be applied to the rendered manifests.
     set : [HelmmCrossplaneIoV1beta1ReleaseSpecForProviderSetItems0], default is Undefined, optional
         set
     skipCRDs : bool, default is Undefined, optional
         SkipCRDs skips installation of CRDs for the release.
+    skipCreateNamespace : bool, default is Undefined, optional
+        SkipCreateNamespace won't create the namespace for the release. This requires the namespace to already exist.
     values : any, default is Undefined, optional
         values
     valuesFrom : [HelmmCrossplaneIoV1beta1ReleaseSpecForProviderValuesFromItems0], default is Undefined, optional
@@ -163,11 +168,15 @@ schema HelmmCrossplaneIoV1beta1ReleaseSpecForProvider:
 
     insecureSkipTLSVerify?: bool
 
+    namespace?: str
+
     patchesFrom?: [HelmmCrossplaneIoV1beta1ReleaseSpecForProviderPatchesFromItems0]
 
     set?: [HelmmCrossplaneIoV1beta1ReleaseSpecForProviderSetItems0]
 
     skipCRDs?: bool
+
+    skipCreateNamespace?: bool
 
     values?: any
 

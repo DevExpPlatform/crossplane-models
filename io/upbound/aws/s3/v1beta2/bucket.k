@@ -66,8 +66,6 @@ schema S3AwsUpboundIoV1beta2BucketSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : S3AwsUpboundIoV1beta2BucketSpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : S3AwsUpboundIoV1beta2BucketSpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : S3AwsUpboundIoV1beta2BucketSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -83,8 +81,6 @@ schema S3AwsUpboundIoV1beta2BucketSpec:
 
     providerConfigRef?: S3AwsUpboundIoV1beta2BucketSpecProviderConfigRef
 
-    publishConnectionDetailsTo?: S3AwsUpboundIoV1beta2BucketSpecPublishConnectionDetailsTo
-
     writeConnectionSecretToRef?: S3AwsUpboundIoV1beta2BucketSpecWriteConnectionSecretToRef
 
 
@@ -99,7 +95,7 @@ schema S3AwsUpboundIoV1beta2BucketSpecForProvider:
     objectLockEnabled : bool, default is Undefined, optional
         Indicates whether this bucket has an Object Lock configuration enabled. Valid values are true or false. This argument is not supported in all regions or partitions.
     region : str, default is Undefined, required
-        AWS region this bucket resides in.
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
     tags : {str:str}, default is Undefined, optional
         Key-value map of resource tags.
@@ -190,112 +186,12 @@ schema S3AwsUpboundIoV1beta2BucketSpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
-schema S3AwsUpboundIoV1beta2BucketSpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : S3AwsUpboundIoV1beta2BucketSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : S3AwsUpboundIoV1beta2BucketSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: S3AwsUpboundIoV1beta2BucketSpecPublishConnectionDetailsToConfigRef
-
-    metadata?: S3AwsUpboundIoV1beta2BucketSpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema S3AwsUpboundIoV1beta2BucketSpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : S3AwsUpboundIoV1beta2BucketSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: S3AwsUpboundIoV1beta2BucketSpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema S3AwsUpboundIoV1beta2BucketSpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema S3AwsUpboundIoV1beta2BucketSpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema S3AwsUpboundIoV1beta2BucketSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------
@@ -350,6 +246,8 @@ schema S3AwsUpboundIoV1beta2BucketStatusAtProvider:
         ARN of the bucket. Will be of format arn:aws:s3:::bucketname.
     bucketDomainName : str, default is Undefined, optional
         Bucket domain name. Will be of format bucketname.s3.amazonaws.com.
+    bucketRegion : str, default is Undefined, optional
+        AWS region this bucket resides in.
     bucketRegionalDomainName : str, default is Undefined, optional
         The bucket region-specific domain name. The bucket domain name including the region name. Please refer to the S3 endpoints reference for format. Note: AWS CloudFront allows specifying an S3 region-specific endpoint when creating an S3 origin. This will prevent redirect issues from CloudFront to the S3 Origin URL. For more information, see the Virtual Hosted-Style Requests for Other Regions section in the AWS S3 User Guide.
     corsRule : [S3AwsUpboundIoV1beta2BucketStatusAtProviderCorsRuleItems0], default is Undefined, optional
@@ -375,7 +273,7 @@ schema S3AwsUpboundIoV1beta2BucketStatusAtProvider:
         Valid bucket policy JSON document. In this case, please make sure you use the verbose/specific version of the policy.
         Use the resource aws_s3_bucket_policy instead.
     region : str, default is Undefined, optional
-        AWS region this bucket resides in.
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
     replicationConfiguration : S3AwsUpboundIoV1beta2BucketStatusAtProviderReplicationConfiguration, default is Undefined, optional
         replication configuration
@@ -408,6 +306,8 @@ schema S3AwsUpboundIoV1beta2BucketStatusAtProvider:
     arn?: str
 
     bucketDomainName?: str
+
+    bucketRegion?: str
 
     bucketRegionalDomainName?: str
 

@@ -82,6 +82,8 @@ schema Ec2AwsmUpboundIoV1beta1VPCIpamSpecForProvider:
         A description for the IPAM.
     enablePrivateGua : bool, default is Undefined, optional
         Enable this option to use your own GUA ranges as private IPv6 addresses. Default: false.
+    meteredAccount : str, default is Undefined, optional
+        AWS account that is charged for active IP addresses managed in IPAM. Valid values are ipam-owner (default) and resource-owner.
     operatingRegions : [Ec2AwsmUpboundIoV1beta1VPCIpamSpecForProviderOperatingRegionsItems0], default is Undefined, optional
         Determines which locales can be chosen when you create pools. Locale is the Region where you want to make an IPAM pool available for allocations. You can only create pools with locales that match the operating Regions of the IPAM. You can only create VPCs from a pool whose locale matches the VPC's Region. You specify a region using the region_name parameter. You must set your provider block region as an operating_region.
     region : str, default is Undefined, required
@@ -99,6 +101,8 @@ schema Ec2AwsmUpboundIoV1beta1VPCIpamSpecForProvider:
     description?: str
 
     enablePrivateGua?: bool
+
+    meteredAccount?: str
 
     operatingRegions?: [Ec2AwsmUpboundIoV1beta1VPCIpamSpecForProviderOperatingRegionsItems0]
 
@@ -144,6 +148,8 @@ schema Ec2AwsmUpboundIoV1beta1VPCIpamSpecInitProvider:
         A description for the IPAM.
     enablePrivateGua : bool, default is Undefined, optional
         Enable this option to use your own GUA ranges as private IPv6 addresses. Default: false.
+    meteredAccount : str, default is Undefined, optional
+        AWS account that is charged for active IP addresses managed in IPAM. Valid values are ipam-owner (default) and resource-owner.
     operatingRegions : [Ec2AwsmUpboundIoV1beta1VPCIpamSpecInitProviderOperatingRegionsItems0], default is Undefined, optional
         Determines which locales can be chosen when you create pools. Locale is the Region where you want to make an IPAM pool available for allocations. You can only create pools with locales that match the operating Regions of the IPAM. You can only create VPCs from a pool whose locale matches the VPC's Region. You specify a region using the region_name parameter. You must set your provider block region as an operating_region.
     tags : {str:str}, default is Undefined, optional
@@ -158,6 +164,8 @@ schema Ec2AwsmUpboundIoV1beta1VPCIpamSpecInitProvider:
     description?: str
 
     enablePrivateGua?: bool
+
+    meteredAccount?: str
 
     operatingRegions?: [Ec2AwsmUpboundIoV1beta1VPCIpamSpecInitProviderOperatingRegionsItems0]
 
@@ -261,6 +269,8 @@ schema Ec2AwsmUpboundIoV1beta1VPCIpamStatusAtProvider:
         Enable this option to use your own GUA ranges as private IPv6 addresses. Default: false.
     id : str, default is Undefined, optional
         The ID of the IPAM
+    meteredAccount : str, default is Undefined, optional
+        AWS account that is charged for active IP addresses managed in IPAM. Valid values are ipam-owner (default) and resource-owner.
     operatingRegions : [Ec2AwsmUpboundIoV1beta1VPCIpamStatusAtProviderOperatingRegionsItems0], default is Undefined, optional
         Determines which locales can be chosen when you create pools. Locale is the Region where you want to make an IPAM pool available for allocations. You can only create pools with locales that match the operating Regions of the IPAM. You can only create VPCs from a pool whose locale matches the VPC's Region. You specify a region using the region_name parameter. You must set your provider block region as an operating_region.
     privateDefaultScopeId : str, default is Undefined, optional
@@ -295,6 +305,8 @@ schema Ec2AwsmUpboundIoV1beta1VPCIpamStatusAtProvider:
     enablePrivateGua?: bool
 
     id?: str
+
+    meteredAccount?: str
 
     operatingRegions?: [Ec2AwsmUpboundIoV1beta1VPCIpamStatusAtProviderOperatingRegionsItems0]
 

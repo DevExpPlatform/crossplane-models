@@ -81,9 +81,9 @@ schema NetworkAzuremUpboundIoV1beta1SecurityRuleSpecForProvider:
     description : str, default is Undefined, optional
         A description for this rule. Restricted to 140 characters.
     destinationAddressPrefix : str, default is Undefined, optional
-        CIDR or destination IP range or * to match any IP. Tags such as VirtualNetwork, AzureLoadBalancer and Internet can also be used. Besides, it also supports all available Service Tags like ‘Sql.WestEurope‘, ‘Storage.EastUS‘, etc. You can list the available service tags with the CLI: shell az network list-service-tags --location westcentralus. For further information please see Azure CLI - az network list-service-tags. This is required if destination_address_prefixes is not specified.
+        CIDR or destination IP range or * to match any IP. Tags such as VirtualNetwork, AzureLoadBalancer and Internet can also be used. Besides, it also supports all available Service Tags like ‘Sql.WestEurope‘, ‘Storage.EastUS‘, etc. You can list the available service tags with the CLI: shell az network list-service-tags --location westcentralus. For further information please see Azure CLI - az network list-service-tags.
     destinationAddressPrefixes : [str], default is Undefined, optional
-        List of destination address prefixes. Tags may not be used. This is required if destination_address_prefix is not specified.
+        List of destination address prefixes. Tags may not be used.
     destinationApplicationSecurityGroupIds : [str], default is Undefined, optional
         A List of destination Application Security Group IDs
     destinationPortRange : str, default is Undefined, optional
@@ -109,9 +109,9 @@ schema NetworkAzuremUpboundIoV1beta1SecurityRuleSpecForProvider:
     resourceGroupNameSelector : NetworkAzuremUpboundIoV1beta1SecurityRuleSpecForProviderResourceGroupNameSelector, default is Undefined, optional
         resource group name selector
     sourceAddressPrefix : str, default is Undefined, optional
-        CIDR or source IP range or * to match any IP. Tags such as VirtualNetwork, AzureLoadBalancer and Internet can also be used. This is required if source_address_prefixes is not specified.
+        CIDR or source IP range or * to match any IP. Tags such as VirtualNetwork, AzureLoadBalancer and Internet can also be used.
     sourceAddressPrefixes : [str], default is Undefined, optional
-        List of source address prefixes. Tags may not be used. This is required if source_address_prefix is not specified.
+        List of source address prefixes. Tags may not be used.
     sourceApplicationSecurityGroupIds : [str], default is Undefined, optional
         A List of source Application Security Group IDs
     sourcePortRange : str, default is Undefined, optional
@@ -378,9 +378,9 @@ schema NetworkAzuremUpboundIoV1beta1SecurityRuleSpecInitProvider:
     description : str, default is Undefined, optional
         A description for this rule. Restricted to 140 characters.
     destinationAddressPrefix : str, default is Undefined, optional
-        CIDR or destination IP range or * to match any IP. Tags such as VirtualNetwork, AzureLoadBalancer and Internet can also be used. Besides, it also supports all available Service Tags like ‘Sql.WestEurope‘, ‘Storage.EastUS‘, etc. You can list the available service tags with the CLI: shell az network list-service-tags --location westcentralus. For further information please see Azure CLI - az network list-service-tags. This is required if destination_address_prefixes is not specified.
+        CIDR or destination IP range or * to match any IP. Tags such as VirtualNetwork, AzureLoadBalancer and Internet can also be used. Besides, it also supports all available Service Tags like ‘Sql.WestEurope‘, ‘Storage.EastUS‘, etc. You can list the available service tags with the CLI: shell az network list-service-tags --location westcentralus. For further information please see Azure CLI - az network list-service-tags.
     destinationAddressPrefixes : [str], default is Undefined, optional
-        List of destination address prefixes. Tags may not be used. This is required if destination_address_prefix is not specified.
+        List of destination address prefixes. Tags may not be used.
     destinationApplicationSecurityGroupIds : [str], default is Undefined, optional
         A List of destination Application Security Group IDs
     destinationPortRange : str, default is Undefined, optional
@@ -394,9 +394,9 @@ schema NetworkAzuremUpboundIoV1beta1SecurityRuleSpecInitProvider:
     $protocol : str, default is Undefined, optional
         Network protocol this rule applies to. Possible values include Tcp, Udp, Icmp, Esp, Ah or * (which matches all).
     sourceAddressPrefix : str, default is Undefined, optional
-        CIDR or source IP range or * to match any IP. Tags such as VirtualNetwork, AzureLoadBalancer and Internet can also be used. This is required if source_address_prefixes is not specified.
+        CIDR or source IP range or * to match any IP. Tags such as VirtualNetwork, AzureLoadBalancer and Internet can also be used.
     sourceAddressPrefixes : [str], default is Undefined, optional
-        List of source address prefixes. Tags may not be used. This is required if source_address_prefix is not specified.
+        List of source address prefixes. Tags may not be used.
     sourceApplicationSecurityGroupIds : [str], default is Undefined, optional
         A List of source Application Security Group IDs
     sourcePortRange : str, default is Undefined, optional
@@ -509,9 +509,9 @@ schema NetworkAzuremUpboundIoV1beta1SecurityRuleStatusAtProvider:
     description : str, default is Undefined, optional
         A description for this rule. Restricted to 140 characters.
     destinationAddressPrefix : str, default is Undefined, optional
-        CIDR or destination IP range or * to match any IP. Tags such as VirtualNetwork, AzureLoadBalancer and Internet can also be used. Besides, it also supports all available Service Tags like ‘Sql.WestEurope‘, ‘Storage.EastUS‘, etc. You can list the available service tags with the CLI: shell az network list-service-tags --location westcentralus. For further information please see Azure CLI - az network list-service-tags. This is required if destination_address_prefixes is not specified.
+        CIDR or destination IP range or * to match any IP. Tags such as VirtualNetwork, AzureLoadBalancer and Internet can also be used. Besides, it also supports all available Service Tags like ‘Sql.WestEurope‘, ‘Storage.EastUS‘, etc. You can list the available service tags with the CLI: shell az network list-service-tags --location westcentralus. For further information please see Azure CLI - az network list-service-tags.
     destinationAddressPrefixes : [str], default is Undefined, optional
-        List of destination address prefixes. Tags may not be used. This is required if destination_address_prefix is not specified.
+        List of destination address prefixes. Tags may not be used.
     destinationApplicationSecurityGroupIds : [str], default is Undefined, optional
         A List of destination Application Security Group IDs
     destinationPortRange : str, default is Undefined, optional
@@ -531,9 +531,9 @@ schema NetworkAzuremUpboundIoV1beta1SecurityRuleStatusAtProvider:
     resourceGroupName : str, default is Undefined, optional
         The name of the resource group in which to create the Network Security Rule. Changing this forces a new resource to be created.
     sourceAddressPrefix : str, default is Undefined, optional
-        CIDR or source IP range or * to match any IP. Tags such as VirtualNetwork, AzureLoadBalancer and Internet can also be used. This is required if source_address_prefixes is not specified.
+        CIDR or source IP range or * to match any IP. Tags such as VirtualNetwork, AzureLoadBalancer and Internet can also be used.
     sourceAddressPrefixes : [str], default is Undefined, optional
-        List of source address prefixes. Tags may not be used. This is required if source_address_prefix is not specified.
+        List of source address prefixes. Tags may not be used.
     sourceApplicationSecurityGroupIds : [str], default is Undefined, optional
         A List of source Application Security Group IDs
     sourcePortRange : str, default is Undefined, optional

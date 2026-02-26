@@ -66,8 +66,6 @@ schema Ec2AwsUpboundIoV1beta1DefaultRouteTableSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : Ec2AwsUpboundIoV1beta1DefaultRouteTableSpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : Ec2AwsUpboundIoV1beta1DefaultRouteTableSpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : Ec2AwsUpboundIoV1beta1DefaultRouteTableSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -82,8 +80,6 @@ schema Ec2AwsUpboundIoV1beta1DefaultRouteTableSpec:
     managementPolicies?: [str] = ["*"]
 
     providerConfigRef?: Ec2AwsUpboundIoV1beta1DefaultRouteTableSpecProviderConfigRef
-
-    publishConnectionDetailsTo?: Ec2AwsUpboundIoV1beta1DefaultRouteTableSpecPublishConnectionDetailsTo
 
     writeConnectionSecretToRef?: Ec2AwsUpboundIoV1beta1DefaultRouteTableSpecWriteConnectionSecretToRef
 
@@ -103,6 +99,7 @@ schema Ec2AwsUpboundIoV1beta1DefaultRouteTableSpecForProvider:
     propagatingVgws : [str], default is Undefined, optional
         List of virtual gateways for propagation.
     region : str, default is Undefined, required
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
     route : [Ec2AwsUpboundIoV1beta1DefaultRouteTableSpecForProviderRouteItems0], default is Undefined, optional
         Configuration block of routes. Detailed below. This argument is processed in attribute-as-blocks mode. This means that omitting this argument is interpreted as ignoring any existing routes. To remove all managed routes an empty list should be specified. See the example above.
@@ -895,112 +892,12 @@ schema Ec2AwsUpboundIoV1beta1DefaultRouteTableSpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
-schema Ec2AwsUpboundIoV1beta1DefaultRouteTableSpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : Ec2AwsUpboundIoV1beta1DefaultRouteTableSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : Ec2AwsUpboundIoV1beta1DefaultRouteTableSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: Ec2AwsUpboundIoV1beta1DefaultRouteTableSpecPublishConnectionDetailsToConfigRef
-
-    metadata?: Ec2AwsUpboundIoV1beta1DefaultRouteTableSpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema Ec2AwsUpboundIoV1beta1DefaultRouteTableSpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : Ec2AwsUpboundIoV1beta1DefaultRouteTableSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: Ec2AwsUpboundIoV1beta1DefaultRouteTableSpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema Ec2AwsUpboundIoV1beta1DefaultRouteTableSpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema Ec2AwsUpboundIoV1beta1DefaultRouteTableSpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema Ec2AwsUpboundIoV1beta1DefaultRouteTableSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------
@@ -1056,6 +953,9 @@ schema Ec2AwsUpboundIoV1beta1DefaultRouteTableStatusAtProvider:
         ID of the AWS account that owns the route table.
     propagatingVgws : [str], default is Undefined, optional
         List of virtual gateways for propagation.
+    region : str, default is Undefined, optional
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
+        Region is the region you'd like your resource to be created in.
     route : [Ec2AwsUpboundIoV1beta1DefaultRouteTableStatusAtProviderRouteItems0], default is Undefined, optional
         Configuration block of routes. Detailed below. This argument is processed in attribute-as-blocks mode. This means that omitting this argument is interpreted as ignoring any existing routes. To remove all managed routes an empty list should be specified. See the example above.
     tags : {str:str}, default is Undefined, optional
@@ -1076,6 +976,8 @@ schema Ec2AwsUpboundIoV1beta1DefaultRouteTableStatusAtProvider:
     ownerId?: str
 
     propagatingVgws?: [str]
+
+    region?: str
 
     route?: [Ec2AwsUpboundIoV1beta1DefaultRouteTableStatusAtProviderRouteItems0]
 

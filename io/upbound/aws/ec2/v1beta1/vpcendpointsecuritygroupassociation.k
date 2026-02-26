@@ -66,8 +66,6 @@ schema Ec2AwsUpboundIoV1beta1VPCEndpointSecurityGroupAssociationSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : Ec2AwsUpboundIoV1beta1VPCEndpointSecurityGroupAssociationSpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : Ec2AwsUpboundIoV1beta1VPCEndpointSecurityGroupAssociationSpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : Ec2AwsUpboundIoV1beta1VPCEndpointSecurityGroupAssociationSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -83,8 +81,6 @@ schema Ec2AwsUpboundIoV1beta1VPCEndpointSecurityGroupAssociationSpec:
 
     providerConfigRef?: Ec2AwsUpboundIoV1beta1VPCEndpointSecurityGroupAssociationSpecProviderConfigRef
 
-    publishConnectionDetailsTo?: Ec2AwsUpboundIoV1beta1VPCEndpointSecurityGroupAssociationSpecPublishConnectionDetailsTo
-
     writeConnectionSecretToRef?: Ec2AwsUpboundIoV1beta1VPCEndpointSecurityGroupAssociationSpecWriteConnectionSecretToRef
 
 
@@ -95,9 +91,10 @@ schema Ec2AwsUpboundIoV1beta1VPCEndpointSecurityGroupAssociationSpecForProvider:
     Attributes
     ----------
     region : str, default is Undefined, required
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
     replaceDefaultAssociation : bool, default is Undefined, optional
-        Whether this association should replace the association with the VPC's default security group that is created when no security groups are specified during VPC endpoint creation. At most 1 association per-VPC endpoint should be configured with replace_default_association = true.
+        Whether this association should replace the association with the VPC's default security group that is created when no security groups are specified during VPC endpoint creation. At most 1 association per-VPC endpoint should be configured with replace_default_association = true. false should be used when importing resources.
     securityGroupId : str, default is Undefined, optional
         The ID of the security group to be associated with the VPC endpoint.
     securityGroupIdRef : Ec2AwsUpboundIoV1beta1VPCEndpointSecurityGroupAssociationSpecForProviderSecurityGroupIDRef, default is Undefined, optional
@@ -324,7 +321,7 @@ schema Ec2AwsUpboundIoV1beta1VPCEndpointSecurityGroupAssociationSpecInitProvider
     Attributes
     ----------
     replaceDefaultAssociation : bool, default is Undefined, optional
-        Whether this association should replace the association with the VPC's default security group that is created when no security groups are specified during VPC endpoint creation. At most 1 association per-VPC endpoint should be configured with replace_default_association = true.
+        Whether this association should replace the association with the VPC's default security group that is created when no security groups are specified during VPC endpoint creation. At most 1 association per-VPC endpoint should be configured with replace_default_association = true. false should be used when importing resources.
     securityGroupId : str, default is Undefined, optional
         The ID of the security group to be associated with the VPC endpoint.
     securityGroupIdRef : Ec2AwsUpboundIoV1beta1VPCEndpointSecurityGroupAssociationSpecInitProviderSecurityGroupIDRef, default is Undefined, optional
@@ -577,112 +574,12 @@ schema Ec2AwsUpboundIoV1beta1VPCEndpointSecurityGroupAssociationSpecProviderConf
     resolve?: "Always" | "IfNotPresent"
 
 
-schema Ec2AwsUpboundIoV1beta1VPCEndpointSecurityGroupAssociationSpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : Ec2AwsUpboundIoV1beta1VPCEndpointSecurityGroupAssociationSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : Ec2AwsUpboundIoV1beta1VPCEndpointSecurityGroupAssociationSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: Ec2AwsUpboundIoV1beta1VPCEndpointSecurityGroupAssociationSpecPublishConnectionDetailsToConfigRef
-
-    metadata?: Ec2AwsUpboundIoV1beta1VPCEndpointSecurityGroupAssociationSpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema Ec2AwsUpboundIoV1beta1VPCEndpointSecurityGroupAssociationSpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : Ec2AwsUpboundIoV1beta1VPCEndpointSecurityGroupAssociationSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: Ec2AwsUpboundIoV1beta1VPCEndpointSecurityGroupAssociationSpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema Ec2AwsUpboundIoV1beta1VPCEndpointSecurityGroupAssociationSpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema Ec2AwsUpboundIoV1beta1VPCEndpointSecurityGroupAssociationSpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema Ec2AwsUpboundIoV1beta1VPCEndpointSecurityGroupAssociationSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------
@@ -730,8 +627,11 @@ schema Ec2AwsUpboundIoV1beta1VPCEndpointSecurityGroupAssociationStatusAtProvider
     ----------
     id : str, default is Undefined, optional
         The ID of the association.
+    region : str, default is Undefined, optional
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
+        Region is the region you'd like your resource to be created in.
     replaceDefaultAssociation : bool, default is Undefined, optional
-        Whether this association should replace the association with the VPC's default security group that is created when no security groups are specified during VPC endpoint creation. At most 1 association per-VPC endpoint should be configured with replace_default_association = true.
+        Whether this association should replace the association with the VPC's default security group that is created when no security groups are specified during VPC endpoint creation. At most 1 association per-VPC endpoint should be configured with replace_default_association = true. false should be used when importing resources.
     securityGroupId : str, default is Undefined, optional
         The ID of the security group to be associated with the VPC endpoint.
     vpcEndpointId : str, default is Undefined, optional
@@ -740,6 +640,8 @@ schema Ec2AwsUpboundIoV1beta1VPCEndpointSecurityGroupAssociationStatusAtProvider
 
 
     id?: str
+
+    region?: str
 
     replaceDefaultAssociation?: bool
 

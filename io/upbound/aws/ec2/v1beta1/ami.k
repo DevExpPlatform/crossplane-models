@@ -66,8 +66,6 @@ schema Ec2AwsUpboundIoV1beta1AMISpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : Ec2AwsUpboundIoV1beta1AMISpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : Ec2AwsUpboundIoV1beta1AMISpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : Ec2AwsUpboundIoV1beta1AMISpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -83,8 +81,6 @@ schema Ec2AwsUpboundIoV1beta1AMISpec:
 
     providerConfigRef?: Ec2AwsUpboundIoV1beta1AMISpecProviderConfigRef
 
-    publishConnectionDetailsTo?: Ec2AwsUpboundIoV1beta1AMISpecPublishConnectionDetailsTo
-
     writeConnectionSecretToRef?: Ec2AwsUpboundIoV1beta1AMISpecWriteConnectionSecretToRef
 
 
@@ -95,7 +91,7 @@ schema Ec2AwsUpboundIoV1beta1AMISpecForProvider:
     Attributes
     ----------
     architecture : str, default is Undefined, optional
-        Machine architecture for created instances. Defaults to "x86_64".
+        Machine architecture for created instances. Defaults to x86_64.
     bootMode : str, default is Undefined, optional
         Boot mode of the AMI. For more information, see Boot modes in the Amazon Elastic Compute Cloud User Guide.
     deprecationTime : str, default is Undefined, optional
@@ -124,6 +120,7 @@ schema Ec2AwsUpboundIoV1beta1AMISpecForProvider:
         ID of an initrd image (ARI) that will be used when booting the
         created instances.
     region : str, default is Undefined, required
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
     rootDeviceName : str, default is Undefined, optional
         Name of the root device (for example, /dev/sda1, or /dev/xvda).
@@ -134,6 +131,8 @@ schema Ec2AwsUpboundIoV1beta1AMISpecForProvider:
         Key-value map of resource tags.
     tpmSupport : str, default is Undefined, optional
         If the image is configured for NitroTPM support, the value is v2.0. For more information, see NitroTPM in the Amazon Elastic Compute Cloud User Guide.
+    uefiData : str, default is Undefined, optional
+        Base64 representation of the non-volatile UEFI variable store.
     virtualizationType : str, default is Undefined, optional
         Keyword to choose what virtualization mode created instances
         will use. Can be either "paravirtual" (the default) or "hvm". The choice of virtualization type
@@ -174,6 +173,8 @@ schema Ec2AwsUpboundIoV1beta1AMISpecForProvider:
     tags?: {str:str}
 
     tpmSupport?: str
+
+    uefiData?: str
 
     virtualizationType?: str
 
@@ -362,7 +363,7 @@ schema Ec2AwsUpboundIoV1beta1AMISpecInitProvider:
     Attributes
     ----------
     architecture : str, default is Undefined, optional
-        Machine architecture for created instances. Defaults to "x86_64".
+        Machine architecture for created instances. Defaults to x86_64.
     bootMode : str, default is Undefined, optional
         Boot mode of the AMI. For more information, see Boot modes in the Amazon Elastic Compute Cloud User Guide.
     deprecationTime : str, default is Undefined, optional
@@ -399,6 +400,8 @@ schema Ec2AwsUpboundIoV1beta1AMISpecInitProvider:
         Key-value map of resource tags.
     tpmSupport : str, default is Undefined, optional
         If the image is configured for NitroTPM support, the value is v2.0. For more information, see NitroTPM in the Amazon Elastic Compute Cloud User Guide.
+    uefiData : str, default is Undefined, optional
+        Base64 representation of the non-volatile UEFI variable store.
     virtualizationType : str, default is Undefined, optional
         Keyword to choose what virtualization mode created instances
         will use. Can be either "paravirtual" (the default) or "hvm". The choice of virtualization type
@@ -437,6 +440,8 @@ schema Ec2AwsUpboundIoV1beta1AMISpecInitProvider:
     tags?: {str:str}
 
     tpmSupport?: str
+
+    uefiData?: str
 
     virtualizationType?: str
 
@@ -653,112 +658,12 @@ schema Ec2AwsUpboundIoV1beta1AMISpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
-schema Ec2AwsUpboundIoV1beta1AMISpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : Ec2AwsUpboundIoV1beta1AMISpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : Ec2AwsUpboundIoV1beta1AMISpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: Ec2AwsUpboundIoV1beta1AMISpecPublishConnectionDetailsToConfigRef
-
-    metadata?: Ec2AwsUpboundIoV1beta1AMISpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema Ec2AwsUpboundIoV1beta1AMISpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : Ec2AwsUpboundIoV1beta1AMISpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: Ec2AwsUpboundIoV1beta1AMISpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema Ec2AwsUpboundIoV1beta1AMISpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema Ec2AwsUpboundIoV1beta1AMISpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema Ec2AwsUpboundIoV1beta1AMISpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------
@@ -805,7 +710,7 @@ schema Ec2AwsUpboundIoV1beta1AMIStatusAtProvider:
     Attributes
     ----------
     architecture : str, default is Undefined, optional
-        Machine architecture for created instances. Defaults to "x86_64".
+        Machine architecture for created instances. Defaults to x86_64.
     arn : str, default is Undefined, optional
         ARN of the AMI.
     bootMode : str, default is Undefined, optional
@@ -838,6 +743,8 @@ schema Ec2AwsUpboundIoV1beta1AMIStatusAtProvider:
     kernelId : str, default is Undefined, optional
         ID of the kernel image (AKI) that will be used as the paravirtual
         kernel in created instances.
+    lastLaunchedTime : str, default is Undefined, optional
+        (Computed) Date and time, in ISO 8601 date-time format , when the AMI was last used to launch an EC2 instance. When the AMI is used to launch an instance, there is a 24-hour delay before that usage is reported. For more information, see the following AWS document.
     manageEbsSnapshots : bool, default is Undefined, optional
         manage ebs snapshots
     name : str, default is Undefined, optional
@@ -853,6 +760,9 @@ schema Ec2AwsUpboundIoV1beta1AMIStatusAtProvider:
     ramdiskId : str, default is Undefined, optional
         ID of an initrd image (ARI) that will be used when booting the
         created instances.
+    region : str, default is Undefined, optional
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
+        Region is the region you'd like your resource to be created in.
     rootDeviceName : str, default is Undefined, optional
         Name of the root device (for example, /dev/sda1, or /dev/xvda).
     rootSnapshotId : str, default is Undefined, optional
@@ -866,6 +776,8 @@ schema Ec2AwsUpboundIoV1beta1AMIStatusAtProvider:
         Map of tags assigned to the resource, including those inherited from the provider default_tags configuration block.
     tpmSupport : str, default is Undefined, optional
         If the image is configured for NitroTPM support, the value is v2.0. For more information, see NitroTPM in the Amazon Elastic Compute Cloud User Guide.
+    uefiData : str, default is Undefined, optional
+        Base64 representation of the non-volatile UEFI variable store.
     usageOperation : str, default is Undefined, optional
         Operation of the Amazon EC2 instance and the billing code that is associated with the AMI.
     virtualizationType : str, default is Undefined, optional
@@ -905,6 +817,8 @@ schema Ec2AwsUpboundIoV1beta1AMIStatusAtProvider:
 
     kernelId?: str
 
+    lastLaunchedTime?: str
+
     manageEbsSnapshots?: bool
 
     name?: str
@@ -919,6 +833,8 @@ schema Ec2AwsUpboundIoV1beta1AMIStatusAtProvider:
 
     ramdiskId?: str
 
+    region?: str
+
     rootDeviceName?: str
 
     rootSnapshotId?: str
@@ -930,6 +846,8 @@ schema Ec2AwsUpboundIoV1beta1AMIStatusAtProvider:
     tagsAll?: {str:str}
 
     tpmSupport?: str
+
+    uefiData?: str
 
     usageOperation?: str
 

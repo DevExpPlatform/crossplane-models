@@ -66,8 +66,6 @@ schema S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -82,8 +80,6 @@ schema S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpec:
     managementPolicies?: [str] = ["*"]
 
     providerConfigRef?: S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecProviderConfigRef
-
-    publishConnectionDetailsTo?: S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecPublishConnectionDetailsTo
 
     writeConnectionSecretToRef?: S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecWriteConnectionSecretToRef
 
@@ -103,6 +99,7 @@ schema S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecForProvider:
     expectedBucketOwner : str, default is Undefined, optional
         Account ID of the expected bucket owner. If the bucket is owned by a different account, the request will fail with an HTTP 403 (Access Denied) error.
     region : str, default is Undefined, required
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
     $rule : [S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecForProviderRuleItems0], default is Undefined, optional
         List of configuration blocks describing the rules managing the replication. See below.
@@ -226,7 +223,10 @@ schema S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecForProviderRuleItems
     expiration : [S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecForProviderRuleItems0ExpirationItems0], default is Undefined, optional
         Configuration block that specifies the expiration for the lifecycle of the object in the form of date, days and, whether the object has a delete marker. See below.
     $filter : [S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecForProviderRuleItems0FilterItems0], default is Undefined, optional
-        Configuration block used to identify objects that a Lifecycle Rule applies to. See below. If not specified, the rule will default to using prefix.
+        Configuration block used to identify objects that a Lifecycle Rule applies to.
+        See below.
+        If not specified, the rule will default to using prefix.
+        One of filter or prefix should be specified.
     id : str, default is Undefined, optional
         Unique identifier for the rule. The value cannot be longer than 255 characters.
     noncurrentVersionExpiration : [S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecForProviderRuleItems0NoncurrentVersionExpirationItems0], default is Undefined, optional
@@ -234,7 +234,11 @@ schema S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecForProviderRuleItems
     noncurrentVersionTransition : [S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecForProviderRuleItems0NoncurrentVersionTransitionItems0], default is Undefined, optional
         Set of configuration blocks that specify the transition rule for the lifecycle rule that describes when noncurrent objects transition to a specific storage class. See below.
     prefix : str, default is Undefined, optional
-        DEPRECATED Use filter instead. This has been deprecated by Amazon S3. Prefix identifying one or more objects to which the rule applies. Defaults to an empty string ("") if filter is not specified.
+        DEPRECATED Use filter instead.
+        This has been deprecated by Amazon S3.
+        Prefix identifying one or more objects to which the rule applies.
+        Defaults to an empty string ("") if filter is not specified.
+        One of prefix or filter should be specified.
     status : str, default is Undefined, optional
         Whether the rule is currently being applied. Valid values: Enabled or Disabled.
     transition : [S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecForProviderRuleItems0TransitionItems0], default is Undefined, optional
@@ -305,9 +309,9 @@ schema S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecForProviderRuleItems
     ----------
     $and : [S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecForProviderRuleItems0FilterItems0AndItems0], default is Undefined, optional
         Configuration block used to apply a logical AND to two or more predicates. See below. The Lifecycle Rule will apply to any object matching all the predicates configured inside the and block.
-    objectSizeGreaterThan : str, default is Undefined, optional
+    objectSizeGreaterThan : float, default is Undefined, optional
         Minimum object size (in bytes) to which the rule applies.
-    objectSizeLessThan : str, default is Undefined, optional
+    objectSizeLessThan : float, default is Undefined, optional
         Maximum object size (in bytes) to which the rule applies.
     prefix : str, default is Undefined, optional
         Prefix identifying one or more objects to which the rule applies. Defaults to an empty string ("") if not specified.
@@ -318,9 +322,9 @@ schema S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecForProviderRuleItems
 
     $and?: [S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecForProviderRuleItems0FilterItems0AndItems0]
 
-    objectSizeGreaterThan?: str
+    objectSizeGreaterThan?: float
 
-    objectSizeLessThan?: str
+    objectSizeLessThan?: float
 
     prefix?: str
 
@@ -340,7 +344,9 @@ schema S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecForProviderRuleItems
     prefix : str, default is Undefined, optional
         Prefix identifying one or more objects to which the rule applies.
     tags : {str:str}, default is Undefined, optional
-        Key-value map of resource tags. All of these tags must exist in the object's tag set in order for the rule to apply.
+        Key-value map of resource tags.
+        All of these tags must exist in the object's tag set in order for the rule to apply.
+        If set, must contain at least one key-value pair.
     """
 
 
@@ -377,14 +383,14 @@ schema S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecForProviderRuleItems
 
     Attributes
     ----------
-    newerNoncurrentVersions : str, default is Undefined, optional
+    newerNoncurrentVersions : float, default is Undefined, optional
         Number of noncurrent versions Amazon S3 will retain. Must be a non-zero positive integer.
     noncurrentDays : float, default is Undefined, optional
         Number of days an object is noncurrent before Amazon S3 can perform the associated action.
     """
 
 
-    newerNoncurrentVersions?: str
+    newerNoncurrentVersions?: float
 
     noncurrentDays?: float
 
@@ -395,7 +401,7 @@ schema S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecForProviderRuleItems
 
     Attributes
     ----------
-    newerNoncurrentVersions : str, default is Undefined, optional
+    newerNoncurrentVersions : float, default is Undefined, optional
         Number of noncurrent versions Amazon S3 will retain. Must be a non-zero positive integer.
     noncurrentDays : float, default is Undefined, optional
         Number of days an object is noncurrent before Amazon S3 can perform the associated action.
@@ -404,7 +410,7 @@ schema S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecForProviderRuleItems
     """
 
 
-    newerNoncurrentVersions?: str
+    newerNoncurrentVersions?: float
 
     noncurrentDays?: float
 
@@ -576,7 +582,10 @@ schema S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecInitProviderRuleItem
     expiration : [S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecInitProviderRuleItems0ExpirationItems0], default is Undefined, optional
         Configuration block that specifies the expiration for the lifecycle of the object in the form of date, days and, whether the object has a delete marker. See below.
     $filter : [S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecInitProviderRuleItems0FilterItems0], default is Undefined, optional
-        Configuration block used to identify objects that a Lifecycle Rule applies to. See below. If not specified, the rule will default to using prefix.
+        Configuration block used to identify objects that a Lifecycle Rule applies to.
+        See below.
+        If not specified, the rule will default to using prefix.
+        One of filter or prefix should be specified.
     id : str, default is Undefined, optional
         Unique identifier for the rule. The value cannot be longer than 255 characters.
     noncurrentVersionExpiration : [S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecInitProviderRuleItems0NoncurrentVersionExpirationItems0], default is Undefined, optional
@@ -584,7 +593,11 @@ schema S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecInitProviderRuleItem
     noncurrentVersionTransition : [S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecInitProviderRuleItems0NoncurrentVersionTransitionItems0], default is Undefined, optional
         Set of configuration blocks that specify the transition rule for the lifecycle rule that describes when noncurrent objects transition to a specific storage class. See below.
     prefix : str, default is Undefined, optional
-        DEPRECATED Use filter instead. This has been deprecated by Amazon S3. Prefix identifying one or more objects to which the rule applies. Defaults to an empty string ("") if filter is not specified.
+        DEPRECATED Use filter instead.
+        This has been deprecated by Amazon S3.
+        Prefix identifying one or more objects to which the rule applies.
+        Defaults to an empty string ("") if filter is not specified.
+        One of prefix or filter should be specified.
     status : str, default is Undefined, optional
         Whether the rule is currently being applied. Valid values: Enabled or Disabled.
     transition : [S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecInitProviderRuleItems0TransitionItems0], default is Undefined, optional
@@ -655,9 +668,9 @@ schema S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecInitProviderRuleItem
     ----------
     $and : [S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecInitProviderRuleItems0FilterItems0AndItems0], default is Undefined, optional
         Configuration block used to apply a logical AND to two or more predicates. See below. The Lifecycle Rule will apply to any object matching all the predicates configured inside the and block.
-    objectSizeGreaterThan : str, default is Undefined, optional
+    objectSizeGreaterThan : float, default is Undefined, optional
         Minimum object size (in bytes) to which the rule applies.
-    objectSizeLessThan : str, default is Undefined, optional
+    objectSizeLessThan : float, default is Undefined, optional
         Maximum object size (in bytes) to which the rule applies.
     prefix : str, default is Undefined, optional
         Prefix identifying one or more objects to which the rule applies. Defaults to an empty string ("") if not specified.
@@ -668,9 +681,9 @@ schema S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecInitProviderRuleItem
 
     $and?: [S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecInitProviderRuleItems0FilterItems0AndItems0]
 
-    objectSizeGreaterThan?: str
+    objectSizeGreaterThan?: float
 
-    objectSizeLessThan?: str
+    objectSizeLessThan?: float
 
     prefix?: str
 
@@ -690,7 +703,9 @@ schema S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecInitProviderRuleItem
     prefix : str, default is Undefined, optional
         Prefix identifying one or more objects to which the rule applies.
     tags : {str:str}, default is Undefined, optional
-        Key-value map of resource tags. All of these tags must exist in the object's tag set in order for the rule to apply.
+        Key-value map of resource tags.
+        All of these tags must exist in the object's tag set in order for the rule to apply.
+        If set, must contain at least one key-value pair.
     """
 
 
@@ -727,14 +742,14 @@ schema S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecInitProviderRuleItem
 
     Attributes
     ----------
-    newerNoncurrentVersions : str, default is Undefined, optional
+    newerNoncurrentVersions : float, default is Undefined, optional
         Number of noncurrent versions Amazon S3 will retain. Must be a non-zero positive integer.
     noncurrentDays : float, default is Undefined, optional
         Number of days an object is noncurrent before Amazon S3 can perform the associated action.
     """
 
 
-    newerNoncurrentVersions?: str
+    newerNoncurrentVersions?: float
 
     noncurrentDays?: float
 
@@ -745,7 +760,7 @@ schema S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecInitProviderRuleItem
 
     Attributes
     ----------
-    newerNoncurrentVersions : str, default is Undefined, optional
+    newerNoncurrentVersions : float, default is Undefined, optional
         Number of noncurrent versions Amazon S3 will retain. Must be a non-zero positive integer.
     noncurrentDays : float, default is Undefined, optional
         Number of days an object is noncurrent before Amazon S3 can perform the associated action.
@@ -754,7 +769,7 @@ schema S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecInitProviderRuleItem
     """
 
 
-    newerNoncurrentVersions?: str
+    newerNoncurrentVersions?: float
 
     noncurrentDays?: float
 
@@ -827,112 +842,12 @@ schema S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecProviderConfigRefPol
     resolve?: "Always" | "IfNotPresent"
 
 
-schema S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecPublishConnectionDetailsToConfigRef
-
-    metadata?: S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema S3AwsUpboundIoV1beta1BucketLifecycleConfigurationSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------
@@ -984,6 +899,9 @@ schema S3AwsUpboundIoV1beta1BucketLifecycleConfigurationStatusAtProvider:
         Account ID of the expected bucket owner. If the bucket is owned by a different account, the request will fail with an HTTP 403 (Access Denied) error.
     id : str, default is Undefined, optional
         and status)
+    region : str, default is Undefined, optional
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
+        Region is the region you'd like your resource to be created in.
     $rule : [S3AwsUpboundIoV1beta1BucketLifecycleConfigurationStatusAtProviderRuleItems0], default is Undefined, optional
         List of configuration blocks describing the rules managing the replication. See below.
     transitionDefaultMinimumObjectSize : str, default is Undefined, optional
@@ -996,6 +914,8 @@ schema S3AwsUpboundIoV1beta1BucketLifecycleConfigurationStatusAtProvider:
     expectedBucketOwner?: str
 
     id?: str
+
+    region?: str
 
     $rule?: [S3AwsUpboundIoV1beta1BucketLifecycleConfigurationStatusAtProviderRuleItems0]
 
@@ -1013,7 +933,10 @@ schema S3AwsUpboundIoV1beta1BucketLifecycleConfigurationStatusAtProviderRuleItem
     expiration : [S3AwsUpboundIoV1beta1BucketLifecycleConfigurationStatusAtProviderRuleItems0ExpirationItems0], default is Undefined, optional
         Configuration block that specifies the expiration for the lifecycle of the object in the form of date, days and, whether the object has a delete marker. See below.
     $filter : [S3AwsUpboundIoV1beta1BucketLifecycleConfigurationStatusAtProviderRuleItems0FilterItems0], default is Undefined, optional
-        Configuration block used to identify objects that a Lifecycle Rule applies to. See below. If not specified, the rule will default to using prefix.
+        Configuration block used to identify objects that a Lifecycle Rule applies to.
+        See below.
+        If not specified, the rule will default to using prefix.
+        One of filter or prefix should be specified.
     id : str, default is Undefined, optional
         Unique identifier for the rule. The value cannot be longer than 255 characters.
     noncurrentVersionExpiration : [S3AwsUpboundIoV1beta1BucketLifecycleConfigurationStatusAtProviderRuleItems0NoncurrentVersionExpirationItems0], default is Undefined, optional
@@ -1021,7 +944,11 @@ schema S3AwsUpboundIoV1beta1BucketLifecycleConfigurationStatusAtProviderRuleItem
     noncurrentVersionTransition : [S3AwsUpboundIoV1beta1BucketLifecycleConfigurationStatusAtProviderRuleItems0NoncurrentVersionTransitionItems0], default is Undefined, optional
         Set of configuration blocks that specify the transition rule for the lifecycle rule that describes when noncurrent objects transition to a specific storage class. See below.
     prefix : str, default is Undefined, optional
-        DEPRECATED Use filter instead. This has been deprecated by Amazon S3. Prefix identifying one or more objects to which the rule applies. Defaults to an empty string ("") if filter is not specified.
+        DEPRECATED Use filter instead.
+        This has been deprecated by Amazon S3.
+        Prefix identifying one or more objects to which the rule applies.
+        Defaults to an empty string ("") if filter is not specified.
+        One of prefix or filter should be specified.
     status : str, default is Undefined, optional
         Whether the rule is currently being applied. Valid values: Enabled or Disabled.
     transition : [S3AwsUpboundIoV1beta1BucketLifecycleConfigurationStatusAtProviderRuleItems0TransitionItems0], default is Undefined, optional
@@ -1092,9 +1019,9 @@ schema S3AwsUpboundIoV1beta1BucketLifecycleConfigurationStatusAtProviderRuleItem
     ----------
     $and : [S3AwsUpboundIoV1beta1BucketLifecycleConfigurationStatusAtProviderRuleItems0FilterItems0AndItems0], default is Undefined, optional
         Configuration block used to apply a logical AND to two or more predicates. See below. The Lifecycle Rule will apply to any object matching all the predicates configured inside the and block.
-    objectSizeGreaterThan : str, default is Undefined, optional
+    objectSizeGreaterThan : float, default is Undefined, optional
         Minimum object size (in bytes) to which the rule applies.
-    objectSizeLessThan : str, default is Undefined, optional
+    objectSizeLessThan : float, default is Undefined, optional
         Maximum object size (in bytes) to which the rule applies.
     prefix : str, default is Undefined, optional
         Prefix identifying one or more objects to which the rule applies. Defaults to an empty string ("") if not specified.
@@ -1105,9 +1032,9 @@ schema S3AwsUpboundIoV1beta1BucketLifecycleConfigurationStatusAtProviderRuleItem
 
     $and?: [S3AwsUpboundIoV1beta1BucketLifecycleConfigurationStatusAtProviderRuleItems0FilterItems0AndItems0]
 
-    objectSizeGreaterThan?: str
+    objectSizeGreaterThan?: float
 
-    objectSizeLessThan?: str
+    objectSizeLessThan?: float
 
     prefix?: str
 
@@ -1127,7 +1054,9 @@ schema S3AwsUpboundIoV1beta1BucketLifecycleConfigurationStatusAtProviderRuleItem
     prefix : str, default is Undefined, optional
         Prefix identifying one or more objects to which the rule applies.
     tags : {str:str}, default is Undefined, optional
-        Key-value map of resource tags. All of these tags must exist in the object's tag set in order for the rule to apply.
+        Key-value map of resource tags.
+        All of these tags must exist in the object's tag set in order for the rule to apply.
+        If set, must contain at least one key-value pair.
     """
 
 
@@ -1164,14 +1093,14 @@ schema S3AwsUpboundIoV1beta1BucketLifecycleConfigurationStatusAtProviderRuleItem
 
     Attributes
     ----------
-    newerNoncurrentVersions : str, default is Undefined, optional
+    newerNoncurrentVersions : float, default is Undefined, optional
         Number of noncurrent versions Amazon S3 will retain. Must be a non-zero positive integer.
     noncurrentDays : float, default is Undefined, optional
         Number of days an object is noncurrent before Amazon S3 can perform the associated action.
     """
 
 
-    newerNoncurrentVersions?: str
+    newerNoncurrentVersions?: float
 
     noncurrentDays?: float
 
@@ -1182,7 +1111,7 @@ schema S3AwsUpboundIoV1beta1BucketLifecycleConfigurationStatusAtProviderRuleItem
 
     Attributes
     ----------
-    newerNoncurrentVersions : str, default is Undefined, optional
+    newerNoncurrentVersions : float, default is Undefined, optional
         Number of noncurrent versions Amazon S3 will retain. Must be a non-zero positive integer.
     noncurrentDays : float, default is Undefined, optional
         Number of days an object is noncurrent before Amazon S3 can perform the associated action.
@@ -1191,7 +1120,7 @@ schema S3AwsUpboundIoV1beta1BucketLifecycleConfigurationStatusAtProviderRuleItem
     """
 
 
-    newerNoncurrentVersions?: str
+    newerNoncurrentVersions?: float
 
     noncurrentDays?: float
 

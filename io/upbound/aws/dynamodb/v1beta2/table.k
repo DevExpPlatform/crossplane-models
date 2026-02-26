@@ -66,8 +66,6 @@ schema DynamodbAwsUpboundIoV1beta2TableSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : DynamodbAwsUpboundIoV1beta2TableSpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : DynamodbAwsUpboundIoV1beta2TableSpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : DynamodbAwsUpboundIoV1beta2TableSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -82,8 +80,6 @@ schema DynamodbAwsUpboundIoV1beta2TableSpec:
     managementPolicies?: [str] = ["*"]
 
     providerConfigRef?: DynamodbAwsUpboundIoV1beta2TableSpecProviderConfigRef
-
-    publishConnectionDetailsTo?: DynamodbAwsUpboundIoV1beta2TableSpecPublishConnectionDetailsTo
 
     writeConnectionSecretToRef?: DynamodbAwsUpboundIoV1beta2TableSpecWriteConnectionSecretToRef
 
@@ -117,6 +113,7 @@ schema DynamodbAwsUpboundIoV1beta2TableSpecForProvider:
     readCapacity : float, default is Undefined, optional
         Number of read units for this table. If the billing_mode is PROVISIONED, this field is required.
     region : str, default is Undefined, required
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
     replica : [DynamodbAwsUpboundIoV1beta2TableSpecForProviderReplicaItems0], default is Undefined, optional
         Configuration block(s) with DynamoDB Global Tables V2 (version 2019.11.21) replication configurations. See below.
@@ -142,6 +139,8 @@ schema DynamodbAwsUpboundIoV1beta2TableSpecForProvider:
         Key-value map of resource tags.
     ttl : DynamodbAwsUpboundIoV1beta2TableSpecForProviderTTL, default is Undefined, optional
         ttl
+    warmThroughput : DynamodbAwsUpboundIoV1beta2TableSpecForProviderWarmThroughput, default is Undefined, optional
+        warm throughput
     writeCapacity : float, default is Undefined, optional
         Number of write units for this table. If the billing_mode is PROVISIONED, this field is required.
     """
@@ -193,6 +192,8 @@ schema DynamodbAwsUpboundIoV1beta2TableSpecForProvider:
 
     ttl?: DynamodbAwsUpboundIoV1beta2TableSpecForProviderTTL
 
+    warmThroughput?: DynamodbAwsUpboundIoV1beta2TableSpecForProviderWarmThroughput
+
     writeCapacity?: float
 
 
@@ -234,6 +235,8 @@ schema DynamodbAwsUpboundIoV1beta2TableSpecForProviderGlobalSecondaryIndexItems0
         Name of the range key; must be defined
     readCapacity : float, default is Undefined, optional
         Number of read units for this index. Must be set if billing_mode is set to PROVISIONED.
+    warmThroughput : DynamodbAwsUpboundIoV1beta2TableSpecForProviderGlobalSecondaryIndexItems0WarmThroughput, default is Undefined, optional
+        warm throughput
     writeCapacity : float, default is Undefined, optional
         Number of write units for this index. Must be set if billing_mode is set to PROVISIONED.
     """
@@ -253,12 +256,14 @@ schema DynamodbAwsUpboundIoV1beta2TableSpecForProviderGlobalSecondaryIndexItems0
 
     readCapacity?: float
 
+    warmThroughput?: DynamodbAwsUpboundIoV1beta2TableSpecForProviderGlobalSecondaryIndexItems0WarmThroughput
+
     writeCapacity?: float
 
 
 schema DynamodbAwsUpboundIoV1beta2TableSpecForProviderGlobalSecondaryIndexItems0OnDemandThroughput:
     r"""
-    Sets the maximum number of read and write units for the specified on-demand table. See below.
+    Sets the maximum number of read and write units for the specified on-demand index. See below.
 
     Attributes
     ----------
@@ -272,6 +277,24 @@ schema DynamodbAwsUpboundIoV1beta2TableSpecForProviderGlobalSecondaryIndexItems0
     maxReadRequestUnits?: float
 
     maxWriteRequestUnits?: float
+
+
+schema DynamodbAwsUpboundIoV1beta2TableSpecForProviderGlobalSecondaryIndexItems0WarmThroughput:
+    r"""
+    Sets the number of warm read and write units for this index. See below.
+
+    Attributes
+    ----------
+    readUnitsPerSecond : float, default is Undefined, optional
+        Number of read operations a table or index can instantaneously support. For the base table, decreasing this value will force a new resource. For a global secondary index, this value can be increased or decreased without recreation. Minimum value of 12000 (default).
+    writeUnitsPerSecond : float, default is Undefined, optional
+        Number of write operations a table or index can instantaneously support. For the base table, decreasing this value will force a new resource. For a global secondary index, this value can be increased or decreased without recreation. Minimum value of 4000 (default).
+    """
+
+
+    readUnitsPerSecond?: float
+
+    writeUnitsPerSecond?: float
 
 
 schema DynamodbAwsUpboundIoV1beta2TableSpecForProviderImportTable:
@@ -411,10 +434,14 @@ schema DynamodbAwsUpboundIoV1beta2TableSpecForProviderPointInTimeRecovery:
     ----------
     enabled : bool, default is Undefined, optional
         Whether to enable point-in-time recovery. It can take 10 minutes to enable for new tables. If the point_in_time_recovery block is not provided, this defaults to false.
+    recoveryPeriodInDays : float, default is Undefined, optional
+        Number of preceding days for which continuous backups are taken and maintained. Default is 35.
     """
 
 
     enabled?: bool
+
+    recoveryPeriodInDays?: float
 
 
 schema DynamodbAwsUpboundIoV1beta2TableSpecForProviderReplicaItems0:
@@ -423,16 +450,32 @@ schema DynamodbAwsUpboundIoV1beta2TableSpecForProviderReplicaItems0:
 
     Attributes
     ----------
+    consistencyMode : str, default is Undefined, optional
+        Whether this global table will be using STRONG consistency mode or EVENTUAL consistency mode. Default value is EVENTUAL.
+    deletionProtectionEnabled : bool, default is Undefined, optional
+        Whether deletion protection is enabled (true) or disabled (false) on the replica. Default is false.
     kmsKeyArn : str, default is Undefined, optional
-        ARN of the CMK that should be used for the AWS KMS encryption. This argument should only be used if the key is different from the default KMS-managed DynamoDB key, alias/aws/dynamodb. Note: This attribute will not be populated with the ARN of default keys.
+        ARN of the CMK that should be used for the AWS KMS encryption.
+        This argument should only be used if the key is different from the default KMS-managed DynamoDB key, alias/aws/dynamodb.
+        Note: This attribute will not be populated with the ARN of default keys.
+        Note: Changing this value will recreate the replica.
     pointInTimeRecovery : bool, default is Undefined, optional
         Whether to enable Point In Time Recovery for the replica. Default is false.
     propagateTags : bool, default is Undefined, optional
-        Whether to propagate the global table's tags to a replica. Default is false. Changes to tags only move in one direction: from global (source) to replica. In other words, tag drift on a replica will not trigger an update. Tag or replica changes on the global table, whether from drift or configuration changes, are propagated to replicas. Changing from true to false on a subsequent apply means replica tags are left as they were, unmanaged, not deleted.
+        Whether to propagate the global table's tags to a replica.
+        Default is false.
+        Changes to tags only move in one direction: from global (source) to replica.
+        Tag drift on a replica will not trigger an update.
+        Tag changes on the global table are propagated to replicas.
+        Changing from true to false on a subsequent apply leaves replica tags as-is and no longer manages them.
     regionName : str, default is Undefined, optional
         Region name of the replica.
     """
 
+
+    consistencyMode?: str
+
+    deletionProtectionEnabled?: bool
 
     kmsKeyArn?: str
 
@@ -479,6 +522,24 @@ schema DynamodbAwsUpboundIoV1beta2TableSpecForProviderTTL:
     attributeName?: str
 
     enabled?: bool
+
+
+schema DynamodbAwsUpboundIoV1beta2TableSpecForProviderWarmThroughput:
+    r"""
+    Sets the number of warm read and write units for the specified table. See below.
+
+    Attributes
+    ----------
+    readUnitsPerSecond : float, default is Undefined, optional
+        Number of read operations a table or index can instantaneously support. For the base table, decreasing this value will force a new resource. For a global secondary index, this value can be increased or decreased without recreation. Minimum value of 12000 (default).
+    writeUnitsPerSecond : float, default is Undefined, optional
+        Number of write operations a table or index can instantaneously support. For the base table, decreasing this value will force a new resource. For a global secondary index, this value can be increased or decreased without recreation. Minimum value of 4000 (default).
+    """
+
+
+    readUnitsPerSecond?: float
+
+    writeUnitsPerSecond?: float
 
 
 schema DynamodbAwsUpboundIoV1beta2TableSpecInitProvider:
@@ -542,6 +603,8 @@ schema DynamodbAwsUpboundIoV1beta2TableSpecInitProvider:
         Key-value map of resource tags.
     ttl : DynamodbAwsUpboundIoV1beta2TableSpecInitProviderTTL, default is Undefined, optional
         ttl
+    warmThroughput : DynamodbAwsUpboundIoV1beta2TableSpecInitProviderWarmThroughput, default is Undefined, optional
+        warm throughput
     writeCapacity : float, default is Undefined, optional
         Number of write units for this table. If the billing_mode is PROVISIONED, this field is required.
     """
@@ -591,6 +654,8 @@ schema DynamodbAwsUpboundIoV1beta2TableSpecInitProvider:
 
     ttl?: DynamodbAwsUpboundIoV1beta2TableSpecInitProviderTTL
 
+    warmThroughput?: DynamodbAwsUpboundIoV1beta2TableSpecInitProviderWarmThroughput
+
     writeCapacity?: float
 
 
@@ -632,6 +697,8 @@ schema DynamodbAwsUpboundIoV1beta2TableSpecInitProviderGlobalSecondaryIndexItems
         Name of the range key; must be defined
     readCapacity : float, default is Undefined, optional
         Number of read units for this index. Must be set if billing_mode is set to PROVISIONED.
+    warmThroughput : DynamodbAwsUpboundIoV1beta2TableSpecInitProviderGlobalSecondaryIndexItems0WarmThroughput, default is Undefined, optional
+        warm throughput
     writeCapacity : float, default is Undefined, optional
         Number of write units for this index. Must be set if billing_mode is set to PROVISIONED.
     """
@@ -651,12 +718,14 @@ schema DynamodbAwsUpboundIoV1beta2TableSpecInitProviderGlobalSecondaryIndexItems
 
     readCapacity?: float
 
+    warmThroughput?: DynamodbAwsUpboundIoV1beta2TableSpecInitProviderGlobalSecondaryIndexItems0WarmThroughput
+
     writeCapacity?: float
 
 
 schema DynamodbAwsUpboundIoV1beta2TableSpecInitProviderGlobalSecondaryIndexItems0OnDemandThroughput:
     r"""
-    Sets the maximum number of read and write units for the specified on-demand table. See below.
+    Sets the maximum number of read and write units for the specified on-demand index. See below.
 
     Attributes
     ----------
@@ -670,6 +739,24 @@ schema DynamodbAwsUpboundIoV1beta2TableSpecInitProviderGlobalSecondaryIndexItems
     maxReadRequestUnits?: float
 
     maxWriteRequestUnits?: float
+
+
+schema DynamodbAwsUpboundIoV1beta2TableSpecInitProviderGlobalSecondaryIndexItems0WarmThroughput:
+    r"""
+    Sets the number of warm read and write units for this index. See below.
+
+    Attributes
+    ----------
+    readUnitsPerSecond : float, default is Undefined, optional
+        Number of read operations a table or index can instantaneously support. For the base table, decreasing this value will force a new resource. For a global secondary index, this value can be increased or decreased without recreation. Minimum value of 12000 (default).
+    writeUnitsPerSecond : float, default is Undefined, optional
+        Number of write operations a table or index can instantaneously support. For the base table, decreasing this value will force a new resource. For a global secondary index, this value can be increased or decreased without recreation. Minimum value of 4000 (default).
+    """
+
+
+    readUnitsPerSecond?: float
+
+    writeUnitsPerSecond?: float
 
 
 schema DynamodbAwsUpboundIoV1beta2TableSpecInitProviderImportTable:
@@ -809,10 +896,14 @@ schema DynamodbAwsUpboundIoV1beta2TableSpecInitProviderPointInTimeRecovery:
     ----------
     enabled : bool, default is Undefined, optional
         Whether to enable point-in-time recovery. It can take 10 minutes to enable for new tables. If the point_in_time_recovery block is not provided, this defaults to false.
+    recoveryPeriodInDays : float, default is Undefined, optional
+        Number of preceding days for which continuous backups are taken and maintained. Default is 35.
     """
 
 
     enabled?: bool
+
+    recoveryPeriodInDays?: float
 
 
 schema DynamodbAwsUpboundIoV1beta2TableSpecInitProviderReplicaItems0:
@@ -821,16 +912,32 @@ schema DynamodbAwsUpboundIoV1beta2TableSpecInitProviderReplicaItems0:
 
     Attributes
     ----------
+    consistencyMode : str, default is Undefined, optional
+        Whether this global table will be using STRONG consistency mode or EVENTUAL consistency mode. Default value is EVENTUAL.
+    deletionProtectionEnabled : bool, default is Undefined, optional
+        Whether deletion protection is enabled (true) or disabled (false) on the replica. Default is false.
     kmsKeyArn : str, default is Undefined, optional
-        ARN of the CMK that should be used for the AWS KMS encryption. This argument should only be used if the key is different from the default KMS-managed DynamoDB key, alias/aws/dynamodb. Note: This attribute will not be populated with the ARN of default keys.
+        ARN of the CMK that should be used for the AWS KMS encryption.
+        This argument should only be used if the key is different from the default KMS-managed DynamoDB key, alias/aws/dynamodb.
+        Note: This attribute will not be populated with the ARN of default keys.
+        Note: Changing this value will recreate the replica.
     pointInTimeRecovery : bool, default is Undefined, optional
         Whether to enable Point In Time Recovery for the replica. Default is false.
     propagateTags : bool, default is Undefined, optional
-        Whether to propagate the global table's tags to a replica. Default is false. Changes to tags only move in one direction: from global (source) to replica. In other words, tag drift on a replica will not trigger an update. Tag or replica changes on the global table, whether from drift or configuration changes, are propagated to replicas. Changing from true to false on a subsequent apply means replica tags are left as they were, unmanaged, not deleted.
+        Whether to propagate the global table's tags to a replica.
+        Default is false.
+        Changes to tags only move in one direction: from global (source) to replica.
+        Tag drift on a replica will not trigger an update.
+        Tag changes on the global table are propagated to replicas.
+        Changing from true to false on a subsequent apply leaves replica tags as-is and no longer manages them.
     regionName : str, default is Undefined, optional
         Region name of the replica.
     """
 
+
+    consistencyMode?: str
+
+    deletionProtectionEnabled?: bool
 
     kmsKeyArn?: str
 
@@ -879,6 +986,24 @@ schema DynamodbAwsUpboundIoV1beta2TableSpecInitProviderTTL:
     enabled?: bool
 
 
+schema DynamodbAwsUpboundIoV1beta2TableSpecInitProviderWarmThroughput:
+    r"""
+    Sets the number of warm read and write units for the specified table. See below.
+
+    Attributes
+    ----------
+    readUnitsPerSecond : float, default is Undefined, optional
+        Number of read operations a table or index can instantaneously support. For the base table, decreasing this value will force a new resource. For a global secondary index, this value can be increased or decreased without recreation. Minimum value of 12000 (default).
+    writeUnitsPerSecond : float, default is Undefined, optional
+        Number of write operations a table or index can instantaneously support. For the base table, decreasing this value will force a new resource. For a global secondary index, this value can be increased or decreased without recreation. Minimum value of 4000 (default).
+    """
+
+
+    readUnitsPerSecond?: float
+
+    writeUnitsPerSecond?: float
+
+
 schema DynamodbAwsUpboundIoV1beta2TableSpecProviderConfigRef:
     r"""
     ProviderConfigReference specifies how the provider that will be used to
@@ -923,112 +1048,12 @@ schema DynamodbAwsUpboundIoV1beta2TableSpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
-schema DynamodbAwsUpboundIoV1beta2TableSpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : DynamodbAwsUpboundIoV1beta2TableSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : DynamodbAwsUpboundIoV1beta2TableSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: DynamodbAwsUpboundIoV1beta2TableSpecPublishConnectionDetailsToConfigRef
-
-    metadata?: DynamodbAwsUpboundIoV1beta2TableSpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema DynamodbAwsUpboundIoV1beta2TableSpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : DynamodbAwsUpboundIoV1beta2TableSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: DynamodbAwsUpboundIoV1beta2TableSpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema DynamodbAwsUpboundIoV1beta2TableSpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema DynamodbAwsUpboundIoV1beta2TableSpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema DynamodbAwsUpboundIoV1beta2TableSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------
@@ -1100,6 +1125,9 @@ schema DynamodbAwsUpboundIoV1beta2TableStatusAtProvider:
         Attribute to use as the range (sort) key. Must also be defined as an attribute, see below.
     readCapacity : float, default is Undefined, optional
         Number of read units for this table. If the billing_mode is PROVISIONED, this field is required.
+    region : str, default is Undefined, optional
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
+        Region is the region you'd like your resource to be created in.
     replica : [DynamodbAwsUpboundIoV1beta2TableStatusAtProviderReplicaItems0], default is Undefined, optional
         Configuration block(s) with DynamoDB Global Tables V2 (version 2019.11.21) replication configurations. See below.
     restoreDateTime : str, default is Undefined, optional
@@ -1130,6 +1158,8 @@ schema DynamodbAwsUpboundIoV1beta2TableStatusAtProvider:
         Map of tags assigned to the resource, including those inherited from the provider default_tags configuration block.
     ttl : DynamodbAwsUpboundIoV1beta2TableStatusAtProviderTTL, default is Undefined, optional
         ttl
+    warmThroughput : DynamodbAwsUpboundIoV1beta2TableStatusAtProviderWarmThroughput, default is Undefined, optional
+        warm throughput
     writeCapacity : float, default is Undefined, optional
         Number of write units for this table. If the billing_mode is PROVISIONED, this field is required.
     """
@@ -1161,6 +1191,8 @@ schema DynamodbAwsUpboundIoV1beta2TableStatusAtProvider:
 
     readCapacity?: float
 
+    region?: str
+
     replica?: [DynamodbAwsUpboundIoV1beta2TableStatusAtProviderReplicaItems0]
 
     restoreDateTime?: str
@@ -1188,6 +1220,8 @@ schema DynamodbAwsUpboundIoV1beta2TableStatusAtProvider:
     tagsAll?: {str:str}
 
     ttl?: DynamodbAwsUpboundIoV1beta2TableStatusAtProviderTTL
+
+    warmThroughput?: DynamodbAwsUpboundIoV1beta2TableStatusAtProviderWarmThroughput
 
     writeCapacity?: float
 
@@ -1230,6 +1264,8 @@ schema DynamodbAwsUpboundIoV1beta2TableStatusAtProviderGlobalSecondaryIndexItems
         Name of the range key; must be defined
     readCapacity : float, default is Undefined, optional
         Number of read units for this index. Must be set if billing_mode is set to PROVISIONED.
+    warmThroughput : DynamodbAwsUpboundIoV1beta2TableStatusAtProviderGlobalSecondaryIndexItems0WarmThroughput, default is Undefined, optional
+        warm throughput
     writeCapacity : float, default is Undefined, optional
         Number of write units for this index. Must be set if billing_mode is set to PROVISIONED.
     """
@@ -1249,12 +1285,14 @@ schema DynamodbAwsUpboundIoV1beta2TableStatusAtProviderGlobalSecondaryIndexItems
 
     readCapacity?: float
 
+    warmThroughput?: DynamodbAwsUpboundIoV1beta2TableStatusAtProviderGlobalSecondaryIndexItems0WarmThroughput
+
     writeCapacity?: float
 
 
 schema DynamodbAwsUpboundIoV1beta2TableStatusAtProviderGlobalSecondaryIndexItems0OnDemandThroughput:
     r"""
-    Sets the maximum number of read and write units for the specified on-demand table. See below.
+    Sets the maximum number of read and write units for the specified on-demand index. See below.
 
     Attributes
     ----------
@@ -1268,6 +1306,24 @@ schema DynamodbAwsUpboundIoV1beta2TableStatusAtProviderGlobalSecondaryIndexItems
     maxReadRequestUnits?: float
 
     maxWriteRequestUnits?: float
+
+
+schema DynamodbAwsUpboundIoV1beta2TableStatusAtProviderGlobalSecondaryIndexItems0WarmThroughput:
+    r"""
+    Sets the number of warm read and write units for this index. See below.
+
+    Attributes
+    ----------
+    readUnitsPerSecond : float, default is Undefined, optional
+        Number of read operations a table or index can instantaneously support. For the base table, decreasing this value will force a new resource. For a global secondary index, this value can be increased or decreased without recreation. Minimum value of 12000 (default).
+    writeUnitsPerSecond : float, default is Undefined, optional
+        Number of write operations a table or index can instantaneously support. For the base table, decreasing this value will force a new resource. For a global secondary index, this value can be increased or decreased without recreation. Minimum value of 4000 (default).
+    """
+
+
+    readUnitsPerSecond?: float
+
+    writeUnitsPerSecond?: float
 
 
 schema DynamodbAwsUpboundIoV1beta2TableStatusAtProviderImportTable:
@@ -1407,10 +1463,14 @@ schema DynamodbAwsUpboundIoV1beta2TableStatusAtProviderPointInTimeRecovery:
     ----------
     enabled : bool, default is Undefined, optional
         Whether to enable point-in-time recovery. It can take 10 minutes to enable for new tables. If the point_in_time_recovery block is not provided, this defaults to false.
+    recoveryPeriodInDays : float, default is Undefined, optional
+        Number of preceding days for which continuous backups are taken and maintained. Default is 35.
     """
 
 
     enabled?: bool
+
+    recoveryPeriodInDays?: float
 
 
 schema DynamodbAwsUpboundIoV1beta2TableStatusAtProviderReplicaItems0:
@@ -1421,12 +1481,24 @@ schema DynamodbAwsUpboundIoV1beta2TableStatusAtProviderReplicaItems0:
     ----------
     arn : str, default is Undefined, optional
         ARN of the replica
+    consistencyMode : str, default is Undefined, optional
+        Whether this global table will be using STRONG consistency mode or EVENTUAL consistency mode. Default value is EVENTUAL.
+    deletionProtectionEnabled : bool, default is Undefined, optional
+        Whether deletion protection is enabled (true) or disabled (false) on the replica. Default is false.
     kmsKeyArn : str, default is Undefined, optional
-        ARN of the CMK that should be used for the AWS KMS encryption. This argument should only be used if the key is different from the default KMS-managed DynamoDB key, alias/aws/dynamodb. Note: This attribute will not be populated with the ARN of default keys.
+        ARN of the CMK that should be used for the AWS KMS encryption.
+        This argument should only be used if the key is different from the default KMS-managed DynamoDB key, alias/aws/dynamodb.
+        Note: This attribute will not be populated with the ARN of default keys.
+        Note: Changing this value will recreate the replica.
     pointInTimeRecovery : bool, default is Undefined, optional
         Whether to enable Point In Time Recovery for the replica. Default is false.
     propagateTags : bool, default is Undefined, optional
-        Whether to propagate the global table's tags to a replica. Default is false. Changes to tags only move in one direction: from global (source) to replica. In other words, tag drift on a replica will not trigger an update. Tag or replica changes on the global table, whether from drift or configuration changes, are propagated to replicas. Changing from true to false on a subsequent apply means replica tags are left as they were, unmanaged, not deleted.
+        Whether to propagate the global table's tags to a replica.
+        Default is false.
+        Changes to tags only move in one direction: from global (source) to replica.
+        Tag drift on a replica will not trigger an update.
+        Tag changes on the global table are propagated to replicas.
+        Changing from true to false on a subsequent apply leaves replica tags as-is and no longer manages them.
     regionName : str, default is Undefined, optional
         Region name of the replica.
     streamArn : str, default is Undefined, optional
@@ -1437,6 +1509,10 @@ schema DynamodbAwsUpboundIoV1beta2TableStatusAtProviderReplicaItems0:
 
 
     arn?: str
+
+    consistencyMode?: str
+
+    deletionProtectionEnabled?: bool
 
     kmsKeyArn?: str
 
@@ -1487,6 +1563,24 @@ schema DynamodbAwsUpboundIoV1beta2TableStatusAtProviderTTL:
     attributeName?: str
 
     enabled?: bool
+
+
+schema DynamodbAwsUpboundIoV1beta2TableStatusAtProviderWarmThroughput:
+    r"""
+    Sets the number of warm read and write units for the specified table. See below.
+
+    Attributes
+    ----------
+    readUnitsPerSecond : float, default is Undefined, optional
+        Number of read operations a table or index can instantaneously support. For the base table, decreasing this value will force a new resource. For a global secondary index, this value can be increased or decreased without recreation. Minimum value of 12000 (default).
+    writeUnitsPerSecond : float, default is Undefined, optional
+        Number of write operations a table or index can instantaneously support. For the base table, decreasing this value will force a new resource. For a global secondary index, this value can be increased or decreased without recreation. Minimum value of 4000 (default).
+    """
+
+
+    readUnitsPerSecond?: float
+
+    writeUnitsPerSecond?: float
 
 
 schema DynamodbAwsUpboundIoV1beta2TableStatusConditionsItems0:

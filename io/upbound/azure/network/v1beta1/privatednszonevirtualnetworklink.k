@@ -66,8 +66,6 @@ schema NetworkAzureUpboundIoV1beta1PrivateDNSZoneVirtualNetworkLinkSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : NetworkAzureUpboundIoV1beta1PrivateDNSZoneVirtualNetworkLinkSpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : NetworkAzureUpboundIoV1beta1PrivateDNSZoneVirtualNetworkLinkSpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : NetworkAzureUpboundIoV1beta1PrivateDNSZoneVirtualNetworkLinkSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -82,8 +80,6 @@ schema NetworkAzureUpboundIoV1beta1PrivateDNSZoneVirtualNetworkLinkSpec:
     managementPolicies?: [str] = ["*"]
 
     providerConfigRef?: NetworkAzureUpboundIoV1beta1PrivateDNSZoneVirtualNetworkLinkSpecProviderConfigRef
-
-    publishConnectionDetailsTo?: NetworkAzureUpboundIoV1beta1PrivateDNSZoneVirtualNetworkLinkSpecPublishConnectionDetailsTo
 
     writeConnectionSecretToRef?: NetworkAzureUpboundIoV1beta1PrivateDNSZoneVirtualNetworkLinkSpecWriteConnectionSecretToRef
 
@@ -102,6 +98,8 @@ schema NetworkAzureUpboundIoV1beta1PrivateDNSZoneVirtualNetworkLinkSpecForProvid
         private Dns zone name selector
     registrationEnabled : bool, default is Undefined, optional
         Is auto-registration of virtual machine records in the virtual network in the Private DNS zone enabled? Defaults to false.
+    resolutionPolicy : str, default is Undefined, optional
+        Specifies the resolution policy of the Private DNS Zone Virtual Network Link. Possible values are Default and NxDomainRedirect.
     resourceGroupName : str, default is Undefined, optional
         Specifies the resource group where the Private DNS Zone exists. Changing this forces a new resource to be created.
     resourceGroupNameRef : NetworkAzureUpboundIoV1beta1PrivateDNSZoneVirtualNetworkLinkSpecForProviderResourceGroupNameRef, default is Undefined, optional
@@ -126,6 +124,8 @@ schema NetworkAzureUpboundIoV1beta1PrivateDNSZoneVirtualNetworkLinkSpecForProvid
     privateDnsZoneNameSelector?: NetworkAzureUpboundIoV1beta1PrivateDNSZoneVirtualNetworkLinkSpecForProviderPrivateDNSZoneNameSelector
 
     registrationEnabled?: bool
+
+    resolutionPolicy?: str
 
     resourceGroupName?: str
 
@@ -426,6 +426,8 @@ schema NetworkAzureUpboundIoV1beta1PrivateDNSZoneVirtualNetworkLinkSpecInitProvi
     ----------
     registrationEnabled : bool, default is Undefined, optional
         Is auto-registration of virtual machine records in the virtual network in the Private DNS zone enabled? Defaults to false.
+    resolutionPolicy : str, default is Undefined, optional
+        Specifies the resolution policy of the Private DNS Zone Virtual Network Link. Possible values are Default and NxDomainRedirect.
     tags : {str:str}, default is Undefined, optional
         A mapping of tags to assign to the resource.
     virtualNetworkId : str, default is Undefined, optional
@@ -438,6 +440,8 @@ schema NetworkAzureUpboundIoV1beta1PrivateDNSZoneVirtualNetworkLinkSpecInitProvi
 
 
     registrationEnabled?: bool
+
+    resolutionPolicy?: str
 
     tags?: {str:str}
 
@@ -581,112 +585,12 @@ schema NetworkAzureUpboundIoV1beta1PrivateDNSZoneVirtualNetworkLinkSpecProviderC
     resolve?: "Always" | "IfNotPresent"
 
 
-schema NetworkAzureUpboundIoV1beta1PrivateDNSZoneVirtualNetworkLinkSpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : NetworkAzureUpboundIoV1beta1PrivateDNSZoneVirtualNetworkLinkSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : NetworkAzureUpboundIoV1beta1PrivateDNSZoneVirtualNetworkLinkSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: NetworkAzureUpboundIoV1beta1PrivateDNSZoneVirtualNetworkLinkSpecPublishConnectionDetailsToConfigRef
-
-    metadata?: NetworkAzureUpboundIoV1beta1PrivateDNSZoneVirtualNetworkLinkSpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema NetworkAzureUpboundIoV1beta1PrivateDNSZoneVirtualNetworkLinkSpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : NetworkAzureUpboundIoV1beta1PrivateDNSZoneVirtualNetworkLinkSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: NetworkAzureUpboundIoV1beta1PrivateDNSZoneVirtualNetworkLinkSpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema NetworkAzureUpboundIoV1beta1PrivateDNSZoneVirtualNetworkLinkSpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema NetworkAzureUpboundIoV1beta1PrivateDNSZoneVirtualNetworkLinkSpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema NetworkAzureUpboundIoV1beta1PrivateDNSZoneVirtualNetworkLinkSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------
@@ -738,6 +642,8 @@ schema NetworkAzureUpboundIoV1beta1PrivateDNSZoneVirtualNetworkLinkStatusAtProvi
         The name of the Private DNS zone (without a terminating dot). Changing this forces a new resource to be created.
     registrationEnabled : bool, default is Undefined, optional
         Is auto-registration of virtual machine records in the virtual network in the Private DNS zone enabled? Defaults to false.
+    resolutionPolicy : str, default is Undefined, optional
+        Specifies the resolution policy of the Private DNS Zone Virtual Network Link. Possible values are Default and NxDomainRedirect.
     resourceGroupName : str, default is Undefined, optional
         Specifies the resource group where the Private DNS Zone exists. Changing this forces a new resource to be created.
     tags : {str:str}, default is Undefined, optional
@@ -752,6 +658,8 @@ schema NetworkAzureUpboundIoV1beta1PrivateDNSZoneVirtualNetworkLinkStatusAtProvi
     privateDnsZoneName?: str
 
     registrationEnabled?: bool
+
+    resolutionPolicy?: str
 
     resourceGroupName?: str
 

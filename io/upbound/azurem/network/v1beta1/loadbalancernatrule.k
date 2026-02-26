@@ -85,9 +85,11 @@ schema NetworkAzuremUpboundIoV1beta1LoadBalancerNatRuleSpecForProvider:
     backendPort : float, default is Undefined, optional
         The port used for internal connections on the endpoint. Possible values range between 1 and 65535, inclusive.
     enableFloatingIp : bool, default is Undefined, optional
-        Are the Floating IPs enabled for this Load Balancer Rule? A "floating” IP is reassigned to a secondary server in case the primary server fails. Required to configure a SQL AlwaysOn Availability Group. Defaults to false.
+        enable floating Ip
     enableTcpReset : bool, default is Undefined, optional
-        Is TCP Reset enabled for this Load Balancer Rule?
+        enable Tcp reset
+    floatingIpEnabled : bool, default is Undefined, optional
+        Are the Floating IPs enabled for this Load Balancer Rule? A "floating" IP is reassigned to a secondary server in case the primary server fails. Required to configure a SQL AlwaysOn Availability Group. Defaults to false.
     frontendIpConfigurationName : str, default is Undefined, optional
         The name of the frontend IP configuration exposing this rule.
     frontendPort : float, default is Undefined, optional
@@ -112,6 +114,8 @@ schema NetworkAzuremUpboundIoV1beta1LoadBalancerNatRuleSpecForProvider:
         resource group name ref
     resourceGroupNameSelector : NetworkAzuremUpboundIoV1beta1LoadBalancerNatRuleSpecForProviderResourceGroupNameSelector, default is Undefined, optional
         resource group name selector
+    tcpResetEnabled : bool, default is Undefined, optional
+        Is TCP Reset enabled for this Load Balancer Rule?
     """
 
 
@@ -126,6 +130,8 @@ schema NetworkAzuremUpboundIoV1beta1LoadBalancerNatRuleSpecForProvider:
     enableFloatingIp?: bool
 
     enableTcpReset?: bool
+
+    floatingIpEnabled?: bool
 
     frontendIpConfigurationName?: str
 
@@ -150,6 +156,8 @@ schema NetworkAzuremUpboundIoV1beta1LoadBalancerNatRuleSpecForProvider:
     resourceGroupNameRef?: NetworkAzuremUpboundIoV1beta1LoadBalancerNatRuleSpecForProviderResourceGroupNameRef
 
     resourceGroupNameSelector?: NetworkAzuremUpboundIoV1beta1LoadBalancerNatRuleSpecForProviderResourceGroupNameSelector
+
+    tcpResetEnabled?: bool
 
 
 schema NetworkAzuremUpboundIoV1beta1LoadBalancerNatRuleSpecForProviderBackendAddressPoolIDRef:
@@ -467,9 +475,11 @@ schema NetworkAzuremUpboundIoV1beta1LoadBalancerNatRuleSpecInitProvider:
     backendPort : float, default is Undefined, optional
         The port used for internal connections on the endpoint. Possible values range between 1 and 65535, inclusive.
     enableFloatingIp : bool, default is Undefined, optional
-        Are the Floating IPs enabled for this Load Balancer Rule? A "floating” IP is reassigned to a secondary server in case the primary server fails. Required to configure a SQL AlwaysOn Availability Group. Defaults to false.
+        enable floating Ip
     enableTcpReset : bool, default is Undefined, optional
-        Is TCP Reset enabled for this Load Balancer Rule?
+        enable Tcp reset
+    floatingIpEnabled : bool, default is Undefined, optional
+        Are the Floating IPs enabled for this Load Balancer Rule? A "floating" IP is reassigned to a secondary server in case the primary server fails. Required to configure a SQL AlwaysOn Availability Group. Defaults to false.
     frontendIpConfigurationName : str, default is Undefined, optional
         The name of the frontend IP configuration exposing this rule.
     frontendPort : float, default is Undefined, optional
@@ -488,6 +498,8 @@ schema NetworkAzuremUpboundIoV1beta1LoadBalancerNatRuleSpecInitProvider:
         resource group name ref
     resourceGroupNameSelector : NetworkAzuremUpboundIoV1beta1LoadBalancerNatRuleSpecInitProviderResourceGroupNameSelector, default is Undefined, optional
         resource group name selector
+    tcpResetEnabled : bool, default is Undefined, optional
+        Is TCP Reset enabled for this Load Balancer Rule?
     """
 
 
@@ -502,6 +514,8 @@ schema NetworkAzuremUpboundIoV1beta1LoadBalancerNatRuleSpecInitProvider:
     enableFloatingIp?: bool
 
     enableTcpReset?: bool
+
+    floatingIpEnabled?: bool
 
     frontendIpConfigurationName?: str
 
@@ -520,6 +534,8 @@ schema NetworkAzuremUpboundIoV1beta1LoadBalancerNatRuleSpecInitProvider:
     resourceGroupNameRef?: NetworkAzuremUpboundIoV1beta1LoadBalancerNatRuleSpecInitProviderResourceGroupNameRef
 
     resourceGroupNameSelector?: NetworkAzuremUpboundIoV1beta1LoadBalancerNatRuleSpecInitProviderResourceGroupNameSelector
+
+    tcpResetEnabled?: bool
 
 
 schema NetworkAzuremUpboundIoV1beta1LoadBalancerNatRuleSpecInitProviderBackendAddressPoolIDRef:
@@ -790,9 +806,11 @@ schema NetworkAzuremUpboundIoV1beta1LoadBalancerNatRuleStatusAtProvider:
     backendPort : float, default is Undefined, optional
         The port used for internal connections on the endpoint. Possible values range between 1 and 65535, inclusive.
     enableFloatingIp : bool, default is Undefined, optional
-        Are the Floating IPs enabled for this Load Balancer Rule? A "floating” IP is reassigned to a secondary server in case the primary server fails. Required to configure a SQL AlwaysOn Availability Group. Defaults to false.
+        enable floating Ip
     enableTcpReset : bool, default is Undefined, optional
-        Is TCP Reset enabled for this Load Balancer Rule?
+        enable Tcp reset
+    floatingIpEnabled : bool, default is Undefined, optional
+        Are the Floating IPs enabled for this Load Balancer Rule? A "floating" IP is reassigned to a secondary server in case the primary server fails. Required to configure a SQL AlwaysOn Availability Group. Defaults to false.
     frontendIpConfigurationId : str, default is Undefined, optional
         The ID of the Load Balancer NAT Rule.
     frontendIpConfigurationName : str, default is Undefined, optional
@@ -813,6 +831,8 @@ schema NetworkAzuremUpboundIoV1beta1LoadBalancerNatRuleStatusAtProvider:
         The transport protocol for the external endpoint. Possible values are Udp, Tcp or All.
     resourceGroupName : str, default is Undefined, optional
         The name of the resource group in which to create the resource. Changing this forces a new resource to be created.
+    tcpResetEnabled : bool, default is Undefined, optional
+        Is TCP Reset enabled for this Load Balancer Rule?
     """
 
 
@@ -825,6 +845,8 @@ schema NetworkAzuremUpboundIoV1beta1LoadBalancerNatRuleStatusAtProvider:
     enableFloatingIp?: bool
 
     enableTcpReset?: bool
+
+    floatingIpEnabled?: bool
 
     frontendIpConfigurationId?: str
 
@@ -845,6 +867,8 @@ schema NetworkAzuremUpboundIoV1beta1LoadBalancerNatRuleStatusAtProvider:
     $protocol?: str
 
     resourceGroupName?: str
+
+    tcpResetEnabled?: bool
 
 
 schema NetworkAzuremUpboundIoV1beta1LoadBalancerNatRuleStatusConditionsItems0:

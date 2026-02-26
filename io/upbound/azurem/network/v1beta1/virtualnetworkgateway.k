@@ -95,10 +95,7 @@ schema NetworkAzuremUpboundIoV1beta1VirtualNetworkGatewaySpecForProvider:
     generation : str, default is Undefined, optional
         The Generation of the Virtual Network gateway. Possible values include Generation1, Generation2 or None. Changing this forces a new resource to be created.
     ipConfiguration : [NetworkAzuremUpboundIoV1beta1VirtualNetworkGatewaySpecForProviderIPConfigurationItems0], default is Undefined, optional
-        One or more (up to 3) ip_configuration blocks documented below. Changing this forces a new resource to be created.
-        An active-standby gateway requires exactly one ip_configuration block,
-        an active-active gateway requires exactly two ip_configuration blocks whereas
-        an active-active zone redundant gateway with P2S configuration requires exactly three ip_configuration blocks.
+        One or more (up to 3) ip_configuration blocks documented below. Changing this forces a new resource to be created. An active-standby gateway requires exactly one ip_configuration block, an active-active gateway requires exactly two ip_configuration blocks whereas an active-active zone redundant gateway with P2S configuration requires exactly three ip_configuration blocks.
     ipSecReplayProtectionEnabled : bool, default is Undefined, optional
         Is IP Sec Replay Protection enabled? Defaults to true.
     location : str, default is Undefined, optional
@@ -855,10 +852,7 @@ schema NetworkAzuremUpboundIoV1beta1VirtualNetworkGatewaySpecInitProvider:
     generation : str, default is Undefined, optional
         The Generation of the Virtual Network gateway. Possible values include Generation1, Generation2 or None. Changing this forces a new resource to be created.
     ipConfiguration : [NetworkAzuremUpboundIoV1beta1VirtualNetworkGatewaySpecInitProviderIPConfigurationItems0], default is Undefined, optional
-        One or more (up to 3) ip_configuration blocks documented below. Changing this forces a new resource to be created.
-        An active-standby gateway requires exactly one ip_configuration block,
-        an active-active gateway requires exactly two ip_configuration blocks whereas
-        an active-active zone redundant gateway with P2S configuration requires exactly three ip_configuration blocks.
+        One or more (up to 3) ip_configuration blocks documented below. Changing this forces a new resource to be created. An active-standby gateway requires exactly one ip_configuration block, an active-active gateway requires exactly two ip_configuration blocks whereas an active-active zone redundant gateway with P2S configuration requires exactly three ip_configuration blocks.
     ipSecReplayProtectionEnabled : bool, default is Undefined, optional
         Is IP Sec Replay Protection enabled? Defaults to true.
     location : str, default is Undefined, optional
@@ -1560,10 +1554,7 @@ schema NetworkAzuremUpboundIoV1beta1VirtualNetworkGatewayStatusAtProvider:
     id : str, default is Undefined, optional
         The ID of the Virtual Network Gateway.
     ipConfiguration : [NetworkAzuremUpboundIoV1beta1VirtualNetworkGatewayStatusAtProviderIPConfigurationItems0], default is Undefined, optional
-        One or more (up to 3) ip_configuration blocks documented below. Changing this forces a new resource to be created.
-        An active-standby gateway requires exactly one ip_configuration block,
-        an active-active gateway requires exactly two ip_configuration blocks whereas
-        an active-active zone redundant gateway with P2S configuration requires exactly three ip_configuration blocks.
+        One or more (up to 3) ip_configuration blocks documented below. Changing this forces a new resource to be created. An active-standby gateway requires exactly one ip_configuration block, an active-active gateway requires exactly two ip_configuration blocks whereas an active-active zone redundant gateway with P2S configuration requires exactly three ip_configuration blocks.
     ipSecReplayProtectionEnabled : bool, default is Undefined, optional
         Is IP Sec Replay Protection enabled? Defaults to true.
     location : str, default is Undefined, optional

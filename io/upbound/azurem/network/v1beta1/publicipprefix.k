@@ -76,6 +76,8 @@ schema NetworkAzuremUpboundIoV1beta1PublicIPPrefixSpecForProvider:
 
     Attributes
     ----------
+    customIpPrefixId : str, default is Undefined, optional
+        The Custom IP Prefix ID associated with the Public IP Prefix. Changing this forces a new resource to be created.
     ipVersion : str, default is Undefined, optional
         The IP Version to use, IPv6 or IPv4. Changing this forces a new resource to be created. Default is IPv4.
     location : str, default is Undefined, optional
@@ -98,6 +100,8 @@ schema NetworkAzuremUpboundIoV1beta1PublicIPPrefixSpecForProvider:
         Specifies a list of Availability Zones in which this Public IP Prefix should be located. Changing this forces a new Public IP Prefix to be created.
     """
 
+
+    customIpPrefixId?: str
 
     ipVersion?: str
 
@@ -232,6 +236,8 @@ schema NetworkAzuremUpboundIoV1beta1PublicIPPrefixSpecInitProvider:
 
     Attributes
     ----------
+    customIpPrefixId : str, default is Undefined, optional
+        The Custom IP Prefix ID associated with the Public IP Prefix. Changing this forces a new resource to be created.
     ipVersion : str, default is Undefined, optional
         The IP Version to use, IPv6 or IPv4. Changing this forces a new resource to be created. Default is IPv4.
     location : str, default is Undefined, optional
@@ -248,6 +254,8 @@ schema NetworkAzuremUpboundIoV1beta1PublicIPPrefixSpecInitProvider:
         Specifies a list of Availability Zones in which this Public IP Prefix should be located. Changing this forces a new Public IP Prefix to be created.
     """
 
+
+    customIpPrefixId?: str
 
     ipVersion?: str
 
@@ -331,6 +339,8 @@ schema NetworkAzuremUpboundIoV1beta1PublicIPPrefixStatusAtProvider:
 
     Attributes
     ----------
+    customIpPrefixId : str, default is Undefined, optional
+        The Custom IP Prefix ID associated with the Public IP Prefix. Changing this forces a new resource to be created.
     id : str, default is Undefined, optional
         The Public IP Prefix ID.
     ipPrefix : str, default is Undefined, optional
@@ -353,6 +363,8 @@ schema NetworkAzuremUpboundIoV1beta1PublicIPPrefixStatusAtProvider:
         Specifies a list of Availability Zones in which this Public IP Prefix should be located. Changing this forces a new Public IP Prefix to be created.
     """
 
+
+    customIpPrefixId?: str
 
     id?: str
 

@@ -77,7 +77,7 @@ schema IamAwsmUpboundIoV1beta1RoleSpecForProvider:
     Attributes
     ----------
     assumeRolePolicy : str, default is Undefined, optional
-        Policy that grants an entity permission to assume the role.
+        Policy that grants an entity permission to assume the role. This field is required, but it can be specified in either 'spec.forProvider.assumeRolePolicy' or 'spec.initProvider.assumeRolePolicy'. While it may appear optional in each location individually, the resource requires that it is defined in at least one of them during creation.
     description : str, default is Undefined, optional
         Description of the role.
     forceDetachPolicies : bool, default is Undefined, optional
@@ -255,7 +255,7 @@ schema IamAwsmUpboundIoV1beta1RoleSpecInitProvider:
     Attributes
     ----------
     assumeRolePolicy : str, default is Undefined, optional
-        Policy that grants an entity permission to assume the role.
+        Policy that grants an entity permission to assume the role. This field is required, but it can be specified in either 'spec.forProvider.assumeRolePolicy' or 'spec.initProvider.assumeRolePolicy'. While it may appear optional in each location individually, the resource requires that it is defined in at least one of them during creation.
     description : str, default is Undefined, optional
         Description of the role.
     forceDetachPolicies : bool, default is Undefined, optional
@@ -487,7 +487,7 @@ schema IamAwsmUpboundIoV1beta1RoleStatusAtProvider:
     arn : str, default is Undefined, optional
         Amazon Resource Name (ARN) specifying the role.
     assumeRolePolicy : str, default is Undefined, optional
-        Policy that grants an entity permission to assume the role.
+        Policy that grants an entity permission to assume the role. This field is required, but it can be specified in either 'spec.forProvider.assumeRolePolicy' or 'spec.initProvider.assumeRolePolicy'. While it may appear optional in each location individually, the resource requires that it is defined in at least one of them during creation.
     createDate : str, default is Undefined, optional
         Creation date of the IAM role.
     description : str, default is Undefined, optional

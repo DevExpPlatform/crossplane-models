@@ -92,6 +92,10 @@ schema Ec2AwsmUpboundIoV1beta1VPCEndpointSpecForProvider:
         Region is the region you'd like your resource to be created in.
     resourceConfigurationArn : str, default is Undefined, optional
         The ARN of a Resource Configuration to connect this VPC Endpoint to. Exactly one of resource_configuration_arn, service_name or service_network_arn is required.
+    resourceConfigurationArnRef : Ec2AwsmUpboundIoV1beta1VPCEndpointSpecForProviderResourceConfigurationArnRef, default is Undefined, optional
+        resource configuration arn ref
+    resourceConfigurationArnSelector : Ec2AwsmUpboundIoV1beta1VPCEndpointSpecForProviderResourceConfigurationArnSelector, default is Undefined, optional
+        resource configuration arn selector
     serviceName : str, default is Undefined, optional
         The service name. For AWS services the service name is usually in the form com.amazonaws.<region>.<service> (the SageMaker AI Notebook service is an exception to this rule, the service name is in the form aws.sagemaker.<region>.notebook). Exactly one of resource_configuration_arn, service_name or service_network_arn is required.
     serviceNameRef : Ec2AwsmUpboundIoV1beta1VPCEndpointSpecForProviderServiceNameRef, default is Undefined, optional
@@ -100,6 +104,10 @@ schema Ec2AwsmUpboundIoV1beta1VPCEndpointSpecForProvider:
         service name selector
     serviceNetworkArn : str, default is Undefined, optional
         The ARN of a Service Network to connect this VPC Endpoint to. Exactly one of resource_configuration_arn, service_name or service_network_arn is required.
+    serviceNetworkArnRef : Ec2AwsmUpboundIoV1beta1VPCEndpointSpecForProviderServiceNetworkArnRef, default is Undefined, optional
+        service network arn ref
+    serviceNetworkArnSelector : Ec2AwsmUpboundIoV1beta1VPCEndpointSpecForProviderServiceNetworkArnSelector, default is Undefined, optional
+        service network arn selector
     serviceRegion : str, default is Undefined, optional
         - The AWS region of the VPC Endpoint Service. If specified, the VPC endpoint will connect to the service in the provided region. Applicable for endpoints of type Interface.
     subnetConfiguration : [Ec2AwsmUpboundIoV1beta1VPCEndpointSpecForProviderSubnetConfigurationItems0], default is Undefined, optional
@@ -131,6 +139,10 @@ schema Ec2AwsmUpboundIoV1beta1VPCEndpointSpecForProvider:
 
     resourceConfigurationArn?: str
 
+    resourceConfigurationArnRef?: Ec2AwsmUpboundIoV1beta1VPCEndpointSpecForProviderResourceConfigurationArnRef
+
+    resourceConfigurationArnSelector?: Ec2AwsmUpboundIoV1beta1VPCEndpointSpecForProviderResourceConfigurationArnSelector
+
     serviceName?: str
 
     serviceNameRef?: Ec2AwsmUpboundIoV1beta1VPCEndpointSpecForProviderServiceNameRef
@@ -138,6 +150,10 @@ schema Ec2AwsmUpboundIoV1beta1VPCEndpointSpecForProvider:
     serviceNameSelector?: Ec2AwsmUpboundIoV1beta1VPCEndpointSpecForProviderServiceNameSelector
 
     serviceNetworkArn?: str
+
+    serviceNetworkArnRef?: Ec2AwsmUpboundIoV1beta1VPCEndpointSpecForProviderServiceNetworkArnRef
+
+    serviceNetworkArnSelector?: Ec2AwsmUpboundIoV1beta1VPCEndpointSpecForProviderServiceNetworkArnSelector
 
     serviceRegion?: str
 
@@ -170,6 +186,103 @@ schema Ec2AwsmUpboundIoV1beta1VPCEndpointSpecForProviderDNSOptions:
     dnsRecordIpType?: str
 
     privateDnsOnlyForInboundResolverEndpoint?: bool
+
+
+schema Ec2AwsmUpboundIoV1beta1VPCEndpointSpecForProviderResourceConfigurationArnRef:
+    r"""
+    Reference to a ResourceConfiguration in vpclattice to populate resourceConfigurationArn.
+
+    Attributes
+    ----------
+    name : str, default is Undefined, required
+        Name of the referenced object.
+    namespace : str, default is Undefined, optional
+        Namespace of the referenced object
+    policy : Ec2AwsmUpboundIoV1beta1VPCEndpointSpecForProviderResourceConfigurationArnRefPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    name: str
+
+    namespace?: str
+
+    policy?: Ec2AwsmUpboundIoV1beta1VPCEndpointSpecForProviderResourceConfigurationArnRefPolicy
+
+
+schema Ec2AwsmUpboundIoV1beta1VPCEndpointSpecForProviderResourceConfigurationArnRefPolicy:
+    r"""
+    Policies for referencing.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
+schema Ec2AwsmUpboundIoV1beta1VPCEndpointSpecForProviderResourceConfigurationArnSelector:
+    r"""
+    Selector for a ResourceConfiguration in vpclattice to populate resourceConfigurationArn.
+
+    Attributes
+    ----------
+    matchControllerRef : bool, default is Undefined, optional
+        MatchControllerRef ensures an object with the same controller reference
+        as the selecting object is selected.
+    matchLabels : {str:str}, default is Undefined, optional
+        MatchLabels ensures an object with matching labels is selected.
+    namespace : str, default is Undefined, optional
+        Namespace for the selector
+    policy : Ec2AwsmUpboundIoV1beta1VPCEndpointSpecForProviderResourceConfigurationArnSelectorPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    matchControllerRef?: bool
+
+    matchLabels?: {str:str}
+
+    namespace?: str
+
+    policy?: Ec2AwsmUpboundIoV1beta1VPCEndpointSpecForProviderResourceConfigurationArnSelectorPolicy
+
+
+schema Ec2AwsmUpboundIoV1beta1VPCEndpointSpecForProviderResourceConfigurationArnSelectorPolicy:
+    r"""
+    Policies for selection.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
 
 
 schema Ec2AwsmUpboundIoV1beta1VPCEndpointSpecForProviderServiceNameRef:
@@ -269,6 +382,103 @@ schema Ec2AwsmUpboundIoV1beta1VPCEndpointSpecForProviderServiceNameSelectorPolic
     resolve?: "Always" | "IfNotPresent"
 
 
+schema Ec2AwsmUpboundIoV1beta1VPCEndpointSpecForProviderServiceNetworkArnRef:
+    r"""
+    Reference to a ServiceNetwork in vpclattice to populate serviceNetworkArn.
+
+    Attributes
+    ----------
+    name : str, default is Undefined, required
+        Name of the referenced object.
+    namespace : str, default is Undefined, optional
+        Namespace of the referenced object
+    policy : Ec2AwsmUpboundIoV1beta1VPCEndpointSpecForProviderServiceNetworkArnRefPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    name: str
+
+    namespace?: str
+
+    policy?: Ec2AwsmUpboundIoV1beta1VPCEndpointSpecForProviderServiceNetworkArnRefPolicy
+
+
+schema Ec2AwsmUpboundIoV1beta1VPCEndpointSpecForProviderServiceNetworkArnRefPolicy:
+    r"""
+    Policies for referencing.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
+schema Ec2AwsmUpboundIoV1beta1VPCEndpointSpecForProviderServiceNetworkArnSelector:
+    r"""
+    Selector for a ServiceNetwork in vpclattice to populate serviceNetworkArn.
+
+    Attributes
+    ----------
+    matchControllerRef : bool, default is Undefined, optional
+        MatchControllerRef ensures an object with the same controller reference
+        as the selecting object is selected.
+    matchLabels : {str:str}, default is Undefined, optional
+        MatchLabels ensures an object with matching labels is selected.
+    namespace : str, default is Undefined, optional
+        Namespace for the selector
+    policy : Ec2AwsmUpboundIoV1beta1VPCEndpointSpecForProviderServiceNetworkArnSelectorPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    matchControllerRef?: bool
+
+    matchLabels?: {str:str}
+
+    namespace?: str
+
+    policy?: Ec2AwsmUpboundIoV1beta1VPCEndpointSpecForProviderServiceNetworkArnSelectorPolicy
+
+
+schema Ec2AwsmUpboundIoV1beta1VPCEndpointSpecForProviderServiceNetworkArnSelectorPolicy:
+    r"""
+    Policies for selection.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
 schema Ec2AwsmUpboundIoV1beta1VPCEndpointSpecForProviderSubnetConfigurationItems0:
     r"""
     ec2 awsm upbound io v1beta1 v p c endpoint spec for provider subnet configuration items0
@@ -280,7 +490,7 @@ schema Ec2AwsmUpboundIoV1beta1VPCEndpointSpecForProviderSubnetConfigurationItems
     ipv6 : str, default is Undefined, optional
         The IPv6 address to assign to the endpoint network interface in the subnet. You must provide an IPv6 address if the VPC endpoint supports IPv6.
     subnetId : str, default is Undefined, optional
-        The ID of the VPC endpoint.
+        The ID of the subnet. Must have a corresponding subnet in the subnet_ids argument.
     subnetIdRef : Ec2AwsmUpboundIoV1beta1VPCEndpointSpecForProviderSubnetConfigurationItems0SubnetIDRef, default is Undefined, optional
         subnet Id ref
     subnetIdSelector : Ec2AwsmUpboundIoV1beta1VPCEndpointSpecForProviderSubnetConfigurationItems0SubnetIDSelector, default is Undefined, optional
@@ -521,6 +731,10 @@ schema Ec2AwsmUpboundIoV1beta1VPCEndpointSpecInitProvider:
         Defaults to false.
     resourceConfigurationArn : str, default is Undefined, optional
         The ARN of a Resource Configuration to connect this VPC Endpoint to. Exactly one of resource_configuration_arn, service_name or service_network_arn is required.
+    resourceConfigurationArnRef : Ec2AwsmUpboundIoV1beta1VPCEndpointSpecInitProviderResourceConfigurationArnRef, default is Undefined, optional
+        resource configuration arn ref
+    resourceConfigurationArnSelector : Ec2AwsmUpboundIoV1beta1VPCEndpointSpecInitProviderResourceConfigurationArnSelector, default is Undefined, optional
+        resource configuration arn selector
     serviceName : str, default is Undefined, optional
         The service name. For AWS services the service name is usually in the form com.amazonaws.<region>.<service> (the SageMaker AI Notebook service is an exception to this rule, the service name is in the form aws.sagemaker.<region>.notebook). Exactly one of resource_configuration_arn, service_name or service_network_arn is required.
     serviceNameRef : Ec2AwsmUpboundIoV1beta1VPCEndpointSpecInitProviderServiceNameRef, default is Undefined, optional
@@ -529,6 +743,10 @@ schema Ec2AwsmUpboundIoV1beta1VPCEndpointSpecInitProvider:
         service name selector
     serviceNetworkArn : str, default is Undefined, optional
         The ARN of a Service Network to connect this VPC Endpoint to. Exactly one of resource_configuration_arn, service_name or service_network_arn is required.
+    serviceNetworkArnRef : Ec2AwsmUpboundIoV1beta1VPCEndpointSpecInitProviderServiceNetworkArnRef, default is Undefined, optional
+        service network arn ref
+    serviceNetworkArnSelector : Ec2AwsmUpboundIoV1beta1VPCEndpointSpecInitProviderServiceNetworkArnSelector, default is Undefined, optional
+        service network arn selector
     serviceRegion : str, default is Undefined, optional
         - The AWS region of the VPC Endpoint Service. If specified, the VPC endpoint will connect to the service in the provided region. Applicable for endpoints of type Interface.
     subnetConfiguration : [Ec2AwsmUpboundIoV1beta1VPCEndpointSpecInitProviderSubnetConfigurationItems0], default is Undefined, optional
@@ -558,6 +776,10 @@ schema Ec2AwsmUpboundIoV1beta1VPCEndpointSpecInitProvider:
 
     resourceConfigurationArn?: str
 
+    resourceConfigurationArnRef?: Ec2AwsmUpboundIoV1beta1VPCEndpointSpecInitProviderResourceConfigurationArnRef
+
+    resourceConfigurationArnSelector?: Ec2AwsmUpboundIoV1beta1VPCEndpointSpecInitProviderResourceConfigurationArnSelector
+
     serviceName?: str
 
     serviceNameRef?: Ec2AwsmUpboundIoV1beta1VPCEndpointSpecInitProviderServiceNameRef
@@ -565,6 +787,10 @@ schema Ec2AwsmUpboundIoV1beta1VPCEndpointSpecInitProvider:
     serviceNameSelector?: Ec2AwsmUpboundIoV1beta1VPCEndpointSpecInitProviderServiceNameSelector
 
     serviceNetworkArn?: str
+
+    serviceNetworkArnRef?: Ec2AwsmUpboundIoV1beta1VPCEndpointSpecInitProviderServiceNetworkArnRef
+
+    serviceNetworkArnSelector?: Ec2AwsmUpboundIoV1beta1VPCEndpointSpecInitProviderServiceNetworkArnSelector
 
     serviceRegion?: str
 
@@ -597,6 +823,103 @@ schema Ec2AwsmUpboundIoV1beta1VPCEndpointSpecInitProviderDNSOptions:
     dnsRecordIpType?: str
 
     privateDnsOnlyForInboundResolverEndpoint?: bool
+
+
+schema Ec2AwsmUpboundIoV1beta1VPCEndpointSpecInitProviderResourceConfigurationArnRef:
+    r"""
+    Reference to a ResourceConfiguration in vpclattice to populate resourceConfigurationArn.
+
+    Attributes
+    ----------
+    name : str, default is Undefined, required
+        Name of the referenced object.
+    namespace : str, default is Undefined, optional
+        Namespace of the referenced object
+    policy : Ec2AwsmUpboundIoV1beta1VPCEndpointSpecInitProviderResourceConfigurationArnRefPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    name: str
+
+    namespace?: str
+
+    policy?: Ec2AwsmUpboundIoV1beta1VPCEndpointSpecInitProviderResourceConfigurationArnRefPolicy
+
+
+schema Ec2AwsmUpboundIoV1beta1VPCEndpointSpecInitProviderResourceConfigurationArnRefPolicy:
+    r"""
+    Policies for referencing.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
+schema Ec2AwsmUpboundIoV1beta1VPCEndpointSpecInitProviderResourceConfigurationArnSelector:
+    r"""
+    Selector for a ResourceConfiguration in vpclattice to populate resourceConfigurationArn.
+
+    Attributes
+    ----------
+    matchControllerRef : bool, default is Undefined, optional
+        MatchControllerRef ensures an object with the same controller reference
+        as the selecting object is selected.
+    matchLabels : {str:str}, default is Undefined, optional
+        MatchLabels ensures an object with matching labels is selected.
+    namespace : str, default is Undefined, optional
+        Namespace for the selector
+    policy : Ec2AwsmUpboundIoV1beta1VPCEndpointSpecInitProviderResourceConfigurationArnSelectorPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    matchControllerRef?: bool
+
+    matchLabels?: {str:str}
+
+    namespace?: str
+
+    policy?: Ec2AwsmUpboundIoV1beta1VPCEndpointSpecInitProviderResourceConfigurationArnSelectorPolicy
+
+
+schema Ec2AwsmUpboundIoV1beta1VPCEndpointSpecInitProviderResourceConfigurationArnSelectorPolicy:
+    r"""
+    Policies for selection.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
 
 
 schema Ec2AwsmUpboundIoV1beta1VPCEndpointSpecInitProviderServiceNameRef:
@@ -696,6 +1019,103 @@ schema Ec2AwsmUpboundIoV1beta1VPCEndpointSpecInitProviderServiceNameSelectorPoli
     resolve?: "Always" | "IfNotPresent"
 
 
+schema Ec2AwsmUpboundIoV1beta1VPCEndpointSpecInitProviderServiceNetworkArnRef:
+    r"""
+    Reference to a ServiceNetwork in vpclattice to populate serviceNetworkArn.
+
+    Attributes
+    ----------
+    name : str, default is Undefined, required
+        Name of the referenced object.
+    namespace : str, default is Undefined, optional
+        Namespace of the referenced object
+    policy : Ec2AwsmUpboundIoV1beta1VPCEndpointSpecInitProviderServiceNetworkArnRefPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    name: str
+
+    namespace?: str
+
+    policy?: Ec2AwsmUpboundIoV1beta1VPCEndpointSpecInitProviderServiceNetworkArnRefPolicy
+
+
+schema Ec2AwsmUpboundIoV1beta1VPCEndpointSpecInitProviderServiceNetworkArnRefPolicy:
+    r"""
+    Policies for referencing.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
+schema Ec2AwsmUpboundIoV1beta1VPCEndpointSpecInitProviderServiceNetworkArnSelector:
+    r"""
+    Selector for a ServiceNetwork in vpclattice to populate serviceNetworkArn.
+
+    Attributes
+    ----------
+    matchControllerRef : bool, default is Undefined, optional
+        MatchControllerRef ensures an object with the same controller reference
+        as the selecting object is selected.
+    matchLabels : {str:str}, default is Undefined, optional
+        MatchLabels ensures an object with matching labels is selected.
+    namespace : str, default is Undefined, optional
+        Namespace for the selector
+    policy : Ec2AwsmUpboundIoV1beta1VPCEndpointSpecInitProviderServiceNetworkArnSelectorPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    matchControllerRef?: bool
+
+    matchLabels?: {str:str}
+
+    namespace?: str
+
+    policy?: Ec2AwsmUpboundIoV1beta1VPCEndpointSpecInitProviderServiceNetworkArnSelectorPolicy
+
+
+schema Ec2AwsmUpboundIoV1beta1VPCEndpointSpecInitProviderServiceNetworkArnSelectorPolicy:
+    r"""
+    Policies for selection.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
 schema Ec2AwsmUpboundIoV1beta1VPCEndpointSpecInitProviderSubnetConfigurationItems0:
     r"""
     ec2 awsm upbound io v1beta1 v p c endpoint spec init provider subnet configuration items0
@@ -707,7 +1127,7 @@ schema Ec2AwsmUpboundIoV1beta1VPCEndpointSpecInitProviderSubnetConfigurationItem
     ipv6 : str, default is Undefined, optional
         The IPv6 address to assign to the endpoint network interface in the subnet. You must provide an IPv6 address if the VPC endpoint supports IPv6.
     subnetId : str, default is Undefined, optional
-        The ID of the VPC endpoint.
+        The ID of the subnet. Must have a corresponding subnet in the subnet_ids argument.
     subnetIdRef : Ec2AwsmUpboundIoV1beta1VPCEndpointSpecInitProviderSubnetConfigurationItems0SubnetIDRef, default is Undefined, optional
         subnet Id ref
     subnetIdSelector : Ec2AwsmUpboundIoV1beta1VPCEndpointSpecInitProviderSubnetConfigurationItems0SubnetIDSelector, default is Undefined, optional
@@ -1149,7 +1569,7 @@ schema Ec2AwsmUpboundIoV1beta1VPCEndpointStatusAtProviderSubnetConfigurationItem
     ipv6 : str, default is Undefined, optional
         The IPv6 address to assign to the endpoint network interface in the subnet. You must provide an IPv6 address if the VPC endpoint supports IPv6.
     subnetId : str, default is Undefined, optional
-        The ID of the VPC endpoint.
+        The ID of the subnet. Must have a corresponding subnet in the subnet_ids argument.
     """
 
 

@@ -66,8 +66,6 @@ schema S3AwsUpboundIoV1beta1BucketPublicAccessBlockSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : S3AwsUpboundIoV1beta1BucketPublicAccessBlockSpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : S3AwsUpboundIoV1beta1BucketPublicAccessBlockSpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : S3AwsUpboundIoV1beta1BucketPublicAccessBlockSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -82,8 +80,6 @@ schema S3AwsUpboundIoV1beta1BucketPublicAccessBlockSpec:
     managementPolicies?: [str] = ["*"]
 
     providerConfigRef?: S3AwsUpboundIoV1beta1BucketPublicAccessBlockSpecProviderConfigRef
-
-    publishConnectionDetailsTo?: S3AwsUpboundIoV1beta1BucketPublicAccessBlockSpecPublishConnectionDetailsTo
 
     writeConnectionSecretToRef?: S3AwsUpboundIoV1beta1BucketPublicAccessBlockSpecWriteConnectionSecretToRef
 
@@ -107,9 +103,12 @@ schema S3AwsUpboundIoV1beta1BucketPublicAccessBlockSpecForProvider:
     ignorePublicAcls : bool, default is Undefined, optional
         Whether Amazon S3 should ignore public ACLs for this bucket. Defaults to false. Enabling this setting does not affect the persistence of any existing ACLs and doesn't prevent new public ACLs from being set. When set to true causes Amazon S3 to:
     region : str, default is Undefined, required
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
     restrictPublicBuckets : bool, default is Undefined, optional
         Whether Amazon S3 should restrict public bucket policies for this bucket. Defaults to false. Enabling this setting does not affect the previously stored bucket policy, except that public and cross-account access within the public bucket policy, including non-public delegation to specific accounts, is blocked. When set to true:
+    skipDestroy : bool, default is Undefined, optional
+        Whether to retain the public access block upon destruction. If set to true, the resource is simply removed from state instead. This may be desirable in certain scenarios to prevent the removal of a public access block before deletion of the associated bucket.
     """
 
 
@@ -128,6 +127,8 @@ schema S3AwsUpboundIoV1beta1BucketPublicAccessBlockSpecForProvider:
     region: str
 
     restrictPublicBuckets?: bool
+
+    skipDestroy?: bool
 
 
 schema S3AwsUpboundIoV1beta1BucketPublicAccessBlockSpecForProviderBucketRef:
@@ -248,6 +249,8 @@ schema S3AwsUpboundIoV1beta1BucketPublicAccessBlockSpecInitProvider:
         Whether Amazon S3 should ignore public ACLs for this bucket. Defaults to false. Enabling this setting does not affect the persistence of any existing ACLs and doesn't prevent new public ACLs from being set. When set to true causes Amazon S3 to:
     restrictPublicBuckets : bool, default is Undefined, optional
         Whether Amazon S3 should restrict public bucket policies for this bucket. Defaults to false. Enabling this setting does not affect the previously stored bucket policy, except that public and cross-account access within the public bucket policy, including non-public delegation to specific accounts, is blocked. When set to true:
+    skipDestroy : bool, default is Undefined, optional
+        Whether to retain the public access block upon destruction. If set to true, the resource is simply removed from state instead. This may be desirable in certain scenarios to prevent the removal of a public access block before deletion of the associated bucket.
     """
 
 
@@ -264,6 +267,8 @@ schema S3AwsUpboundIoV1beta1BucketPublicAccessBlockSpecInitProvider:
     ignorePublicAcls?: bool
 
     restrictPublicBuckets?: bool
+
+    skipDestroy?: bool
 
 
 schema S3AwsUpboundIoV1beta1BucketPublicAccessBlockSpecInitProviderBucketRef:
@@ -399,112 +404,12 @@ schema S3AwsUpboundIoV1beta1BucketPublicAccessBlockSpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
-schema S3AwsUpboundIoV1beta1BucketPublicAccessBlockSpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : S3AwsUpboundIoV1beta1BucketPublicAccessBlockSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : S3AwsUpboundIoV1beta1BucketPublicAccessBlockSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: S3AwsUpboundIoV1beta1BucketPublicAccessBlockSpecPublishConnectionDetailsToConfigRef
-
-    metadata?: S3AwsUpboundIoV1beta1BucketPublicAccessBlockSpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema S3AwsUpboundIoV1beta1BucketPublicAccessBlockSpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : S3AwsUpboundIoV1beta1BucketPublicAccessBlockSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: S3AwsUpboundIoV1beta1BucketPublicAccessBlockSpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema S3AwsUpboundIoV1beta1BucketPublicAccessBlockSpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema S3AwsUpboundIoV1beta1BucketPublicAccessBlockSpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema S3AwsUpboundIoV1beta1BucketPublicAccessBlockSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------
@@ -560,8 +465,13 @@ schema S3AwsUpboundIoV1beta1BucketPublicAccessBlockStatusAtProvider:
         Name of the S3 bucket the configuration is attached to
     ignorePublicAcls : bool, default is Undefined, optional
         Whether Amazon S3 should ignore public ACLs for this bucket. Defaults to false. Enabling this setting does not affect the persistence of any existing ACLs and doesn't prevent new public ACLs from being set. When set to true causes Amazon S3 to:
+    region : str, default is Undefined, optional
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
+        Region is the region you'd like your resource to be created in.
     restrictPublicBuckets : bool, default is Undefined, optional
         Whether Amazon S3 should restrict public bucket policies for this bucket. Defaults to false. Enabling this setting does not affect the previously stored bucket policy, except that public and cross-account access within the public bucket policy, including non-public delegation to specific accounts, is blocked. When set to true:
+    skipDestroy : bool, default is Undefined, optional
+        Whether to retain the public access block upon destruction. If set to true, the resource is simply removed from state instead. This may be desirable in certain scenarios to prevent the removal of a public access block before deletion of the associated bucket.
     """
 
 
@@ -575,7 +485,11 @@ schema S3AwsUpboundIoV1beta1BucketPublicAccessBlockStatusAtProvider:
 
     ignorePublicAcls?: bool
 
+    region?: str
+
     restrictPublicBuckets?: bool
+
+    skipDestroy?: bool
 
 
 schema S3AwsUpboundIoV1beta1BucketPublicAccessBlockStatusConditionsItems0:

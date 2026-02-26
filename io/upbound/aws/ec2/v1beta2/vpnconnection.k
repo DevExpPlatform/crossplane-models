@@ -66,8 +66,6 @@ schema Ec2AwsUpboundIoV1beta2VPNConnectionSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : Ec2AwsUpboundIoV1beta2VPNConnectionSpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : Ec2AwsUpboundIoV1beta2VPNConnectionSpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : Ec2AwsUpboundIoV1beta2VPNConnectionSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -82,8 +80,6 @@ schema Ec2AwsUpboundIoV1beta2VPNConnectionSpec:
     managementPolicies?: [str] = ["*"]
 
     providerConfigRef?: Ec2AwsUpboundIoV1beta2VPNConnectionSpecProviderConfigRef
-
-    publishConnectionDetailsTo?: Ec2AwsUpboundIoV1beta2VPNConnectionSpecPublishConnectionDetailsTo
 
     writeConnectionSecretToRef?: Ec2AwsUpboundIoV1beta2VPNConnectionSpecWriteConnectionSecretToRef
 
@@ -108,7 +104,10 @@ schema Ec2AwsUpboundIoV1beta2VPNConnectionSpecForProvider:
         The IPv6 CIDR on the customer gateway (on-premises) side of the VPN connection.
     outsideIpAddressType : str, default is Undefined, optional
         Indicates if a Public S2S VPN or Private S2S VPN over AWS Direct Connect. Valid values are PublicIpv4 | PrivateIpv4
+    presharedKeyStorage : str, default is Undefined, optional
+        Storage mode for the pre-shared key (PSK). Valid values are Standard (stored in the Site-to-Site VPN service) or SecretsManager (stored in AWS Secrets Manager).
     region : str, default is Undefined, required
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
     remoteIpv4NetworkCidr : str, default is Undefined, optional
         The IPv4 CIDR on the AWS side of the VPN connection.
@@ -236,6 +235,8 @@ schema Ec2AwsUpboundIoV1beta2VPNConnectionSpecForProvider:
     localIpv6NetworkCidr?: str
 
     outsideIpAddressType?: str
+
+    presharedKeyStorage?: str
 
     region: str
 
@@ -851,6 +852,8 @@ schema Ec2AwsUpboundIoV1beta2VPNConnectionSpecInitProvider:
         The IPv6 CIDR on the customer gateway (on-premises) side of the VPN connection.
     outsideIpAddressType : str, default is Undefined, optional
         Indicates if a Public S2S VPN or Private S2S VPN over AWS Direct Connect. Valid values are PublicIpv4 | PrivateIpv4
+    presharedKeyStorage : str, default is Undefined, optional
+        Storage mode for the pre-shared key (PSK). Valid values are Standard (stored in the Site-to-Site VPN service) or SecretsManager (stored in AWS Secrets Manager).
     remoteIpv4NetworkCidr : str, default is Undefined, optional
         The IPv4 CIDR on the AWS side of the VPN connection.
     remoteIpv6NetworkCidr : str, default is Undefined, optional
@@ -977,6 +980,8 @@ schema Ec2AwsUpboundIoV1beta2VPNConnectionSpecInitProvider:
     localIpv6NetworkCidr?: str
 
     outsideIpAddressType?: str
+
+    presharedKeyStorage?: str
 
     remoteIpv4NetworkCidr?: str
 
@@ -1605,112 +1610,12 @@ schema Ec2AwsUpboundIoV1beta2VPNConnectionSpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
-schema Ec2AwsUpboundIoV1beta2VPNConnectionSpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : Ec2AwsUpboundIoV1beta2VPNConnectionSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : Ec2AwsUpboundIoV1beta2VPNConnectionSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: Ec2AwsUpboundIoV1beta2VPNConnectionSpecPublishConnectionDetailsToConfigRef
-
-    metadata?: Ec2AwsUpboundIoV1beta2VPNConnectionSpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema Ec2AwsUpboundIoV1beta2VPNConnectionSpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : Ec2AwsUpboundIoV1beta2VPNConnectionSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: Ec2AwsUpboundIoV1beta2VPNConnectionSpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema Ec2AwsUpboundIoV1beta2VPNConnectionSpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema Ec2AwsUpboundIoV1beta2VPNConnectionSpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema Ec2AwsUpboundIoV1beta2VPNConnectionSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------
@@ -1774,6 +1679,13 @@ schema Ec2AwsUpboundIoV1beta2VPNConnectionStatusAtProvider:
         The IPv6 CIDR on the customer gateway (on-premises) side of the VPN connection.
     outsideIpAddressType : str, default is Undefined, optional
         Indicates if a Public S2S VPN or Private S2S VPN over AWS Direct Connect. Valid values are PublicIpv4 | PrivateIpv4
+    presharedKeyArn : str, default is Undefined, optional
+        ARN of the Secrets Manager secret storing the pre-shared key(s) for the VPN connection. Note that even if it returns a valid Secrets Manager ARN, the pre-shared key(s) will not be stored in Secrets Manager unless the preshared_key_storage argument is set to SecretsManager.
+    presharedKeyStorage : str, default is Undefined, optional
+        Storage mode for the pre-shared key (PSK). Valid values are Standard (stored in the Site-to-Site VPN service) or SecretsManager (stored in AWS Secrets Manager).
+    region : str, default is Undefined, optional
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
+        Region is the region you'd like your resource to be created in.
     remoteIpv4NetworkCidr : str, default is Undefined, optional
         The IPv4 CIDR on the AWS side of the VPN connection.
     remoteIpv6NetworkCidr : str, default is Undefined, optional
@@ -1916,6 +1828,12 @@ schema Ec2AwsUpboundIoV1beta2VPNConnectionStatusAtProvider:
     localIpv6NetworkCidr?: str
 
     outsideIpAddressType?: str
+
+    presharedKeyArn?: str
+
+    presharedKeyStorage?: str
+
+    region?: str
 
     remoteIpv4NetworkCidr?: str
 

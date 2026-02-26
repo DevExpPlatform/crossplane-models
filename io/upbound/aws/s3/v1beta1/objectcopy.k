@@ -66,8 +66,6 @@ schema S3AwsUpboundIoV1beta1ObjectCopySpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : S3AwsUpboundIoV1beta1ObjectCopySpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : S3AwsUpboundIoV1beta1ObjectCopySpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : S3AwsUpboundIoV1beta1ObjectCopySpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -82,8 +80,6 @@ schema S3AwsUpboundIoV1beta1ObjectCopySpec:
     managementPolicies?: [str] = ["*"]
 
     providerConfigRef?: S3AwsUpboundIoV1beta1ObjectCopySpecProviderConfigRef
-
-    publishConnectionDetailsTo?: S3AwsUpboundIoV1beta1ObjectCopySpecPublishConnectionDetailsTo
 
     writeConnectionSecretToRef?: S3AwsUpboundIoV1beta1ObjectCopySpecWriteConnectionSecretToRef
 
@@ -103,7 +99,7 @@ schema S3AwsUpboundIoV1beta1ObjectCopySpecForProvider:
     cacheControl : str, default is Undefined, optional
         Specifies caching behavior along the request/reply chain Read w3c cache_control for further details.
     checksumAlgorithm : str, default is Undefined, optional
-        Indicates the algorithm used to create the checksum for the object. If a value is specified and the object is encrypted with KMS, you must have permission to use the kms:Decrypt action. Valid values: CRC32, CRC32C, SHA1, SHA256.
+        Indicates the algorithm used to create the checksum for the object. If a value is specified and the object is encrypted with KMS, you must have permission to use the kms:Decrypt action. Valid values: CRC32, CRC32C, CRC64NVME SHA1, SHA256.
     contentDisposition : str, default is Undefined, optional
         Specifies presentational information for the object. Read w3c content_disposition for further information.
     contentEncoding : str, default is Undefined, optional
@@ -152,7 +148,10 @@ schema S3AwsUpboundIoV1beta1ObjectCopySpecForProvider:
         Object lock retention mode that you want to apply to this object. Valid values are GOVERNANCE and COMPLIANCE.
     objectLockRetainUntilDate : str, default is Undefined, optional
         Date and time, in RFC3339 format, when this object's object lock will expire.
+    overrideProvider : S3AwsUpboundIoV1beta1ObjectCopySpecForProviderOverrideProvider, default is Undefined, optional
+        override provider
     region : str, default is Undefined, required
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
     requestPayer : str, default is Undefined, optional
         Confirms that the requester knows that they will be charged for the request. Bucket owners need not specify this parameter in their requests. For information about downloading objects from requester pays buckets, see Downloading Objects in Requestor Pays Buckets (https://docs.aws.amazon.com/AmazonS3/latest/dev/ObjectsinRequesterPaysBuckets.html) in the Amazon S3 Developer Guide. If included, the only valid value is requester.
@@ -234,6 +233,8 @@ schema S3AwsUpboundIoV1beta1ObjectCopySpecForProvider:
     objectLockMode?: str
 
     objectLockRetainUntilDate?: str
+
+    overrideProvider?: S3AwsUpboundIoV1beta1ObjectCopySpecForProviderOverrideProvider
 
     region: str
 
@@ -354,6 +355,34 @@ schema S3AwsUpboundIoV1beta1ObjectCopySpecForProviderKmsKeyIDSecretRef:
     namespace: str
 
 
+schema S3AwsUpboundIoV1beta1ObjectCopySpecForProviderOverrideProvider:
+    r"""
+    s3 aws upbound io v1beta1 object copy spec for provider override provider
+
+    Attributes
+    ----------
+    defaultTags : S3AwsUpboundIoV1beta1ObjectCopySpecForProviderOverrideProviderDefaultTags, default is Undefined, optional
+        default tags
+    """
+
+
+    defaultTags?: S3AwsUpboundIoV1beta1ObjectCopySpecForProviderOverrideProviderDefaultTags
+
+
+schema S3AwsUpboundIoV1beta1ObjectCopySpecForProviderOverrideProviderDefaultTags:
+    r"""
+    Override the provider default_tags configuration block.
+
+    Attributes
+    ----------
+    tags : {str:str}, default is Undefined, optional
+        Key-value map of resource tags.
+    """
+
+
+    tags?: {str:str}
+
+
 schema S3AwsUpboundIoV1beta1ObjectCopySpecForProviderSourceCustomerKeySecretRef:
     r"""
     Specifies the customer-provided encryption key for Amazon S3 to use to decrypt the source object. The encryption key provided in this header must be one that was used when the source object was created.
@@ -400,7 +429,7 @@ schema S3AwsUpboundIoV1beta1ObjectCopySpecInitProvider:
     cacheControl : str, default is Undefined, optional
         Specifies caching behavior along the request/reply chain Read w3c cache_control for further details.
     checksumAlgorithm : str, default is Undefined, optional
-        Indicates the algorithm used to create the checksum for the object. If a value is specified and the object is encrypted with KMS, you must have permission to use the kms:Decrypt action. Valid values: CRC32, CRC32C, SHA1, SHA256.
+        Indicates the algorithm used to create the checksum for the object. If a value is specified and the object is encrypted with KMS, you must have permission to use the kms:Decrypt action. Valid values: CRC32, CRC32C, CRC64NVME SHA1, SHA256.
     contentDisposition : str, default is Undefined, optional
         Specifies presentational information for the object. Read w3c content_disposition for further information.
     contentEncoding : str, default is Undefined, optional
@@ -449,6 +478,8 @@ schema S3AwsUpboundIoV1beta1ObjectCopySpecInitProvider:
         Object lock retention mode that you want to apply to this object. Valid values are GOVERNANCE and COMPLIANCE.
     objectLockRetainUntilDate : str, default is Undefined, optional
         Date and time, in RFC3339 format, when this object's object lock will expire.
+    overrideProvider : S3AwsUpboundIoV1beta1ObjectCopySpecInitProviderOverrideProvider, default is Undefined, optional
+        override provider
     requestPayer : str, default is Undefined, optional
         Confirms that the requester knows that they will be charged for the request. Bucket owners need not specify this parameter in their requests. For information about downloading objects from requester pays buckets, see Downloading Objects in Requestor Pays Buckets (https://docs.aws.amazon.com/AmazonS3/latest/dev/ObjectsinRequesterPaysBuckets.html) in the Amazon S3 Developer Guide. If included, the only valid value is requester.
     serverSideEncryption : str, default is Undefined, optional
@@ -529,6 +560,8 @@ schema S3AwsUpboundIoV1beta1ObjectCopySpecInitProvider:
     objectLockMode?: str
 
     objectLockRetainUntilDate?: str
+
+    overrideProvider?: S3AwsUpboundIoV1beta1ObjectCopySpecInitProviderOverrideProvider
 
     requestPayer?: str
 
@@ -647,6 +680,34 @@ schema S3AwsUpboundIoV1beta1ObjectCopySpecInitProviderKmsKeyIDSecretRef:
     namespace: str
 
 
+schema S3AwsUpboundIoV1beta1ObjectCopySpecInitProviderOverrideProvider:
+    r"""
+    s3 aws upbound io v1beta1 object copy spec init provider override provider
+
+    Attributes
+    ----------
+    defaultTags : S3AwsUpboundIoV1beta1ObjectCopySpecInitProviderOverrideProviderDefaultTags, default is Undefined, optional
+        default tags
+    """
+
+
+    defaultTags?: S3AwsUpboundIoV1beta1ObjectCopySpecInitProviderOverrideProviderDefaultTags
+
+
+schema S3AwsUpboundIoV1beta1ObjectCopySpecInitProviderOverrideProviderDefaultTags:
+    r"""
+    Override the provider default_tags configuration block.
+
+    Attributes
+    ----------
+    tags : {str:str}, default is Undefined, optional
+        Key-value map of resource tags.
+    """
+
+
+    tags?: {str:str}
+
+
 schema S3AwsUpboundIoV1beta1ObjectCopySpecInitProviderSourceCustomerKeySecretRef:
     r"""
     Specifies the customer-provided encryption key for Amazon S3 to use to decrypt the source object. The encryption key provided in this header must be one that was used when the source object was created.
@@ -713,112 +774,12 @@ schema S3AwsUpboundIoV1beta1ObjectCopySpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
-schema S3AwsUpboundIoV1beta1ObjectCopySpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : S3AwsUpboundIoV1beta1ObjectCopySpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : S3AwsUpboundIoV1beta1ObjectCopySpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: S3AwsUpboundIoV1beta1ObjectCopySpecPublishConnectionDetailsToConfigRef
-
-    metadata?: S3AwsUpboundIoV1beta1ObjectCopySpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema S3AwsUpboundIoV1beta1ObjectCopySpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : S3AwsUpboundIoV1beta1ObjectCopySpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: S3AwsUpboundIoV1beta1ObjectCopySpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema S3AwsUpboundIoV1beta1ObjectCopySpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema S3AwsUpboundIoV1beta1ObjectCopySpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema S3AwsUpboundIoV1beta1ObjectCopySpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------
@@ -875,11 +836,13 @@ schema S3AwsUpboundIoV1beta1ObjectCopyStatusAtProvider:
     cacheControl : str, default is Undefined, optional
         Specifies caching behavior along the request/reply chain Read w3c cache_control for further details.
     checksumAlgorithm : str, default is Undefined, optional
-        Indicates the algorithm used to create the checksum for the object. If a value is specified and the object is encrypted with KMS, you must have permission to use the kms:Decrypt action. Valid values: CRC32, CRC32C, SHA1, SHA256.
+        Indicates the algorithm used to create the checksum for the object. If a value is specified and the object is encrypted with KMS, you must have permission to use the kms:Decrypt action. Valid values: CRC32, CRC32C, CRC64NVME SHA1, SHA256.
     checksumCrc32 : str, default is Undefined, optional
         The base64-encoded, 32-bit CRC32 checksum of the object.
     checksumCrc32C : str, default is Undefined, optional
         The base64-encoded, 32-bit CRC32C checksum of the object.
+    checksumCrc64Nvme : str, default is Undefined, optional
+        The base64-encoded, 64-bit CRC64NVME checksum of the object.
     checksumSha1 : str, default is Undefined, optional
         The base64-encoded, 160-bit SHA-1 digest of the object.
     checksumSha256 : str, default is Undefined, optional
@@ -934,6 +897,11 @@ schema S3AwsUpboundIoV1beta1ObjectCopyStatusAtProvider:
         Object lock retention mode that you want to apply to this object. Valid values are GOVERNANCE and COMPLIANCE.
     objectLockRetainUntilDate : str, default is Undefined, optional
         Date and time, in RFC3339 format, when this object's object lock will expire.
+    overrideProvider : S3AwsUpboundIoV1beta1ObjectCopyStatusAtProviderOverrideProvider, default is Undefined, optional
+        override provider
+    region : str, default is Undefined, optional
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
+        Region is the region you'd like your resource to be created in.
     requestCharged : bool, default is Undefined, optional
         If present, indicates that the requester was successfully charged for the request.
     requestPayer : str, default is Undefined, optional
@@ -978,6 +946,8 @@ schema S3AwsUpboundIoV1beta1ObjectCopyStatusAtProvider:
     checksumCrc32?: str
 
     checksumCrc32C?: str
+
+    checksumCrc64Nvme?: str
 
     checksumSha1?: str
 
@@ -1032,6 +1002,10 @@ schema S3AwsUpboundIoV1beta1ObjectCopyStatusAtProvider:
     objectLockMode?: str
 
     objectLockRetainUntilDate?: str
+
+    overrideProvider?: S3AwsUpboundIoV1beta1ObjectCopyStatusAtProviderOverrideProvider
+
+    region?: str
 
     requestCharged?: bool
 
@@ -1088,6 +1062,34 @@ schema S3AwsUpboundIoV1beta1ObjectCopyStatusAtProviderGrantItems0:
     $type?: str
 
     uri?: str
+
+
+schema S3AwsUpboundIoV1beta1ObjectCopyStatusAtProviderOverrideProvider:
+    r"""
+    s3 aws upbound io v1beta1 object copy status at provider override provider
+
+    Attributes
+    ----------
+    defaultTags : S3AwsUpboundIoV1beta1ObjectCopyStatusAtProviderOverrideProviderDefaultTags, default is Undefined, optional
+        default tags
+    """
+
+
+    defaultTags?: S3AwsUpboundIoV1beta1ObjectCopyStatusAtProviderOverrideProviderDefaultTags
+
+
+schema S3AwsUpboundIoV1beta1ObjectCopyStatusAtProviderOverrideProviderDefaultTags:
+    r"""
+    Override the provider default_tags configuration block.
+
+    Attributes
+    ----------
+    tags : {str:str}, default is Undefined, optional
+        Key-value map of resource tags.
+    """
+
+
+    tags?: {str:str}
 
 
 schema S3AwsUpboundIoV1beta1ObjectCopyStatusConditionsItems0:

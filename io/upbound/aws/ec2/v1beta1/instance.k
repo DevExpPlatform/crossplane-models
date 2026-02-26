@@ -66,8 +66,6 @@ schema Ec2AwsUpboundIoV1beta1InstanceSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : Ec2AwsUpboundIoV1beta1InstanceSpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : Ec2AwsUpboundIoV1beta1InstanceSpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : Ec2AwsUpboundIoV1beta1InstanceSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -82,8 +80,6 @@ schema Ec2AwsUpboundIoV1beta1InstanceSpec:
     managementPolicies?: [str] = ["*"]
 
     providerConfigRef?: Ec2AwsUpboundIoV1beta1InstanceSpecProviderConfigRef
-
-    publishConnectionDetailsTo?: Ec2AwsUpboundIoV1beta1InstanceSpecPublishConnectionDetailsTo
 
     writeConnectionSecretToRef?: Ec2AwsUpboundIoV1beta1InstanceSpecWriteConnectionSecretToRef
 
@@ -102,12 +98,8 @@ schema Ec2AwsUpboundIoV1beta1InstanceSpecForProvider:
         AZ to start the instance in.
     capacityReservationSpecification : [Ec2AwsUpboundIoV1beta1InstanceSpecForProviderCapacityReservationSpecificationItems0], default is Undefined, optional
         Describes an instance's Capacity Reservation targeting option. See Capacity Reservation Specification below for more details.
-    cpuCoreCount : float, default is Undefined, optional
-        Sets the number of CPU cores for an instance. This option is only supported on creation of instance type that support CPU Options CPU Cores and Threads Per CPU Core Per Instance Type - specifying this option for unsupported instance types will return an error from the EC2 API.
     cpuOptions : [Ec2AwsUpboundIoV1beta1InstanceSpecForProviderCPUOptionsItems0], default is Undefined, optional
         The CPU options for the instance. See CPU Options below for more details.
-    cpuThreadsPerCore : float, default is Undefined, optional
-        If set to 1, hyperthreading is disabled on the launched instance. Defaults to 2 if not set. See Optimizing CPU Options for more information.
     creditSpecification : [Ec2AwsUpboundIoV1beta1InstanceSpecForProviderCreditSpecificationItems0], default is Undefined, optional
         Configuration block for customizing the credit specification of the instance. See Credit Specification below for more details. Removing this configuration on existing instances will only stop managing it. It will not change the configuration back to the default for the instance type.
     disableApiStop : bool, default is Undefined, optional
@@ -124,6 +116,8 @@ schema Ec2AwsUpboundIoV1beta1InstanceSpecForProvider:
         Enable Nitro Enclaves on launched instances. See Enclave Options below for more details.
     ephemeralBlockDevice : [Ec2AwsUpboundIoV1beta1InstanceSpecForProviderEphemeralBlockDeviceItems0], default is Undefined, optional
         One or more configuration blocks to customize Ephemeral (also known as "Instance Store") volumes on the instance. See Block Devices below for details. When accessing this as an attribute reference, it is a set of objects.
+    forceDestroy : bool, default is Undefined, optional
+        Destroys instance even if disable_api_termination or disable_api_stop is set to true. Defaults to false. If setting this field in the same operation that would require replacing the instance or destroying the instance, this flag will not work.
     getPasswordData : bool, default is Undefined, optional
         If true, wait for password data to become available and retrieve it. Useful for getting the administrator password for instances running Microsoft Windows. The password data is exported to the password_data attribute. See GetPasswordData for more information.
     hibernation : bool, default is Undefined, optional
@@ -157,14 +151,19 @@ schema Ec2AwsUpboundIoV1beta1InstanceSpecForProvider:
     networkInterface : [Ec2AwsUpboundIoV1beta1InstanceSpecForProviderNetworkInterfaceItems0], default is Undefined, optional
         Customize network interfaces to be attached at instance boot time. See Network Interfaces below for more details.
     placementGroup : str, default is Undefined, optional
-        Placement Group to start the instance in.
+        Placement Group to start the instance in. Conflicts with placement_group_id.
+    placementGroupId : str, default is Undefined, optional
+        Placement Group ID to start the instance in. Conflicts with placement_group.
     placementPartitionNumber : float, default is Undefined, optional
         Number of the partition the instance is in. Valid only if the  strategy argument is set to "partition".
+    primaryNetworkInterface : [Ec2AwsUpboundIoV1beta1InstanceSpecForProviderPrimaryNetworkInterfaceItems0], default is Undefined, optional
+        The primary network interface. See Primary Network Interface below.
     privateDnsNameOptions : [Ec2AwsUpboundIoV1beta1InstanceSpecForProviderPrivateDNSNameOptionsItems0], default is Undefined, optional
         Options for the instance hostname. The default values are inherited from the subnet. See Private DNS Name Options below for more details.
     privateIp : str, default is Undefined, optional
         Private IP address to associate with the instance in a VPC.
     region : str, default is Undefined, required
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
     rootBlockDevice : [Ec2AwsUpboundIoV1beta1InstanceSpecForProviderRootBlockDeviceItems0], default is Undefined, optional
         Configuration block to customize details about the root block device of the instance. See Block Devices below for details. When accessing this as an attribute reference, it is a list containing one object.
@@ -183,11 +182,11 @@ schema Ec2AwsUpboundIoV1beta1InstanceSpecForProvider:
     tenancy : str, default is Undefined, optional
         Tenancy of the instance (if the instance is running in a VPC). An instance with a tenancy of dedicated runs on single-tenant hardware. The host tenancy is not supported for the import-instance command. Valid values are default, dedicated, and host.
     userData : str, default is Undefined, optional
-        User data to provide when launching the instance. Do not pass gzip-compressed data via this argument; see user_data_base64 instead. Updates to this field will trigger a stop/start of the EC2 instance by default. If the user_data_replace_on_change is set then updates to this field will trigger a destroy and recreate.
+        User data to provide when launching the instance. Do not pass gzip-compressed data via this argument; see user_data_base64 instead. Updates to this field will trigger a stop/start of the EC2 instance by default. If the user_data_replace_on_change is set then updates to this field will trigger a destroy and recreate of the EC2 instance.
     userDataBase64 : str, default is Undefined, optional
-        Can be used instead of user_data to pass base64-encoded binary data directly. Use this instead of user_data whenever the value is not a valid UTF-8 string. For example, gzip-encoded user data must be base64-encoded and passed via this argument to avoid corruption. Updates to this field will trigger a stop/start of the EC2 instance by default. If the user_data_replace_on_change is set then updates to this field will trigger a destroy and recreate.
+        Can be used instead of user_data to pass base64-encoded binary data directly. Use this instead of user_data whenever the value is not a valid UTF-8 string. For example, gzip-encoded user data must be base64-encoded and passed via this argument to avoid corruption. Updates to this field will trigger a stop/start of the EC2 instance by default. If the user_data_replace_on_change is set then updates to this field will trigger a destroy and recreate of the EC2 instance.
     userDataReplaceOnChange : bool, default is Undefined, optional
-        When used in combination with user_data or user_data_base64 will trigger a destroy and recreate when set to true. Defaults to false if not set.
+        When used in combination with user_data or user_data_base64 will trigger a destroy and recreate of the EC2 instance when set to true. Defaults to false if not set.
     volumeTags : {str:str}, default is Undefined, optional
         Map of tags to assign, at instance-creation time, to root and EBS volumes.
     vpcSecurityGroupIdRefs : [Ec2AwsUpboundIoV1beta1InstanceSpecForProviderVpcSecurityGroupIDRefsItems0], default is Undefined, optional
@@ -207,11 +206,7 @@ schema Ec2AwsUpboundIoV1beta1InstanceSpecForProvider:
 
     capacityReservationSpecification?: [Ec2AwsUpboundIoV1beta1InstanceSpecForProviderCapacityReservationSpecificationItems0]
 
-    cpuCoreCount?: float
-
     cpuOptions?: [Ec2AwsUpboundIoV1beta1InstanceSpecForProviderCPUOptionsItems0]
-
-    cpuThreadsPerCore?: float
 
     creditSpecification?: [Ec2AwsUpboundIoV1beta1InstanceSpecForProviderCreditSpecificationItems0]
 
@@ -228,6 +223,8 @@ schema Ec2AwsUpboundIoV1beta1InstanceSpecForProvider:
     enclaveOptions?: [Ec2AwsUpboundIoV1beta1InstanceSpecForProviderEnclaveOptionsItems0]
 
     ephemeralBlockDevice?: [Ec2AwsUpboundIoV1beta1InstanceSpecForProviderEphemeralBlockDeviceItems0]
+
+    forceDestroy?: bool
 
     getPasswordData?: bool
 
@@ -263,7 +260,11 @@ schema Ec2AwsUpboundIoV1beta1InstanceSpecForProvider:
 
     placementGroup?: str
 
+    placementGroupId?: str
+
     placementPartitionNumber?: float
+
+    primaryNetworkInterface?: [Ec2AwsUpboundIoV1beta1InstanceSpecForProviderPrimaryNetworkInterfaceItems0]
 
     privateDnsNameOptions?: [Ec2AwsUpboundIoV1beta1InstanceSpecForProviderPrivateDNSNameOptionsItems0]
 
@@ -568,7 +569,7 @@ schema Ec2AwsUpboundIoV1beta1InstanceSpecForProviderInstanceMarketOptionsItems0:
     Attributes
     ----------
     marketType : str, default is Undefined, optional
-        Type of market for the instance. Valid value is spot. Defaults to spot. Required if spot_options is specified.
+        Type of market for the instance. Valid values are spot and capacity-block. Defaults to spot. Required if spot_options is specified.
     spotOptions : [Ec2AwsUpboundIoV1beta1InstanceSpecForProviderInstanceMarketOptionsItems0SpotOptionsItems0], default is Undefined, optional
         Block to configure the options for Spot Instances. See Spot Options below for details on attributes.
     """
@@ -654,7 +655,7 @@ schema Ec2AwsUpboundIoV1beta1InstanceSpecForProviderMetadataOptionsItems0:
     httpPutResponseHopLimit : float, default is Undefined, optional
         Desired HTTP PUT response hop limit for instance metadata requests. The larger the number, the further instance metadata requests can travel. Valid values are integer from 1 to 64. Defaults to 1.
     httpTokens : str, default is Undefined, optional
-        Whether or not the metadata service requires session tokens, also referred to as Instance Metadata Service Version 2 (IMDSv2). Valid values include optional or required. Defaults to optional.
+        Whether or not the metadata service requires session tokens, also referred to as Instance Metadata Service Version 2 (IMDSv2). Valid values include optional or required.
     instanceMetadataTags : str, default is Undefined, optional
         Enables or disables access to instance tags from the instance metadata service. Valid values include enabled or disabled. Defaults to disabled.
     """
@@ -771,6 +772,117 @@ schema Ec2AwsUpboundIoV1beta1InstanceSpecForProviderNetworkInterfaceItems0Networ
 
 
 schema Ec2AwsUpboundIoV1beta1InstanceSpecForProviderNetworkInterfaceItems0NetworkInterfaceIDSelectorPolicy:
+    r"""
+    Policies for selection.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
+schema Ec2AwsUpboundIoV1beta1InstanceSpecForProviderPrimaryNetworkInterfaceItems0:
+    r"""
+    ec2 aws upbound io v1beta1 instance spec for provider primary network interface items0
+
+    Attributes
+    ----------
+    networkInterfaceId : str, default is Undefined, optional
+        ID of the network interface to attach.
+    networkInterfaceIdRef : Ec2AwsUpboundIoV1beta1InstanceSpecForProviderPrimaryNetworkInterfaceItems0NetworkInterfaceIDRef, default is Undefined, optional
+        network interface Id ref
+    networkInterfaceIdSelector : Ec2AwsUpboundIoV1beta1InstanceSpecForProviderPrimaryNetworkInterfaceItems0NetworkInterfaceIDSelector, default is Undefined, optional
+        network interface Id selector
+    """
+
+
+    networkInterfaceId?: str
+
+    networkInterfaceIdRef?: Ec2AwsUpboundIoV1beta1InstanceSpecForProviderPrimaryNetworkInterfaceItems0NetworkInterfaceIDRef
+
+    networkInterfaceIdSelector?: Ec2AwsUpboundIoV1beta1InstanceSpecForProviderPrimaryNetworkInterfaceItems0NetworkInterfaceIDSelector
+
+
+schema Ec2AwsUpboundIoV1beta1InstanceSpecForProviderPrimaryNetworkInterfaceItems0NetworkInterfaceIDRef:
+    r"""
+    Reference to a NetworkInterface in ec2 to populate networkInterfaceId.
+
+    Attributes
+    ----------
+    name : str, default is Undefined, required
+        Name of the referenced object.
+    policy : Ec2AwsUpboundIoV1beta1InstanceSpecForProviderPrimaryNetworkInterfaceItems0NetworkInterfaceIDRefPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    name: str
+
+    policy?: Ec2AwsUpboundIoV1beta1InstanceSpecForProviderPrimaryNetworkInterfaceItems0NetworkInterfaceIDRefPolicy
+
+
+schema Ec2AwsUpboundIoV1beta1InstanceSpecForProviderPrimaryNetworkInterfaceItems0NetworkInterfaceIDRefPolicy:
+    r"""
+    Policies for referencing.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
+schema Ec2AwsUpboundIoV1beta1InstanceSpecForProviderPrimaryNetworkInterfaceItems0NetworkInterfaceIDSelector:
+    r"""
+    Selector for a NetworkInterface in ec2 to populate networkInterfaceId.
+
+    Attributes
+    ----------
+    matchControllerRef : bool, default is Undefined, optional
+        MatchControllerRef ensures an object with the same controller reference
+        as the selecting object is selected.
+    matchLabels : {str:str}, default is Undefined, optional
+        MatchLabels ensures an object with matching labels is selected.
+    policy : Ec2AwsUpboundIoV1beta1InstanceSpecForProviderPrimaryNetworkInterfaceItems0NetworkInterfaceIDSelectorPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    matchControllerRef?: bool
+
+    matchLabels?: {str:str}
+
+    policy?: Ec2AwsUpboundIoV1beta1InstanceSpecForProviderPrimaryNetworkInterfaceItems0NetworkInterfaceIDSelectorPolicy
+
+
+schema Ec2AwsUpboundIoV1beta1InstanceSpecForProviderPrimaryNetworkInterfaceItems0NetworkInterfaceIDSelectorPolicy:
     r"""
     Policies for selection.
 
@@ -1160,12 +1272,8 @@ schema Ec2AwsUpboundIoV1beta1InstanceSpecInitProvider:
         AZ to start the instance in.
     capacityReservationSpecification : [Ec2AwsUpboundIoV1beta1InstanceSpecInitProviderCapacityReservationSpecificationItems0], default is Undefined, optional
         Describes an instance's Capacity Reservation targeting option. See Capacity Reservation Specification below for more details.
-    cpuCoreCount : float, default is Undefined, optional
-        Sets the number of CPU cores for an instance. This option is only supported on creation of instance type that support CPU Options CPU Cores and Threads Per CPU Core Per Instance Type - specifying this option for unsupported instance types will return an error from the EC2 API.
     cpuOptions : [Ec2AwsUpboundIoV1beta1InstanceSpecInitProviderCPUOptionsItems0], default is Undefined, optional
         The CPU options for the instance. See CPU Options below for more details.
-    cpuThreadsPerCore : float, default is Undefined, optional
-        If set to 1, hyperthreading is disabled on the launched instance. Defaults to 2 if not set. See Optimizing CPU Options for more information.
     creditSpecification : [Ec2AwsUpboundIoV1beta1InstanceSpecInitProviderCreditSpecificationItems0], default is Undefined, optional
         Configuration block for customizing the credit specification of the instance. See Credit Specification below for more details. Removing this configuration on existing instances will only stop managing it. It will not change the configuration back to the default for the instance type.
     disableApiStop : bool, default is Undefined, optional
@@ -1182,6 +1290,8 @@ schema Ec2AwsUpboundIoV1beta1InstanceSpecInitProvider:
         Enable Nitro Enclaves on launched instances. See Enclave Options below for more details.
     ephemeralBlockDevice : [Ec2AwsUpboundIoV1beta1InstanceSpecInitProviderEphemeralBlockDeviceItems0], default is Undefined, optional
         One or more configuration blocks to customize Ephemeral (also known as "Instance Store") volumes on the instance. See Block Devices below for details. When accessing this as an attribute reference, it is a set of objects.
+    forceDestroy : bool, default is Undefined, optional
+        Destroys instance even if disable_api_termination or disable_api_stop is set to true. Defaults to false. If setting this field in the same operation that would require replacing the instance or destroying the instance, this flag will not work.
     getPasswordData : bool, default is Undefined, optional
         If true, wait for password data to become available and retrieve it. Useful for getting the administrator password for instances running Microsoft Windows. The password data is exported to the password_data attribute. See GetPasswordData for more information.
     hibernation : bool, default is Undefined, optional
@@ -1215,9 +1325,13 @@ schema Ec2AwsUpboundIoV1beta1InstanceSpecInitProvider:
     networkInterface : [Ec2AwsUpboundIoV1beta1InstanceSpecInitProviderNetworkInterfaceItems0], default is Undefined, optional
         Customize network interfaces to be attached at instance boot time. See Network Interfaces below for more details.
     placementGroup : str, default is Undefined, optional
-        Placement Group to start the instance in.
+        Placement Group to start the instance in. Conflicts with placement_group_id.
+    placementGroupId : str, default is Undefined, optional
+        Placement Group ID to start the instance in. Conflicts with placement_group.
     placementPartitionNumber : float, default is Undefined, optional
         Number of the partition the instance is in. Valid only if the  strategy argument is set to "partition".
+    primaryNetworkInterface : [Ec2AwsUpboundIoV1beta1InstanceSpecInitProviderPrimaryNetworkInterfaceItems0], default is Undefined, optional
+        The primary network interface. See Primary Network Interface below.
     privateDnsNameOptions : [Ec2AwsUpboundIoV1beta1InstanceSpecInitProviderPrivateDNSNameOptionsItems0], default is Undefined, optional
         Options for the instance hostname. The default values are inherited from the subnet. See Private DNS Name Options below for more details.
     privateIp : str, default is Undefined, optional
@@ -1239,11 +1353,11 @@ schema Ec2AwsUpboundIoV1beta1InstanceSpecInitProvider:
     tenancy : str, default is Undefined, optional
         Tenancy of the instance (if the instance is running in a VPC). An instance with a tenancy of dedicated runs on single-tenant hardware. The host tenancy is not supported for the import-instance command. Valid values are default, dedicated, and host.
     userData : str, default is Undefined, optional
-        User data to provide when launching the instance. Do not pass gzip-compressed data via this argument; see user_data_base64 instead. Updates to this field will trigger a stop/start of the EC2 instance by default. If the user_data_replace_on_change is set then updates to this field will trigger a destroy and recreate.
+        User data to provide when launching the instance. Do not pass gzip-compressed data via this argument; see user_data_base64 instead. Updates to this field will trigger a stop/start of the EC2 instance by default. If the user_data_replace_on_change is set then updates to this field will trigger a destroy and recreate of the EC2 instance.
     userDataBase64 : str, default is Undefined, optional
-        Can be used instead of user_data to pass base64-encoded binary data directly. Use this instead of user_data whenever the value is not a valid UTF-8 string. For example, gzip-encoded user data must be base64-encoded and passed via this argument to avoid corruption. Updates to this field will trigger a stop/start of the EC2 instance by default. If the user_data_replace_on_change is set then updates to this field will trigger a destroy and recreate.
+        Can be used instead of user_data to pass base64-encoded binary data directly. Use this instead of user_data whenever the value is not a valid UTF-8 string. For example, gzip-encoded user data must be base64-encoded and passed via this argument to avoid corruption. Updates to this field will trigger a stop/start of the EC2 instance by default. If the user_data_replace_on_change is set then updates to this field will trigger a destroy and recreate of the EC2 instance.
     userDataReplaceOnChange : bool, default is Undefined, optional
-        When used in combination with user_data or user_data_base64 will trigger a destroy and recreate when set to true. Defaults to false if not set.
+        When used in combination with user_data or user_data_base64 will trigger a destroy and recreate of the EC2 instance when set to true. Defaults to false if not set.
     volumeTags : {str:str}, default is Undefined, optional
         Map of tags to assign, at instance-creation time, to root and EBS volumes.
     vpcSecurityGroupIdRefs : [Ec2AwsUpboundIoV1beta1InstanceSpecInitProviderVpcSecurityGroupIDRefsItems0], default is Undefined, optional
@@ -1263,11 +1377,7 @@ schema Ec2AwsUpboundIoV1beta1InstanceSpecInitProvider:
 
     capacityReservationSpecification?: [Ec2AwsUpboundIoV1beta1InstanceSpecInitProviderCapacityReservationSpecificationItems0]
 
-    cpuCoreCount?: float
-
     cpuOptions?: [Ec2AwsUpboundIoV1beta1InstanceSpecInitProviderCPUOptionsItems0]
-
-    cpuThreadsPerCore?: float
 
     creditSpecification?: [Ec2AwsUpboundIoV1beta1InstanceSpecInitProviderCreditSpecificationItems0]
 
@@ -1284,6 +1394,8 @@ schema Ec2AwsUpboundIoV1beta1InstanceSpecInitProvider:
     enclaveOptions?: [Ec2AwsUpboundIoV1beta1InstanceSpecInitProviderEnclaveOptionsItems0]
 
     ephemeralBlockDevice?: [Ec2AwsUpboundIoV1beta1InstanceSpecInitProviderEphemeralBlockDeviceItems0]
+
+    forceDestroy?: bool
 
     getPasswordData?: bool
 
@@ -1319,7 +1431,11 @@ schema Ec2AwsUpboundIoV1beta1InstanceSpecInitProvider:
 
     placementGroup?: str
 
+    placementGroupId?: str
+
     placementPartitionNumber?: float
+
+    primaryNetworkInterface?: [Ec2AwsUpboundIoV1beta1InstanceSpecInitProviderPrimaryNetworkInterfaceItems0]
 
     privateDnsNameOptions?: [Ec2AwsUpboundIoV1beta1InstanceSpecInitProviderPrivateDNSNameOptionsItems0]
 
@@ -1622,7 +1738,7 @@ schema Ec2AwsUpboundIoV1beta1InstanceSpecInitProviderInstanceMarketOptionsItems0
     Attributes
     ----------
     marketType : str, default is Undefined, optional
-        Type of market for the instance. Valid value is spot. Defaults to spot. Required if spot_options is specified.
+        Type of market for the instance. Valid values are spot and capacity-block. Defaults to spot. Required if spot_options is specified.
     spotOptions : [Ec2AwsUpboundIoV1beta1InstanceSpecInitProviderInstanceMarketOptionsItems0SpotOptionsItems0], default is Undefined, optional
         Block to configure the options for Spot Instances. See Spot Options below for details on attributes.
     """
@@ -1708,7 +1824,7 @@ schema Ec2AwsUpboundIoV1beta1InstanceSpecInitProviderMetadataOptionsItems0:
     httpPutResponseHopLimit : float, default is Undefined, optional
         Desired HTTP PUT response hop limit for instance metadata requests. The larger the number, the further instance metadata requests can travel. Valid values are integer from 1 to 64. Defaults to 1.
     httpTokens : str, default is Undefined, optional
-        Whether or not the metadata service requires session tokens, also referred to as Instance Metadata Service Version 2 (IMDSv2). Valid values include optional or required. Defaults to optional.
+        Whether or not the metadata service requires session tokens, also referred to as Instance Metadata Service Version 2 (IMDSv2). Valid values include optional or required.
     instanceMetadataTags : str, default is Undefined, optional
         Enables or disables access to instance tags from the instance metadata service. Valid values include enabled or disabled. Defaults to disabled.
     """
@@ -1825,6 +1941,117 @@ schema Ec2AwsUpboundIoV1beta1InstanceSpecInitProviderNetworkInterfaceItems0Netwo
 
 
 schema Ec2AwsUpboundIoV1beta1InstanceSpecInitProviderNetworkInterfaceItems0NetworkInterfaceIDSelectorPolicy:
+    r"""
+    Policies for selection.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
+schema Ec2AwsUpboundIoV1beta1InstanceSpecInitProviderPrimaryNetworkInterfaceItems0:
+    r"""
+    ec2 aws upbound io v1beta1 instance spec init provider primary network interface items0
+
+    Attributes
+    ----------
+    networkInterfaceId : str, default is Undefined, optional
+        ID of the network interface to attach.
+    networkInterfaceIdRef : Ec2AwsUpboundIoV1beta1InstanceSpecInitProviderPrimaryNetworkInterfaceItems0NetworkInterfaceIDRef, default is Undefined, optional
+        network interface Id ref
+    networkInterfaceIdSelector : Ec2AwsUpboundIoV1beta1InstanceSpecInitProviderPrimaryNetworkInterfaceItems0NetworkInterfaceIDSelector, default is Undefined, optional
+        network interface Id selector
+    """
+
+
+    networkInterfaceId?: str
+
+    networkInterfaceIdRef?: Ec2AwsUpboundIoV1beta1InstanceSpecInitProviderPrimaryNetworkInterfaceItems0NetworkInterfaceIDRef
+
+    networkInterfaceIdSelector?: Ec2AwsUpboundIoV1beta1InstanceSpecInitProviderPrimaryNetworkInterfaceItems0NetworkInterfaceIDSelector
+
+
+schema Ec2AwsUpboundIoV1beta1InstanceSpecInitProviderPrimaryNetworkInterfaceItems0NetworkInterfaceIDRef:
+    r"""
+    Reference to a NetworkInterface in ec2 to populate networkInterfaceId.
+
+    Attributes
+    ----------
+    name : str, default is Undefined, required
+        Name of the referenced object.
+    policy : Ec2AwsUpboundIoV1beta1InstanceSpecInitProviderPrimaryNetworkInterfaceItems0NetworkInterfaceIDRefPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    name: str
+
+    policy?: Ec2AwsUpboundIoV1beta1InstanceSpecInitProviderPrimaryNetworkInterfaceItems0NetworkInterfaceIDRefPolicy
+
+
+schema Ec2AwsUpboundIoV1beta1InstanceSpecInitProviderPrimaryNetworkInterfaceItems0NetworkInterfaceIDRefPolicy:
+    r"""
+    Policies for referencing.
+
+    Attributes
+    ----------
+    resolution : str, default is "Required", optional
+        Resolution specifies whether resolution of this reference is required.
+        The default is 'Required', which means the reconcile will fail if the
+        reference cannot be resolved. 'Optional' means this reference will be
+        a no-op if it cannot be resolved.
+    resolve : str, default is Undefined, optional
+        Resolve specifies when this reference should be resolved. The default
+        is 'IfNotPresent', which will attempt to resolve the reference only when
+        the corresponding field is not present. Use 'Always' to resolve the
+        reference on every reconcile.
+    """
+
+
+    resolution?: "Required" | "Optional" = "Required"
+
+    resolve?: "Always" | "IfNotPresent"
+
+
+schema Ec2AwsUpboundIoV1beta1InstanceSpecInitProviderPrimaryNetworkInterfaceItems0NetworkInterfaceIDSelector:
+    r"""
+    Selector for a NetworkInterface in ec2 to populate networkInterfaceId.
+
+    Attributes
+    ----------
+    matchControllerRef : bool, default is Undefined, optional
+        MatchControllerRef ensures an object with the same controller reference
+        as the selecting object is selected.
+    matchLabels : {str:str}, default is Undefined, optional
+        MatchLabels ensures an object with matching labels is selected.
+    policy : Ec2AwsUpboundIoV1beta1InstanceSpecInitProviderPrimaryNetworkInterfaceItems0NetworkInterfaceIDSelectorPolicy, default is Undefined, optional
+        policy
+    """
+
+
+    matchControllerRef?: bool
+
+    matchLabels?: {str:str}
+
+    policy?: Ec2AwsUpboundIoV1beta1InstanceSpecInitProviderPrimaryNetworkInterfaceItems0NetworkInterfaceIDSelectorPolicy
+
+
+schema Ec2AwsUpboundIoV1beta1InstanceSpecInitProviderPrimaryNetworkInterfaceItems0NetworkInterfaceIDSelectorPolicy:
     r"""
     Policies for selection.
 
@@ -2235,112 +2462,12 @@ schema Ec2AwsUpboundIoV1beta1InstanceSpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
-schema Ec2AwsUpboundIoV1beta1InstanceSpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : Ec2AwsUpboundIoV1beta1InstanceSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : Ec2AwsUpboundIoV1beta1InstanceSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: Ec2AwsUpboundIoV1beta1InstanceSpecPublishConnectionDetailsToConfigRef
-
-    metadata?: Ec2AwsUpboundIoV1beta1InstanceSpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema Ec2AwsUpboundIoV1beta1InstanceSpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : Ec2AwsUpboundIoV1beta1InstanceSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: Ec2AwsUpboundIoV1beta1InstanceSpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema Ec2AwsUpboundIoV1beta1InstanceSpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema Ec2AwsUpboundIoV1beta1InstanceSpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema Ec2AwsUpboundIoV1beta1InstanceSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------
@@ -2396,12 +2523,8 @@ schema Ec2AwsUpboundIoV1beta1InstanceStatusAtProvider:
         AZ to start the instance in.
     capacityReservationSpecification : [Ec2AwsUpboundIoV1beta1InstanceStatusAtProviderCapacityReservationSpecificationItems0], default is Undefined, optional
         Describes an instance's Capacity Reservation targeting option. See Capacity Reservation Specification below for more details.
-    cpuCoreCount : float, default is Undefined, optional
-        Sets the number of CPU cores for an instance. This option is only supported on creation of instance type that support CPU Options CPU Cores and Threads Per CPU Core Per Instance Type - specifying this option for unsupported instance types will return an error from the EC2 API.
     cpuOptions : [Ec2AwsUpboundIoV1beta1InstanceStatusAtProviderCPUOptionsItems0], default is Undefined, optional
         The CPU options for the instance. See CPU Options below for more details.
-    cpuThreadsPerCore : float, default is Undefined, optional
-        If set to 1, hyperthreading is disabled on the launched instance. Defaults to 2 if not set. See Optimizing CPU Options for more information.
     creditSpecification : [Ec2AwsUpboundIoV1beta1InstanceStatusAtProviderCreditSpecificationItems0], default is Undefined, optional
         Configuration block for customizing the credit specification of the instance. See Credit Specification below for more details. Removing this configuration on existing instances will only stop managing it. It will not change the configuration back to the default for the instance type.
     disableApiStop : bool, default is Undefined, optional
@@ -2418,6 +2541,8 @@ schema Ec2AwsUpboundIoV1beta1InstanceStatusAtProvider:
         Enable Nitro Enclaves on launched instances. See Enclave Options below for more details.
     ephemeralBlockDevice : [Ec2AwsUpboundIoV1beta1InstanceStatusAtProviderEphemeralBlockDeviceItems0], default is Undefined, optional
         One or more configuration blocks to customize Ephemeral (also known as "Instance Store") volumes on the instance. See Block Devices below for details. When accessing this as an attribute reference, it is a set of objects.
+    forceDestroy : bool, default is Undefined, optional
+        Destroys instance even if disable_api_termination or disable_api_stop is set to true. Defaults to false. If setting this field in the same operation that would require replacing the instance or destroying the instance, this flag will not work.
     getPasswordData : bool, default is Undefined, optional
         If true, wait for password data to become available and retrieve it. Useful for getting the administrator password for instances running Microsoft Windows. The password data is exported to the password_data attribute. See GetPasswordData for more information.
     hibernation : bool, default is Undefined, optional
@@ -2461,9 +2586,13 @@ schema Ec2AwsUpboundIoV1beta1InstanceStatusAtProvider:
     passwordData : str, default is Undefined, optional
         Base-64 encoded encrypted password data for the instance. Useful for getting the administrator password for instances running Microsoft Windows. This attribute is only exported if get_password_data is true. Note that this encrypted value will be stored in the state file, as with all exported attributes. See GetPasswordData for more information.
     placementGroup : str, default is Undefined, optional
-        Placement Group to start the instance in.
+        Placement Group to start the instance in. Conflicts with placement_group_id.
+    placementGroupId : str, default is Undefined, optional
+        Placement Group ID to start the instance in. Conflicts with placement_group.
     placementPartitionNumber : float, default is Undefined, optional
         Number of the partition the instance is in. Valid only if the  strategy argument is set to "partition".
+    primaryNetworkInterface : [Ec2AwsUpboundIoV1beta1InstanceStatusAtProviderPrimaryNetworkInterfaceItems0], default is Undefined, optional
+        The primary network interface. See Primary Network Interface below.
     primaryNetworkInterfaceId : str, default is Undefined, optional
         ID of the instance's primary network interface.
     privateDns : str, default is Undefined, optional
@@ -2476,6 +2605,9 @@ schema Ec2AwsUpboundIoV1beta1InstanceStatusAtProvider:
         Public DNS name assigned to the instance. For EC2-VPC, this is only available if you've enabled DNS hostnames for your VPC.
     publicIp : str, default is Undefined, optional
         Public IP address assigned to the instance, if applicable. NOTE: If you are using an aws_eip with your instance, you should refer to the EIP's address directly and not use public_ip as this field will change after the EIP is attached.
+    region : str, default is Undefined, optional
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
+        Region is the region you'd like your resource to be created in.
     rootBlockDevice : [Ec2AwsUpboundIoV1beta1InstanceStatusAtProviderRootBlockDeviceItems0], default is Undefined, optional
         Configuration block to customize details about the root block device of the instance. See Block Devices below for details. When accessing this as an attribute reference, it is a list containing one object.
     secondaryPrivateIps : [str], default is Undefined, optional
@@ -2495,11 +2627,11 @@ schema Ec2AwsUpboundIoV1beta1InstanceStatusAtProvider:
     tenancy : str, default is Undefined, optional
         Tenancy of the instance (if the instance is running in a VPC). An instance with a tenancy of dedicated runs on single-tenant hardware. The host tenancy is not supported for the import-instance command. Valid values are default, dedicated, and host.
     userData : str, default is Undefined, optional
-        User data to provide when launching the instance. Do not pass gzip-compressed data via this argument; see user_data_base64 instead. Updates to this field will trigger a stop/start of the EC2 instance by default. If the user_data_replace_on_change is set then updates to this field will trigger a destroy and recreate.
+        User data to provide when launching the instance. Do not pass gzip-compressed data via this argument; see user_data_base64 instead. Updates to this field will trigger a stop/start of the EC2 instance by default. If the user_data_replace_on_change is set then updates to this field will trigger a destroy and recreate of the EC2 instance.
     userDataBase64 : str, default is Undefined, optional
-        Can be used instead of user_data to pass base64-encoded binary data directly. Use this instead of user_data whenever the value is not a valid UTF-8 string. For example, gzip-encoded user data must be base64-encoded and passed via this argument to avoid corruption. Updates to this field will trigger a stop/start of the EC2 instance by default. If the user_data_replace_on_change is set then updates to this field will trigger a destroy and recreate.
+        Can be used instead of user_data to pass base64-encoded binary data directly. Use this instead of user_data whenever the value is not a valid UTF-8 string. For example, gzip-encoded user data must be base64-encoded and passed via this argument to avoid corruption. Updates to this field will trigger a stop/start of the EC2 instance by default. If the user_data_replace_on_change is set then updates to this field will trigger a destroy and recreate of the EC2 instance.
     userDataReplaceOnChange : bool, default is Undefined, optional
-        When used in combination with user_data or user_data_base64 will trigger a destroy and recreate when set to true. Defaults to false if not set.
+        When used in combination with user_data or user_data_base64 will trigger a destroy and recreate of the EC2 instance when set to true. Defaults to false if not set.
     volumeTags : {str:str}, default is Undefined, optional
         Map of tags to assign, at instance-creation time, to root and EBS volumes.
     vpcSecurityGroupIds : [str], default is Undefined, optional
@@ -2517,11 +2649,7 @@ schema Ec2AwsUpboundIoV1beta1InstanceStatusAtProvider:
 
     capacityReservationSpecification?: [Ec2AwsUpboundIoV1beta1InstanceStatusAtProviderCapacityReservationSpecificationItems0]
 
-    cpuCoreCount?: float
-
     cpuOptions?: [Ec2AwsUpboundIoV1beta1InstanceStatusAtProviderCPUOptionsItems0]
-
-    cpuThreadsPerCore?: float
 
     creditSpecification?: [Ec2AwsUpboundIoV1beta1InstanceStatusAtProviderCreditSpecificationItems0]
 
@@ -2538,6 +2666,8 @@ schema Ec2AwsUpboundIoV1beta1InstanceStatusAtProvider:
     enclaveOptions?: [Ec2AwsUpboundIoV1beta1InstanceStatusAtProviderEnclaveOptionsItems0]
 
     ephemeralBlockDevice?: [Ec2AwsUpboundIoV1beta1InstanceStatusAtProviderEphemeralBlockDeviceItems0]
+
+    forceDestroy?: bool
 
     getPasswordData?: bool
 
@@ -2583,7 +2713,11 @@ schema Ec2AwsUpboundIoV1beta1InstanceStatusAtProvider:
 
     placementGroup?: str
 
+    placementGroupId?: str
+
     placementPartitionNumber?: float
+
+    primaryNetworkInterface?: [Ec2AwsUpboundIoV1beta1InstanceStatusAtProviderPrimaryNetworkInterfaceItems0]
 
     primaryNetworkInterfaceId?: str
 
@@ -2596,6 +2730,8 @@ schema Ec2AwsUpboundIoV1beta1InstanceStatusAtProvider:
     publicDns?: str
 
     publicIp?: str
+
+    region?: str
 
     rootBlockDevice?: [Ec2AwsUpboundIoV1beta1InstanceStatusAtProviderRootBlockDeviceItems0]
 
@@ -2799,7 +2935,7 @@ schema Ec2AwsUpboundIoV1beta1InstanceStatusAtProviderInstanceMarketOptionsItems0
     Attributes
     ----------
     marketType : str, default is Undefined, optional
-        Type of market for the instance. Valid value is spot. Defaults to spot. Required if spot_options is specified.
+        Type of market for the instance. Valid values are spot and capacity-block. Defaults to spot. Required if spot_options is specified.
     spotOptions : [Ec2AwsUpboundIoV1beta1InstanceStatusAtProviderInstanceMarketOptionsItems0SpotOptionsItems0], default is Undefined, optional
         Block to configure the options for Spot Instances. See Spot Options below for details on attributes.
     """
@@ -2885,7 +3021,7 @@ schema Ec2AwsUpboundIoV1beta1InstanceStatusAtProviderMetadataOptionsItems0:
     httpPutResponseHopLimit : float, default is Undefined, optional
         Desired HTTP PUT response hop limit for instance metadata requests. The larger the number, the further instance metadata requests can travel. Valid values are integer from 1 to 64. Defaults to 1.
     httpTokens : str, default is Undefined, optional
-        Whether or not the metadata service requires session tokens, also referred to as Instance Metadata Service Version 2 (IMDSv2). Valid values include optional or required. Defaults to optional.
+        Whether or not the metadata service requires session tokens, also referred to as Instance Metadata Service Version 2 (IMDSv2). Valid values include optional or required.
     instanceMetadataTags : str, default is Undefined, optional
         Enables or disables access to instance tags from the instance metadata service. Valid values include enabled or disabled. Defaults to disabled.
     """
@@ -2924,6 +3060,24 @@ schema Ec2AwsUpboundIoV1beta1InstanceStatusAtProviderNetworkInterfaceItems0:
     deviceIndex?: float
 
     networkCardIndex?: float
+
+    networkInterfaceId?: str
+
+
+schema Ec2AwsUpboundIoV1beta1InstanceStatusAtProviderPrimaryNetworkInterfaceItems0:
+    r"""
+    ec2 aws upbound io v1beta1 instance status at provider primary network interface items0
+
+    Attributes
+    ----------
+    deleteOnTermination : bool, default is Undefined, optional
+        (Read-Only) Whether the network interface will be deleted when the instance terminates.
+    networkInterfaceId : str, default is Undefined, optional
+        ID of the network interface to attach.
+    """
+
+
+    deleteOnTermination?: bool
 
     networkInterfaceId?: str
 

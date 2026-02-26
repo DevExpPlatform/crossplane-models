@@ -66,8 +66,6 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : Ec2AwsUpboundIoV1beta1LaunchTemplateSpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : Ec2AwsUpboundIoV1beta1LaunchTemplateSpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : Ec2AwsUpboundIoV1beta1LaunchTemplateSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -82,8 +80,6 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpec:
     managementPolicies?: [str] = ["*"]
 
     providerConfigRef?: Ec2AwsUpboundIoV1beta1LaunchTemplateSpecProviderConfigRef
-
-    publishConnectionDetailsTo?: Ec2AwsUpboundIoV1beta1LaunchTemplateSpecPublishConnectionDetailsTo
 
     writeConnectionSecretToRef?: Ec2AwsUpboundIoV1beta1LaunchTemplateSpecWriteConnectionSecretToRef
 
@@ -115,11 +111,6 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecForProvider:
         Termination Protection
     ebsOptimized : str, default is Undefined, optional
         If true, the launched EC2 instance will be EBS-optimized.
-    elasticGpuSpecifications : [Ec2AwsUpboundIoV1beta1LaunchTemplateSpecForProviderElasticGpuSpecificationsItems0], default is Undefined, optional
-        The elastic GPU to attach to the instance. See Elastic GPU
-        below for more details.
-    elasticInferenceAccelerator : [Ec2AwsUpboundIoV1beta1LaunchTemplateSpecForProviderElasticInferenceAcceleratorItems0], default is Undefined, optional
-        Configuration block containing an Elastic Inference Accelerator to attach to the instance. See Elastic Inference Accelerator below for more details.
     enclaveOptions : [Ec2AwsUpboundIoV1beta1LaunchTemplateSpecForProviderEnclaveOptionsItems0], default is Undefined, optional
         Enable Nitro Enclaves on launched instances. See Enclave Options below for more details.
     hibernationOptions : [Ec2AwsUpboundIoV1beta1LaunchTemplateSpecForProviderHibernationOptionsItems0], default is Undefined, optional
@@ -128,7 +119,7 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecForProvider:
         The IAM Instance Profile to launch the instance with. See Instance Profile
         below for more details.
     imageId : str, default is Undefined, optional
-        The AMI from which to launch the instance.
+        The AMI from which to launch the instance or use a Systems Manager parameter convention e.g. resolve:ssm:parameter-name. See docs for more details.
     instanceInitiatedShutdownBehavior : str, default is Undefined, optional
         Shutdown behavior for the instance. Can be stop or terminate.
         (Default: stop).
@@ -163,6 +154,7 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecForProvider:
     ramDiskId : str, default is Undefined, optional
         The ID of the RAM disk.
     region : str, default is Undefined, required
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
     securityGroupNameRefs : [Ec2AwsUpboundIoV1beta1LaunchTemplateSpecForProviderSecurityGroupNameRefsItems0], default is Undefined, optional
         References to SecurityGroup in ec2 to populate securityGroupNames.
@@ -205,10 +197,6 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecForProvider:
     disableApiTermination?: bool
 
     ebsOptimized?: str
-
-    elasticGpuSpecifications?: [Ec2AwsUpboundIoV1beta1LaunchTemplateSpecForProviderElasticGpuSpecificationsItems0]
-
-    elasticInferenceAccelerator?: [Ec2AwsUpboundIoV1beta1LaunchTemplateSpecForProviderElasticInferenceAcceleratorItems0]
 
     enclaveOptions?: [Ec2AwsUpboundIoV1beta1LaunchTemplateSpecForProviderEnclaveOptionsItems0]
 
@@ -325,6 +313,8 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecForProviderBlockDeviceMappingsIte
         The Snapshot ID to mount.
     throughput : float, default is Undefined, optional
         The throughput to provision for a gp3 volume in MiB/s (specified as an integer, e.g., 500), with a maximum of 1,000 MiB/s.
+    volumeInitializationRate : float, default is Undefined, optional
+        The volume initialization rate in MiB/s (specified as an integer, e.g. 100), with a minimum of 100 MiB/s and maximum of 300 MiB/s.
     volumeSize : float, default is Undefined, optional
         The size of the volume in gigabytes.
     volumeType : str, default is Undefined, optional
@@ -348,6 +338,8 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecForProviderBlockDeviceMappingsIte
     snapshotId?: str
 
     throughput?: float
+
+    volumeInitializationRate?: float
 
     volumeSize?: float
 
@@ -474,7 +466,7 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecForProviderCapacityReservationSpe
     Attributes
     ----------
     capacityReservationPreference : str, default is Undefined, optional
-        Indicates the instance's Capacity Reservation preferences. Can be open or none. (Default none).
+        Indicates the instance's Capacity Reservation preferences. Can be capacity-reservations-only, open or none. If capacity_reservation_id or capacity_reservation_resource_group_arn is specified in capacity_reservation_target block, either omit capacity_reservation_preference or set it to capacity-reservations-only.
     capacityReservationTarget : [Ec2AwsUpboundIoV1beta1LaunchTemplateSpecForProviderCapacityReservationSpecificationItems0CapacityReservationTargetItems0], default is Undefined, optional
         Used to target a specific Capacity Reservation:
     """
@@ -518,34 +510,6 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecForProviderCreditSpecificationIte
 
 
     cpuCredits?: str
-
-
-schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecForProviderElasticGpuSpecificationsItems0:
-    r"""
-    ec2 aws upbound io v1beta1 launch template spec for provider elastic gpu specifications items0
-
-    Attributes
-    ----------
-    $type : str, default is Undefined, optional
-        The Elastic GPU Type
-    """
-
-
-    $type?: str
-
-
-schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecForProviderElasticInferenceAcceleratorItems0:
-    r"""
-    ec2 aws upbound io v1beta1 launch template spec for provider elastic inference accelerator items0
-
-    Attributes
-    ----------
-    $type : str, default is Undefined, optional
-        Accelerator type.
-    """
-
-
-    $type?: str
 
 
 schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecForProviderEnclaveOptionsItems0:
@@ -886,7 +850,7 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecForProviderInstanceRequirementsIt
     requireHibernateSupport : bool, default is Undefined, optional
         Indicate whether instance types must support On-Demand Instance Hibernation, either true or false. Default is false.
     spotMaxPricePercentageOverLowestPrice : float, default is Undefined, optional
-        The price protection threshold for Spot Instances. This is the maximum you’ll pay for a Spot Instance, expressed as a percentage higher than the cheapest M, C, or R instance type with your specified attributes. When Amazon EC2 Auto Scaling selects instance types with your attributes, we will exclude instance types whose price is higher than your threshold. The parameter accepts an integer, which Amazon EC2 Auto Scaling interprets as a percentage. To turn off price protection, specify a high value, such as 999999. Default is 100.
+        The price protection threshold for Spot Instances. This is the maximum you’ll pay for a Spot Instance, expressed as a percentage higher than the cheapest M, C, or R instance type with your specified attributes. When Amazon EC2 Auto Scaling selects instance types with your attributes, we will exclude instance types whose price is higher than your threshold. The parameter accepts an integer, which Amazon EC2 Auto Scaling interprets as a percentage. To turn off price protection, specify a high value, such as 999999. Default is 100. Conflicts with max_spot_price_as_percentage_of_optimal_on_demand_price
     totalLocalStorageGb : [Ec2AwsUpboundIoV1beta1LaunchTemplateSpecForProviderInstanceRequirementsItems0TotalLocalStorageGbItems0], default is Undefined, optional
         Block describing the minimum and maximum total local storage (GB). Default is no minimum or maximum.
     vcpuCount : [Ec2AwsUpboundIoV1beta1LaunchTemplateSpecForProviderInstanceRequirementsItems0VcpuCountItems0], default is Undefined, optional
@@ -1184,18 +1148,19 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecForProviderNetworkInterfacesItems
     Attributes
     ----------
     associateCarrierIpAddress : str, default is Undefined, optional
-        Associate a Carrier IP address with eth0 for a new network interface.
-        Use this option when you launch an instance in a Wavelength Zone and want to associate a Carrier IP address with the network interface.
-        Boolean value, can be left unset.
+        Associate a Carrier IP address with eth0 for a new network interface. Use this option when you launch an instance in a Wavelength Zone and want to associate a Carrier IP address with the network interface. Boolean value, can be left unset.
     associatePublicIpAddress : str, default is Undefined, optional
-        Associate a public ip address with the network interface.
-        Boolean value, can be left unset.
+        Associate a public ip address with the network interface. Boolean value, can be left unset.
+    connectionTrackingSpecification : [Ec2AwsUpboundIoV1beta1LaunchTemplateSpecForProviderNetworkInterfacesItems0ConnectionTrackingSpecificationItems0], default is Undefined, optional
+        The Connection Tracking Configuration for the network interface. See Amazon EC2 security group connection tracking
     deleteOnTermination : str, default is Undefined, optional
         Whether the network interface should be destroyed on instance termination.
     description : str, default is Undefined, optional
         Description of the network interface.
     deviceIndex : float, default is Undefined, optional
         The integer index of the network interface attachment.
+    enaSrdSpecification : [Ec2AwsUpboundIoV1beta1LaunchTemplateSpecForProviderNetworkInterfacesItems0EnaSrdSpecificationItems0], default is Undefined, optional
+        Configuration for Elastic Network Adapter (ENA) Express settings. Applies to network interfaces that use the ena Express feature. See details below.
     interfaceType : str, default is Undefined, optional
         The type of network interface. To create an Elastic Fabric Adapter (EFA), specify efa.
     ipv4AddressCount : float, default is Undefined, optional
@@ -1223,7 +1188,7 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecForProviderNetworkInterfacesItems
     networkInterfaceIdSelector : Ec2AwsUpboundIoV1beta1LaunchTemplateSpecForProviderNetworkInterfacesItems0NetworkInterfaceIDSelector, default is Undefined, optional
         network interface Id selector
     primaryIpv6 : str, default is Undefined, optional
-        primary Ipv6
+        Whether the first IPv6 GUA will be made the primary IPv6 address.
     privateIpAddress : str, default is Undefined, optional
         The primary private IPv4 address.
     securityGroupRefs : [Ec2AwsUpboundIoV1beta1LaunchTemplateSpecForProviderNetworkInterfacesItems0SecurityGroupRefsItems0], default is Undefined, optional
@@ -1245,11 +1210,15 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecForProviderNetworkInterfacesItems
 
     associatePublicIpAddress?: str
 
+    connectionTrackingSpecification?: [Ec2AwsUpboundIoV1beta1LaunchTemplateSpecForProviderNetworkInterfacesItems0ConnectionTrackingSpecificationItems0]
+
     deleteOnTermination?: str
 
     description?: str
 
     deviceIndex?: float
+
+    enaSrdSpecification?: [Ec2AwsUpboundIoV1beta1LaunchTemplateSpecForProviderNetworkInterfacesItems0EnaSrdSpecificationItems0]
 
     interfaceType?: str
 
@@ -1292,6 +1261,60 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecForProviderNetworkInterfacesItems
     subnetIdRef?: Ec2AwsUpboundIoV1beta1LaunchTemplateSpecForProviderNetworkInterfacesItems0SubnetIDRef
 
     subnetIdSelector?: Ec2AwsUpboundIoV1beta1LaunchTemplateSpecForProviderNetworkInterfacesItems0SubnetIDSelector
+
+
+schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecForProviderNetworkInterfacesItems0ConnectionTrackingSpecificationItems0:
+    r"""
+    ec2 aws upbound io v1beta1 launch template spec for provider network interfaces items0 connection tracking specification items0
+
+    Attributes
+    ----------
+    tcpEstablishedTimeout : float, default is Undefined, optional
+        Timeout (in seconds) for idle TCP connections in an established state. Min: 60 seconds. Max: 432000 seconds (5 days). Default: 432000 seconds. Recommended: Less than 432000 seconds.
+    udpStreamTimeout : float, default is Undefined, optional
+        Timeout (in seconds) for idle UDP flows that have seen traffic only in a single direction or a single request-response transaction. Min: 30 seconds. Max: 60 seconds. Default: 30 seconds.
+    udpTimeout : float, default is Undefined, optional
+        Timeout (in seconds) for idle UDP flows classified as streams which have seen more than one request-response transaction. Min: 60 seconds. Max: 180 seconds (3 minutes). Default: 180 seconds.
+    """
+
+
+    tcpEstablishedTimeout?: float
+
+    udpStreamTimeout?: float
+
+    udpTimeout?: float
+
+
+schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecForProviderNetworkInterfacesItems0EnaSrdSpecificationItems0:
+    r"""
+    ec2 aws upbound io v1beta1 launch template spec for provider network interfaces items0 ena srd specification items0
+
+    Attributes
+    ----------
+    enaSrdEnabled : bool, default is Undefined, optional
+        Whether to enable ENA Express. ENA Express uses AWS Scalable Reliable Datagram (SRD) technology to improve the performance of TCP traffic.
+    enaSrdUdpSpecification : [Ec2AwsUpboundIoV1beta1LaunchTemplateSpecForProviderNetworkInterfacesItems0EnaSrdSpecificationItems0EnaSrdUDPSpecificationItems0], default is Undefined, optional
+        Configuration for ENA Express UDP optimization. See details below.
+    """
+
+
+    enaSrdEnabled?: bool
+
+    enaSrdUdpSpecification?: [Ec2AwsUpboundIoV1beta1LaunchTemplateSpecForProviderNetworkInterfacesItems0EnaSrdSpecificationItems0EnaSrdUDPSpecificationItems0]
+
+
+schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecForProviderNetworkInterfacesItems0EnaSrdSpecificationItems0EnaSrdUDPSpecificationItems0:
+    r"""
+    ec2 aws upbound io v1beta1 launch template spec for provider network interfaces items0 ena srd specification items0 ena srd UDP specification items0
+
+    Attributes
+    ----------
+    enaSrdUdpEnabled : bool, default is Undefined, optional
+        Whether to enable UDP traffic optimization through ENA Express. Requires ena_srd_enabled to be true.
+    """
+
+
+    enaSrdUdpEnabled?: bool
 
 
 schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecForProviderNetworkInterfacesItems0NetworkInterfaceIDRef:
@@ -1571,8 +1594,10 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecForProviderPlacementItems0:
         The affinity setting for an instance on a Dedicated Host.
     availabilityZone : str, default is Undefined, optional
         The Availability Zone for the instance.
+    groupId : str, default is Undefined, optional
+        The ID of the placement group for the instance. Conflicts with group_name.
     groupName : str, default is Undefined, optional
-        The name of the placement group for the instance.
+        The name of the placement group for the instance. Conflicts with group_id.
     hostId : str, default is Undefined, optional
         The ID of the Dedicated Host for the instance.
     hostResourceGroupArn : str, default is Undefined, optional
@@ -1589,6 +1614,8 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecForProviderPlacementItems0:
     affinity?: str
 
     availabilityZone?: str
+
+    groupId?: str
 
     groupName?: str
 
@@ -1857,11 +1884,6 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecInitProvider:
         Termination Protection
     ebsOptimized : str, default is Undefined, optional
         If true, the launched EC2 instance will be EBS-optimized.
-    elasticGpuSpecifications : [Ec2AwsUpboundIoV1beta1LaunchTemplateSpecInitProviderElasticGpuSpecificationsItems0], default is Undefined, optional
-        The elastic GPU to attach to the instance. See Elastic GPU
-        below for more details.
-    elasticInferenceAccelerator : [Ec2AwsUpboundIoV1beta1LaunchTemplateSpecInitProviderElasticInferenceAcceleratorItems0], default is Undefined, optional
-        Configuration block containing an Elastic Inference Accelerator to attach to the instance. See Elastic Inference Accelerator below for more details.
     enclaveOptions : [Ec2AwsUpboundIoV1beta1LaunchTemplateSpecInitProviderEnclaveOptionsItems0], default is Undefined, optional
         Enable Nitro Enclaves on launched instances. See Enclave Options below for more details.
     hibernationOptions : [Ec2AwsUpboundIoV1beta1LaunchTemplateSpecInitProviderHibernationOptionsItems0], default is Undefined, optional
@@ -1870,7 +1892,7 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecInitProvider:
         The IAM Instance Profile to launch the instance with. See Instance Profile
         below for more details.
     imageId : str, default is Undefined, optional
-        The AMI from which to launch the instance.
+        The AMI from which to launch the instance or use a Systems Manager parameter convention e.g. resolve:ssm:parameter-name. See docs for more details.
     instanceInitiatedShutdownBehavior : str, default is Undefined, optional
         Shutdown behavior for the instance. Can be stop or terminate.
         (Default: stop).
@@ -1945,10 +1967,6 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecInitProvider:
     disableApiTermination?: bool
 
     ebsOptimized?: str
-
-    elasticGpuSpecifications?: [Ec2AwsUpboundIoV1beta1LaunchTemplateSpecInitProviderElasticGpuSpecificationsItems0]
-
-    elasticInferenceAccelerator?: [Ec2AwsUpboundIoV1beta1LaunchTemplateSpecInitProviderElasticInferenceAcceleratorItems0]
 
     enclaveOptions?: [Ec2AwsUpboundIoV1beta1LaunchTemplateSpecInitProviderEnclaveOptionsItems0]
 
@@ -2063,6 +2081,8 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecInitProviderBlockDeviceMappingsIt
         The Snapshot ID to mount.
     throughput : float, default is Undefined, optional
         The throughput to provision for a gp3 volume in MiB/s (specified as an integer, e.g., 500), with a maximum of 1,000 MiB/s.
+    volumeInitializationRate : float, default is Undefined, optional
+        The volume initialization rate in MiB/s (specified as an integer, e.g. 100), with a minimum of 100 MiB/s and maximum of 300 MiB/s.
     volumeSize : float, default is Undefined, optional
         The size of the volume in gigabytes.
     volumeType : str, default is Undefined, optional
@@ -2086,6 +2106,8 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecInitProviderBlockDeviceMappingsIt
     snapshotId?: str
 
     throughput?: float
+
+    volumeInitializationRate?: float
 
     volumeSize?: float
 
@@ -2212,7 +2234,7 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecInitProviderCapacityReservationSp
     Attributes
     ----------
     capacityReservationPreference : str, default is Undefined, optional
-        Indicates the instance's Capacity Reservation preferences. Can be open or none. (Default none).
+        Indicates the instance's Capacity Reservation preferences. Can be capacity-reservations-only, open or none. If capacity_reservation_id or capacity_reservation_resource_group_arn is specified in capacity_reservation_target block, either omit capacity_reservation_preference or set it to capacity-reservations-only.
     capacityReservationTarget : [Ec2AwsUpboundIoV1beta1LaunchTemplateSpecInitProviderCapacityReservationSpecificationItems0CapacityReservationTargetItems0], default is Undefined, optional
         Used to target a specific Capacity Reservation:
     """
@@ -2256,34 +2278,6 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecInitProviderCreditSpecificationIt
 
 
     cpuCredits?: str
-
-
-schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecInitProviderElasticGpuSpecificationsItems0:
-    r"""
-    ec2 aws upbound io v1beta1 launch template spec init provider elastic gpu specifications items0
-
-    Attributes
-    ----------
-    $type : str, default is Undefined, optional
-        The Elastic GPU Type
-    """
-
-
-    $type?: str
-
-
-schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecInitProviderElasticInferenceAcceleratorItems0:
-    r"""
-    ec2 aws upbound io v1beta1 launch template spec init provider elastic inference accelerator items0
-
-    Attributes
-    ----------
-    $type : str, default is Undefined, optional
-        Accelerator type.
-    """
-
-
-    $type?: str
 
 
 schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecInitProviderEnclaveOptionsItems0:
@@ -2624,7 +2618,7 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecInitProviderInstanceRequirementsI
     requireHibernateSupport : bool, default is Undefined, optional
         Indicate whether instance types must support On-Demand Instance Hibernation, either true or false. Default is false.
     spotMaxPricePercentageOverLowestPrice : float, default is Undefined, optional
-        The price protection threshold for Spot Instances. This is the maximum you’ll pay for a Spot Instance, expressed as a percentage higher than the cheapest M, C, or R instance type with your specified attributes. When Amazon EC2 Auto Scaling selects instance types with your attributes, we will exclude instance types whose price is higher than your threshold. The parameter accepts an integer, which Amazon EC2 Auto Scaling interprets as a percentage. To turn off price protection, specify a high value, such as 999999. Default is 100.
+        The price protection threshold for Spot Instances. This is the maximum you’ll pay for a Spot Instance, expressed as a percentage higher than the cheapest M, C, or R instance type with your specified attributes. When Amazon EC2 Auto Scaling selects instance types with your attributes, we will exclude instance types whose price is higher than your threshold. The parameter accepts an integer, which Amazon EC2 Auto Scaling interprets as a percentage. To turn off price protection, specify a high value, such as 999999. Default is 100. Conflicts with max_spot_price_as_percentage_of_optimal_on_demand_price
     totalLocalStorageGb : [Ec2AwsUpboundIoV1beta1LaunchTemplateSpecInitProviderInstanceRequirementsItems0TotalLocalStorageGbItems0], default is Undefined, optional
         Block describing the minimum and maximum total local storage (GB). Default is no minimum or maximum.
     vcpuCount : [Ec2AwsUpboundIoV1beta1LaunchTemplateSpecInitProviderInstanceRequirementsItems0VcpuCountItems0], default is Undefined, optional
@@ -2922,18 +2916,19 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecInitProviderNetworkInterfacesItem
     Attributes
     ----------
     associateCarrierIpAddress : str, default is Undefined, optional
-        Associate a Carrier IP address with eth0 for a new network interface.
-        Use this option when you launch an instance in a Wavelength Zone and want to associate a Carrier IP address with the network interface.
-        Boolean value, can be left unset.
+        Associate a Carrier IP address with eth0 for a new network interface. Use this option when you launch an instance in a Wavelength Zone and want to associate a Carrier IP address with the network interface. Boolean value, can be left unset.
     associatePublicIpAddress : str, default is Undefined, optional
-        Associate a public ip address with the network interface.
-        Boolean value, can be left unset.
+        Associate a public ip address with the network interface. Boolean value, can be left unset.
+    connectionTrackingSpecification : [Ec2AwsUpboundIoV1beta1LaunchTemplateSpecInitProviderNetworkInterfacesItems0ConnectionTrackingSpecificationItems0], default is Undefined, optional
+        The Connection Tracking Configuration for the network interface. See Amazon EC2 security group connection tracking
     deleteOnTermination : str, default is Undefined, optional
         Whether the network interface should be destroyed on instance termination.
     description : str, default is Undefined, optional
         Description of the network interface.
     deviceIndex : float, default is Undefined, optional
         The integer index of the network interface attachment.
+    enaSrdSpecification : [Ec2AwsUpboundIoV1beta1LaunchTemplateSpecInitProviderNetworkInterfacesItems0EnaSrdSpecificationItems0], default is Undefined, optional
+        Configuration for Elastic Network Adapter (ENA) Express settings. Applies to network interfaces that use the ena Express feature. See details below.
     interfaceType : str, default is Undefined, optional
         The type of network interface. To create an Elastic Fabric Adapter (EFA), specify efa.
     ipv4AddressCount : float, default is Undefined, optional
@@ -2961,7 +2956,7 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecInitProviderNetworkInterfacesItem
     networkInterfaceIdSelector : Ec2AwsUpboundIoV1beta1LaunchTemplateSpecInitProviderNetworkInterfacesItems0NetworkInterfaceIDSelector, default is Undefined, optional
         network interface Id selector
     primaryIpv6 : str, default is Undefined, optional
-        primary Ipv6
+        Whether the first IPv6 GUA will be made the primary IPv6 address.
     privateIpAddress : str, default is Undefined, optional
         The primary private IPv4 address.
     securityGroupRefs : [Ec2AwsUpboundIoV1beta1LaunchTemplateSpecInitProviderNetworkInterfacesItems0SecurityGroupRefsItems0], default is Undefined, optional
@@ -2983,11 +2978,15 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecInitProviderNetworkInterfacesItem
 
     associatePublicIpAddress?: str
 
+    connectionTrackingSpecification?: [Ec2AwsUpboundIoV1beta1LaunchTemplateSpecInitProviderNetworkInterfacesItems0ConnectionTrackingSpecificationItems0]
+
     deleteOnTermination?: str
 
     description?: str
 
     deviceIndex?: float
+
+    enaSrdSpecification?: [Ec2AwsUpboundIoV1beta1LaunchTemplateSpecInitProviderNetworkInterfacesItems0EnaSrdSpecificationItems0]
 
     interfaceType?: str
 
@@ -3030,6 +3029,60 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecInitProviderNetworkInterfacesItem
     subnetIdRef?: Ec2AwsUpboundIoV1beta1LaunchTemplateSpecInitProviderNetworkInterfacesItems0SubnetIDRef
 
     subnetIdSelector?: Ec2AwsUpboundIoV1beta1LaunchTemplateSpecInitProviderNetworkInterfacesItems0SubnetIDSelector
+
+
+schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecInitProviderNetworkInterfacesItems0ConnectionTrackingSpecificationItems0:
+    r"""
+    ec2 aws upbound io v1beta1 launch template spec init provider network interfaces items0 connection tracking specification items0
+
+    Attributes
+    ----------
+    tcpEstablishedTimeout : float, default is Undefined, optional
+        Timeout (in seconds) for idle TCP connections in an established state. Min: 60 seconds. Max: 432000 seconds (5 days). Default: 432000 seconds. Recommended: Less than 432000 seconds.
+    udpStreamTimeout : float, default is Undefined, optional
+        Timeout (in seconds) for idle UDP flows that have seen traffic only in a single direction or a single request-response transaction. Min: 30 seconds. Max: 60 seconds. Default: 30 seconds.
+    udpTimeout : float, default is Undefined, optional
+        Timeout (in seconds) for idle UDP flows classified as streams which have seen more than one request-response transaction. Min: 60 seconds. Max: 180 seconds (3 minutes). Default: 180 seconds.
+    """
+
+
+    tcpEstablishedTimeout?: float
+
+    udpStreamTimeout?: float
+
+    udpTimeout?: float
+
+
+schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecInitProviderNetworkInterfacesItems0EnaSrdSpecificationItems0:
+    r"""
+    ec2 aws upbound io v1beta1 launch template spec init provider network interfaces items0 ena srd specification items0
+
+    Attributes
+    ----------
+    enaSrdEnabled : bool, default is Undefined, optional
+        Whether to enable ENA Express. ENA Express uses AWS Scalable Reliable Datagram (SRD) technology to improve the performance of TCP traffic.
+    enaSrdUdpSpecification : [Ec2AwsUpboundIoV1beta1LaunchTemplateSpecInitProviderNetworkInterfacesItems0EnaSrdSpecificationItems0EnaSrdUDPSpecificationItems0], default is Undefined, optional
+        Configuration for ENA Express UDP optimization. See details below.
+    """
+
+
+    enaSrdEnabled?: bool
+
+    enaSrdUdpSpecification?: [Ec2AwsUpboundIoV1beta1LaunchTemplateSpecInitProviderNetworkInterfacesItems0EnaSrdSpecificationItems0EnaSrdUDPSpecificationItems0]
+
+
+schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecInitProviderNetworkInterfacesItems0EnaSrdSpecificationItems0EnaSrdUDPSpecificationItems0:
+    r"""
+    ec2 aws upbound io v1beta1 launch template spec init provider network interfaces items0 ena srd specification items0 ena srd UDP specification items0
+
+    Attributes
+    ----------
+    enaSrdUdpEnabled : bool, default is Undefined, optional
+        Whether to enable UDP traffic optimization through ENA Express. Requires ena_srd_enabled to be true.
+    """
+
+
+    enaSrdUdpEnabled?: bool
 
 
 schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecInitProviderNetworkInterfacesItems0NetworkInterfaceIDRef:
@@ -3309,8 +3362,10 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecInitProviderPlacementItems0:
         The affinity setting for an instance on a Dedicated Host.
     availabilityZone : str, default is Undefined, optional
         The Availability Zone for the instance.
+    groupId : str, default is Undefined, optional
+        The ID of the placement group for the instance. Conflicts with group_name.
     groupName : str, default is Undefined, optional
-        The name of the placement group for the instance.
+        The name of the placement group for the instance. Conflicts with group_id.
     hostId : str, default is Undefined, optional
         The ID of the Dedicated Host for the instance.
     hostResourceGroupArn : str, default is Undefined, optional
@@ -3327,6 +3382,8 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecInitProviderPlacementItems0:
     affinity?: str
 
     availabilityZone?: str
+
+    groupId?: str
 
     groupName?: str
 
@@ -3603,112 +3660,12 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
-schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : Ec2AwsUpboundIoV1beta1LaunchTemplateSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : Ec2AwsUpboundIoV1beta1LaunchTemplateSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: Ec2AwsUpboundIoV1beta1LaunchTemplateSpecPublishConnectionDetailsToConfigRef
-
-    metadata?: Ec2AwsUpboundIoV1beta1LaunchTemplateSpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : Ec2AwsUpboundIoV1beta1LaunchTemplateSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: Ec2AwsUpboundIoV1beta1LaunchTemplateSpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema Ec2AwsUpboundIoV1beta1LaunchTemplateSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------
@@ -3777,11 +3734,6 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateStatusAtProvider:
         Termination Protection
     ebsOptimized : str, default is Undefined, optional
         If true, the launched EC2 instance will be EBS-optimized.
-    elasticGpuSpecifications : [Ec2AwsUpboundIoV1beta1LaunchTemplateStatusAtProviderElasticGpuSpecificationsItems0], default is Undefined, optional
-        The elastic GPU to attach to the instance. See Elastic GPU
-        below for more details.
-    elasticInferenceAccelerator : [Ec2AwsUpboundIoV1beta1LaunchTemplateStatusAtProviderElasticInferenceAcceleratorItems0], default is Undefined, optional
-        Configuration block containing an Elastic Inference Accelerator to attach to the instance. See Elastic Inference Accelerator below for more details.
     enclaveOptions : [Ec2AwsUpboundIoV1beta1LaunchTemplateStatusAtProviderEnclaveOptionsItems0], default is Undefined, optional
         Enable Nitro Enclaves on launched instances. See Enclave Options below for more details.
     hibernationOptions : [Ec2AwsUpboundIoV1beta1LaunchTemplateStatusAtProviderHibernationOptionsItems0], default is Undefined, optional
@@ -3792,7 +3744,7 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateStatusAtProvider:
     id : str, default is Undefined, optional
         The ID of the launch template.
     imageId : str, default is Undefined, optional
-        The AMI from which to launch the instance.
+        The AMI from which to launch the instance or use a Systems Manager parameter convention e.g. resolve:ssm:parameter-name. See docs for more details.
     instanceInitiatedShutdownBehavior : str, default is Undefined, optional
         Shutdown behavior for the instance. Can be stop or terminate.
         (Default: stop).
@@ -3828,6 +3780,9 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateStatusAtProvider:
         The options for the instance hostname. The default values are inherited from the subnet. See Private DNS Name Options below for more details.
     ramDiskId : str, default is Undefined, optional
         The ID of the RAM disk.
+    region : str, default is Undefined, optional
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
+        Region is the region you'd like your resource to be created in.
     securityGroupNames : [str], default is Undefined, optional
         A list of security group names to associate with. If you are creating Instances in a VPC, use
         vpc_security_group_ids instead.
@@ -3865,10 +3820,6 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateStatusAtProvider:
     disableApiTermination?: bool
 
     ebsOptimized?: str
-
-    elasticGpuSpecifications?: [Ec2AwsUpboundIoV1beta1LaunchTemplateStatusAtProviderElasticGpuSpecificationsItems0]
-
-    elasticInferenceAccelerator?: [Ec2AwsUpboundIoV1beta1LaunchTemplateStatusAtProviderElasticInferenceAcceleratorItems0]
 
     enclaveOptions?: [Ec2AwsUpboundIoV1beta1LaunchTemplateStatusAtProviderEnclaveOptionsItems0]
 
@@ -3911,6 +3862,8 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateStatusAtProvider:
     privateDnsNameOptions?: [Ec2AwsUpboundIoV1beta1LaunchTemplateStatusAtProviderPrivateDNSNameOptionsItems0]
 
     ramDiskId?: str
+
+    region?: str
 
     securityGroupNames?: [str]
 
@@ -3977,6 +3930,8 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateStatusAtProviderBlockDeviceMappingsIt
         The Snapshot ID to mount.
     throughput : float, default is Undefined, optional
         The throughput to provision for a gp3 volume in MiB/s (specified as an integer, e.g., 500), with a maximum of 1,000 MiB/s.
+    volumeInitializationRate : float, default is Undefined, optional
+        The volume initialization rate in MiB/s (specified as an integer, e.g. 100), with a minimum of 100 MiB/s and maximum of 300 MiB/s.
     volumeSize : float, default is Undefined, optional
         The size of the volume in gigabytes.
     volumeType : str, default is Undefined, optional
@@ -3996,6 +3951,8 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateStatusAtProviderBlockDeviceMappingsIt
     snapshotId?: str
 
     throughput?: float
+
+    volumeInitializationRate?: float
 
     volumeSize?: float
 
@@ -4033,7 +3990,7 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateStatusAtProviderCapacityReservationSp
     Attributes
     ----------
     capacityReservationPreference : str, default is Undefined, optional
-        Indicates the instance's Capacity Reservation preferences. Can be open or none. (Default none).
+        Indicates the instance's Capacity Reservation preferences. Can be capacity-reservations-only, open or none. If capacity_reservation_id or capacity_reservation_resource_group_arn is specified in capacity_reservation_target block, either omit capacity_reservation_preference or set it to capacity-reservations-only.
     capacityReservationTarget : [Ec2AwsUpboundIoV1beta1LaunchTemplateStatusAtProviderCapacityReservationSpecificationItems0CapacityReservationTargetItems0], default is Undefined, optional
         Used to target a specific Capacity Reservation:
     """
@@ -4077,34 +4034,6 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateStatusAtProviderCreditSpecificationIt
 
 
     cpuCredits?: str
-
-
-schema Ec2AwsUpboundIoV1beta1LaunchTemplateStatusAtProviderElasticGpuSpecificationsItems0:
-    r"""
-    ec2 aws upbound io v1beta1 launch template status at provider elastic gpu specifications items0
-
-    Attributes
-    ----------
-    $type : str, default is Undefined, optional
-        The Elastic GPU Type
-    """
-
-
-    $type?: str
-
-
-schema Ec2AwsUpboundIoV1beta1LaunchTemplateStatusAtProviderElasticInferenceAcceleratorItems0:
-    r"""
-    ec2 aws upbound io v1beta1 launch template status at provider elastic inference accelerator items0
-
-    Attributes
-    ----------
-    $type : str, default is Undefined, optional
-        Accelerator type.
-    """
-
-
-    $type?: str
 
 
 schema Ec2AwsUpboundIoV1beta1LaunchTemplateStatusAtProviderEnclaveOptionsItems0:
@@ -4251,7 +4180,7 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateStatusAtProviderInstanceRequirementsI
     requireHibernateSupport : bool, default is Undefined, optional
         Indicate whether instance types must support On-Demand Instance Hibernation, either true or false. Default is false.
     spotMaxPricePercentageOverLowestPrice : float, default is Undefined, optional
-        The price protection threshold for Spot Instances. This is the maximum you’ll pay for a Spot Instance, expressed as a percentage higher than the cheapest M, C, or R instance type with your specified attributes. When Amazon EC2 Auto Scaling selects instance types with your attributes, we will exclude instance types whose price is higher than your threshold. The parameter accepts an integer, which Amazon EC2 Auto Scaling interprets as a percentage. To turn off price protection, specify a high value, such as 999999. Default is 100.
+        The price protection threshold for Spot Instances. This is the maximum you’ll pay for a Spot Instance, expressed as a percentage higher than the cheapest M, C, or R instance type with your specified attributes. When Amazon EC2 Auto Scaling selects instance types with your attributes, we will exclude instance types whose price is higher than your threshold. The parameter accepts an integer, which Amazon EC2 Auto Scaling interprets as a percentage. To turn off price protection, specify a high value, such as 999999. Default is 100. Conflicts with max_spot_price_as_percentage_of_optimal_on_demand_price
     totalLocalStorageGb : [Ec2AwsUpboundIoV1beta1LaunchTemplateStatusAtProviderInstanceRequirementsItems0TotalLocalStorageGbItems0], default is Undefined, optional
         Block describing the minimum and maximum total local storage (GB). Default is no minimum or maximum.
     vcpuCount : [Ec2AwsUpboundIoV1beta1LaunchTemplateStatusAtProviderInstanceRequirementsItems0VcpuCountItems0], default is Undefined, optional
@@ -4549,18 +4478,19 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateStatusAtProviderNetworkInterfacesItem
     Attributes
     ----------
     associateCarrierIpAddress : str, default is Undefined, optional
-        Associate a Carrier IP address with eth0 for a new network interface.
-        Use this option when you launch an instance in a Wavelength Zone and want to associate a Carrier IP address with the network interface.
-        Boolean value, can be left unset.
+        Associate a Carrier IP address with eth0 for a new network interface. Use this option when you launch an instance in a Wavelength Zone and want to associate a Carrier IP address with the network interface. Boolean value, can be left unset.
     associatePublicIpAddress : str, default is Undefined, optional
-        Associate a public ip address with the network interface.
-        Boolean value, can be left unset.
+        Associate a public ip address with the network interface. Boolean value, can be left unset.
+    connectionTrackingSpecification : [Ec2AwsUpboundIoV1beta1LaunchTemplateStatusAtProviderNetworkInterfacesItems0ConnectionTrackingSpecificationItems0], default is Undefined, optional
+        The Connection Tracking Configuration for the network interface. See Amazon EC2 security group connection tracking
     deleteOnTermination : str, default is Undefined, optional
         Whether the network interface should be destroyed on instance termination.
     description : str, default is Undefined, optional
         Description of the network interface.
     deviceIndex : float, default is Undefined, optional
         The integer index of the network interface attachment.
+    enaSrdSpecification : [Ec2AwsUpboundIoV1beta1LaunchTemplateStatusAtProviderNetworkInterfacesItems0EnaSrdSpecificationItems0], default is Undefined, optional
+        Configuration for Elastic Network Adapter (ENA) Express settings. Applies to network interfaces that use the ena Express feature. See details below.
     interfaceType : str, default is Undefined, optional
         The type of network interface. To create an Elastic Fabric Adapter (EFA), specify efa.
     ipv4AddressCount : float, default is Undefined, optional
@@ -4584,7 +4514,7 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateStatusAtProviderNetworkInterfacesItem
     networkInterfaceId : str, default is Undefined, optional
         The ID of the network interface to attach.
     primaryIpv6 : str, default is Undefined, optional
-        primary Ipv6
+        Whether the first IPv6 GUA will be made the primary IPv6 address.
     privateIpAddress : str, default is Undefined, optional
         The primary private IPv4 address.
     securityGroups : [str], default is Undefined, optional
@@ -4598,11 +4528,15 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateStatusAtProviderNetworkInterfacesItem
 
     associatePublicIpAddress?: str
 
+    connectionTrackingSpecification?: [Ec2AwsUpboundIoV1beta1LaunchTemplateStatusAtProviderNetworkInterfacesItems0ConnectionTrackingSpecificationItems0]
+
     deleteOnTermination?: str
 
     description?: str
 
     deviceIndex?: float
+
+    enaSrdSpecification?: [Ec2AwsUpboundIoV1beta1LaunchTemplateStatusAtProviderNetworkInterfacesItems0EnaSrdSpecificationItems0]
 
     interfaceType?: str
 
@@ -4635,6 +4569,60 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateStatusAtProviderNetworkInterfacesItem
     subnetId?: str
 
 
+schema Ec2AwsUpboundIoV1beta1LaunchTemplateStatusAtProviderNetworkInterfacesItems0ConnectionTrackingSpecificationItems0:
+    r"""
+    ec2 aws upbound io v1beta1 launch template status at provider network interfaces items0 connection tracking specification items0
+
+    Attributes
+    ----------
+    tcpEstablishedTimeout : float, default is Undefined, optional
+        Timeout (in seconds) for idle TCP connections in an established state. Min: 60 seconds. Max: 432000 seconds (5 days). Default: 432000 seconds. Recommended: Less than 432000 seconds.
+    udpStreamTimeout : float, default is Undefined, optional
+        Timeout (in seconds) for idle UDP flows that have seen traffic only in a single direction or a single request-response transaction. Min: 30 seconds. Max: 60 seconds. Default: 30 seconds.
+    udpTimeout : float, default is Undefined, optional
+        Timeout (in seconds) for idle UDP flows classified as streams which have seen more than one request-response transaction. Min: 60 seconds. Max: 180 seconds (3 minutes). Default: 180 seconds.
+    """
+
+
+    tcpEstablishedTimeout?: float
+
+    udpStreamTimeout?: float
+
+    udpTimeout?: float
+
+
+schema Ec2AwsUpboundIoV1beta1LaunchTemplateStatusAtProviderNetworkInterfacesItems0EnaSrdSpecificationItems0:
+    r"""
+    ec2 aws upbound io v1beta1 launch template status at provider network interfaces items0 ena srd specification items0
+
+    Attributes
+    ----------
+    enaSrdEnabled : bool, default is Undefined, optional
+        Whether to enable ENA Express. ENA Express uses AWS Scalable Reliable Datagram (SRD) technology to improve the performance of TCP traffic.
+    enaSrdUdpSpecification : [Ec2AwsUpboundIoV1beta1LaunchTemplateStatusAtProviderNetworkInterfacesItems0EnaSrdSpecificationItems0EnaSrdUDPSpecificationItems0], default is Undefined, optional
+        Configuration for ENA Express UDP optimization. See details below.
+    """
+
+
+    enaSrdEnabled?: bool
+
+    enaSrdUdpSpecification?: [Ec2AwsUpboundIoV1beta1LaunchTemplateStatusAtProviderNetworkInterfacesItems0EnaSrdSpecificationItems0EnaSrdUDPSpecificationItems0]
+
+
+schema Ec2AwsUpboundIoV1beta1LaunchTemplateStatusAtProviderNetworkInterfacesItems0EnaSrdSpecificationItems0EnaSrdUDPSpecificationItems0:
+    r"""
+    ec2 aws upbound io v1beta1 launch template status at provider network interfaces items0 ena srd specification items0 ena srd UDP specification items0
+
+    Attributes
+    ----------
+    enaSrdUdpEnabled : bool, default is Undefined, optional
+        Whether to enable UDP traffic optimization through ENA Express. Requires ena_srd_enabled to be true.
+    """
+
+
+    enaSrdUdpEnabled?: bool
+
+
 schema Ec2AwsUpboundIoV1beta1LaunchTemplateStatusAtProviderPlacementItems0:
     r"""
     ec2 aws upbound io v1beta1 launch template status at provider placement items0
@@ -4645,8 +4633,10 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateStatusAtProviderPlacementItems0:
         The affinity setting for an instance on a Dedicated Host.
     availabilityZone : str, default is Undefined, optional
         The Availability Zone for the instance.
+    groupId : str, default is Undefined, optional
+        The ID of the placement group for the instance. Conflicts with group_name.
     groupName : str, default is Undefined, optional
-        The name of the placement group for the instance.
+        The name of the placement group for the instance. Conflicts with group_id.
     hostId : str, default is Undefined, optional
         The ID of the Dedicated Host for the instance.
     hostResourceGroupArn : str, default is Undefined, optional
@@ -4663,6 +4653,8 @@ schema Ec2AwsUpboundIoV1beta1LaunchTemplateStatusAtProviderPlacementItems0:
     affinity?: str
 
     availabilityZone?: str
+
+    groupId?: str
 
     groupName?: str
 

@@ -66,8 +66,6 @@ schema S3AwsUpboundIoV1beta1ObjectSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : S3AwsUpboundIoV1beta1ObjectSpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : S3AwsUpboundIoV1beta1ObjectSpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : S3AwsUpboundIoV1beta1ObjectSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -82,8 +80,6 @@ schema S3AwsUpboundIoV1beta1ObjectSpec:
     managementPolicies?: [str] = ["*"]
 
     providerConfigRef?: S3AwsUpboundIoV1beta1ObjectSpecProviderConfigRef
-
-    publishConnectionDetailsTo?: S3AwsUpboundIoV1beta1ObjectSpecPublishConnectionDetailsTo
 
     writeConnectionSecretToRef?: S3AwsUpboundIoV1beta1ObjectSpecWriteConnectionSecretToRef
 
@@ -107,7 +103,7 @@ schema S3AwsUpboundIoV1beta1ObjectSpecForProvider:
     cacheControl : str, default is Undefined, optional
         Caching behavior along the request/reply chain Read w3c cache_control for further details.
     checksumAlgorithm : str, default is Undefined, optional
-        Indicates the algorithm used to create the checksum for the object. If a value is specified and the object is encrypted with KMS, you must have permission to use the kms:Decrypt action. Valid values: CRC32, CRC32C, SHA1, SHA256.
+        Indicates the algorithm used to create the checksum for the object. If a value is specified and the object is encrypted with KMS, you must have permission to use the kms:Decrypt action. Valid values: CRC32, CRC32C, CRC64NVME, SHA1, SHA256.
     content : str, default is Undefined, optional
         Literal string value to use as the object content, which will be uploaded as UTF-8-encoded text.
     contentBase64 : str, default is Undefined, optional
@@ -143,6 +139,7 @@ schema S3AwsUpboundIoV1beta1ObjectSpecForProvider:
     overrideProvider : [S3AwsUpboundIoV1beta1ObjectSpecForProviderOverrideProviderItems0], default is Undefined, optional
         Override provider-level configuration options. See Override Provider below for more details.
     region : str, default is Undefined, required
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
     serverSideEncryption : str, default is Undefined, optional
         Server-side encryption of the object in S3. Valid values are "AES256" and "aws:kms".
@@ -456,7 +453,7 @@ schema S3AwsUpboundIoV1beta1ObjectSpecInitProvider:
     cacheControl : str, default is Undefined, optional
         Caching behavior along the request/reply chain Read w3c cache_control for further details.
     checksumAlgorithm : str, default is Undefined, optional
-        Indicates the algorithm used to create the checksum for the object. If a value is specified and the object is encrypted with KMS, you must have permission to use the kms:Decrypt action. Valid values: CRC32, CRC32C, SHA1, SHA256.
+        Indicates the algorithm used to create the checksum for the object. If a value is specified and the object is encrypted with KMS, you must have permission to use the kms:Decrypt action. Valid values: CRC32, CRC32C, CRC64NVME, SHA1, SHA256.
     content : str, default is Undefined, optional
         Literal string value to use as the object content, which will be uploaded as UTF-8-encoded text.
     contentBase64 : str, default is Undefined, optional
@@ -817,112 +814,12 @@ schema S3AwsUpboundIoV1beta1ObjectSpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
-schema S3AwsUpboundIoV1beta1ObjectSpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : S3AwsUpboundIoV1beta1ObjectSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : S3AwsUpboundIoV1beta1ObjectSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: S3AwsUpboundIoV1beta1ObjectSpecPublishConnectionDetailsToConfigRef
-
-    metadata?: S3AwsUpboundIoV1beta1ObjectSpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema S3AwsUpboundIoV1beta1ObjectSpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : S3AwsUpboundIoV1beta1ObjectSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: S3AwsUpboundIoV1beta1ObjectSpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema S3AwsUpboundIoV1beta1ObjectSpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema S3AwsUpboundIoV1beta1ObjectSpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema S3AwsUpboundIoV1beta1ObjectSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------
@@ -979,11 +876,13 @@ schema S3AwsUpboundIoV1beta1ObjectStatusAtProvider:
     cacheControl : str, default is Undefined, optional
         Caching behavior along the request/reply chain Read w3c cache_control for further details.
     checksumAlgorithm : str, default is Undefined, optional
-        Indicates the algorithm used to create the checksum for the object. If a value is specified and the object is encrypted with KMS, you must have permission to use the kms:Decrypt action. Valid values: CRC32, CRC32C, SHA1, SHA256.
+        Indicates the algorithm used to create the checksum for the object. If a value is specified and the object is encrypted with KMS, you must have permission to use the kms:Decrypt action. Valid values: CRC32, CRC32C, CRC64NVME, SHA1, SHA256.
     checksumCrc32 : str, default is Undefined, optional
         The base64-encoded, 32-bit CRC32 checksum of the object.
     checksumCrc32C : str, default is Undefined, optional
         The base64-encoded, 32-bit CRC32C checksum of the object.
+    checksumCrc64Nvme : str, default is Undefined, optional
+        The base64-encoded, 64-bit CRC64NVME checksum of the object.
     checksumSha1 : str, default is Undefined, optional
         The base64-encoded, 160-bit SHA-1 digest of the object.
     checksumSha256 : str, default is Undefined, optional
@@ -1020,6 +919,9 @@ schema S3AwsUpboundIoV1beta1ObjectStatusAtProvider:
         Date and time, in RFC3339 format, when this object's object lock will expire.
     overrideProvider : [S3AwsUpboundIoV1beta1ObjectStatusAtProviderOverrideProviderItems0], default is Undefined, optional
         Override provider-level configuration options. See Override Provider below for more details.
+    region : str, default is Undefined, optional
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
+        Region is the region you'd like your resource to be created in.
     serverSideEncryption : str, default is Undefined, optional
         Server-side encryption of the object in S3. Valid values are "AES256" and "aws:kms".
     source : str, default is Undefined, optional
@@ -1054,6 +956,8 @@ schema S3AwsUpboundIoV1beta1ObjectStatusAtProvider:
     checksumCrc32?: str
 
     checksumCrc32C?: str
+
+    checksumCrc64Nvme?: str
 
     checksumSha1?: str
 
@@ -1090,6 +994,8 @@ schema S3AwsUpboundIoV1beta1ObjectStatusAtProvider:
     objectLockRetainUntilDate?: str
 
     overrideProvider?: [S3AwsUpboundIoV1beta1ObjectStatusAtProviderOverrideProviderItems0]
+
+    region?: str
 
     serverSideEncryption?: str
 

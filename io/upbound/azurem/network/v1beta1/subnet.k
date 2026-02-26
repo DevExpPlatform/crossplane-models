@@ -82,6 +82,8 @@ schema NetworkAzuremUpboundIoV1beta1SubnetSpecForProvider:
         Enable default outbound access to the internet for the subnet. Defaults to true.
     delegation : [NetworkAzuremUpboundIoV1beta1SubnetSpecForProviderDelegationItems0], default is Undefined, optional
         One or more delegation blocks as defined below.
+    ipAddressPool : NetworkAzuremUpboundIoV1beta1SubnetSpecForProviderIPAddressPool, default is Undefined, optional
+        ip address pool
     privateEndpointNetworkPolicies : str, default is Undefined, optional
         Enable or Disable network policies for the private endpoint on the subnet. Possible values are Disabled, Enabled, NetworkSecurityGroupEnabled and RouteTableEnabled. Defaults to Disabled.
     privateLinkServiceNetworkPoliciesEnabled : bool, default is Undefined, optional
@@ -96,6 +98,8 @@ schema NetworkAzuremUpboundIoV1beta1SubnetSpecForProvider:
         The list of IDs of Service Endpoint Policies to associate with the subnet.
     serviceEndpoints : [str], default is Undefined, optional
         The list of Service endpoints to associate with the subnet. Possible values include: Microsoft.AzureActiveDirectory, Microsoft.AzureCosmosDB, Microsoft.ContainerRegistry, Microsoft.EventHub, Microsoft.KeyVault, Microsoft.ServiceBus, Microsoft.Sql, Microsoft.Storage, Microsoft.Storage.Global and Microsoft.Web.
+    sharingScope : str, default is Undefined, optional
+        The sharing scope of the subnet. Possible value is Tenant.
     virtualNetworkName : str, default is Undefined, optional
         The name of the virtual network to which to attach the subnet. Changing this forces a new resource to be created.
     virtualNetworkNameRef : NetworkAzuremUpboundIoV1beta1SubnetSpecForProviderVirtualNetworkNameRef, default is Undefined, optional
@@ -111,6 +115,8 @@ schema NetworkAzuremUpboundIoV1beta1SubnetSpecForProvider:
 
     delegation?: [NetworkAzuremUpboundIoV1beta1SubnetSpecForProviderDelegationItems0]
 
+    ipAddressPool?: NetworkAzuremUpboundIoV1beta1SubnetSpecForProviderIPAddressPool
+
     privateEndpointNetworkPolicies?: str
 
     privateLinkServiceNetworkPoliciesEnabled?: bool
@@ -124,6 +130,8 @@ schema NetworkAzuremUpboundIoV1beta1SubnetSpecForProvider:
     serviceEndpointPolicyIds?: [str]
 
     serviceEndpoints?: [str]
+
+    sharingScope?: str
 
     virtualNetworkName?: str
 
@@ -166,6 +174,24 @@ schema NetworkAzuremUpboundIoV1beta1SubnetSpecForProviderDelegationItems0Service
     actions?: [str]
 
     name?: str
+
+
+schema NetworkAzuremUpboundIoV1beta1SubnetSpecForProviderIPAddressPool:
+    r"""
+    An ip_address_pool block as defined below.
+
+    Attributes
+    ----------
+    id : str, default is Undefined, optional
+        The ID of the Network Manager IP Address Management (IPAM) Pool.
+    numberOfIpAddresses : str, default is Undefined, optional
+        The number of IP addresses to allocated to the subnet. The value must be a string that represents a positive number, e.g., "100".
+    """
+
+
+    id?: str
+
+    numberOfIpAddresses?: str
 
 
 schema NetworkAzuremUpboundIoV1beta1SubnetSpecForProviderResourceGroupNameRef:
@@ -383,6 +409,8 @@ schema NetworkAzuremUpboundIoV1beta1SubnetSpecInitProvider:
         Enable default outbound access to the internet for the subnet. Defaults to true.
     delegation : [NetworkAzuremUpboundIoV1beta1SubnetSpecInitProviderDelegationItems0], default is Undefined, optional
         One or more delegation blocks as defined below.
+    ipAddressPool : NetworkAzuremUpboundIoV1beta1SubnetSpecInitProviderIPAddressPool, default is Undefined, optional
+        ip address pool
     privateEndpointNetworkPolicies : str, default is Undefined, optional
         Enable or Disable network policies for the private endpoint on the subnet. Possible values are Disabled, Enabled, NetworkSecurityGroupEnabled and RouteTableEnabled. Defaults to Disabled.
     privateLinkServiceNetworkPoliciesEnabled : bool, default is Undefined, optional
@@ -391,6 +419,8 @@ schema NetworkAzuremUpboundIoV1beta1SubnetSpecInitProvider:
         The list of IDs of Service Endpoint Policies to associate with the subnet.
     serviceEndpoints : [str], default is Undefined, optional
         The list of Service endpoints to associate with the subnet. Possible values include: Microsoft.AzureActiveDirectory, Microsoft.AzureCosmosDB, Microsoft.ContainerRegistry, Microsoft.EventHub, Microsoft.KeyVault, Microsoft.ServiceBus, Microsoft.Sql, Microsoft.Storage, Microsoft.Storage.Global and Microsoft.Web.
+    sharingScope : str, default is Undefined, optional
+        The sharing scope of the subnet. Possible value is Tenant.
     """
 
 
@@ -400,6 +430,8 @@ schema NetworkAzuremUpboundIoV1beta1SubnetSpecInitProvider:
 
     delegation?: [NetworkAzuremUpboundIoV1beta1SubnetSpecInitProviderDelegationItems0]
 
+    ipAddressPool?: NetworkAzuremUpboundIoV1beta1SubnetSpecInitProviderIPAddressPool
+
     privateEndpointNetworkPolicies?: str
 
     privateLinkServiceNetworkPoliciesEnabled?: bool
@@ -407,6 +439,8 @@ schema NetworkAzuremUpboundIoV1beta1SubnetSpecInitProvider:
     serviceEndpointPolicyIds?: [str]
 
     serviceEndpoints?: [str]
+
+    sharingScope?: str
 
 
 schema NetworkAzuremUpboundIoV1beta1SubnetSpecInitProviderDelegationItems0:
@@ -443,6 +477,24 @@ schema NetworkAzuremUpboundIoV1beta1SubnetSpecInitProviderDelegationItems0Servic
     actions?: [str]
 
     name?: str
+
+
+schema NetworkAzuremUpboundIoV1beta1SubnetSpecInitProviderIPAddressPool:
+    r"""
+    An ip_address_pool block as defined below.
+
+    Attributes
+    ----------
+    id : str, default is Undefined, optional
+        The ID of the Network Manager IP Address Management (IPAM) Pool.
+    numberOfIpAddresses : str, default is Undefined, optional
+        The number of IP addresses to allocated to the subnet. The value must be a string that represents a positive number, e.g., "100".
+    """
+
+
+    id?: str
+
+    numberOfIpAddresses?: str
 
 
 schema NetworkAzuremUpboundIoV1beta1SubnetSpecProviderConfigRef:
@@ -520,6 +572,8 @@ schema NetworkAzuremUpboundIoV1beta1SubnetStatusAtProvider:
         One or more delegation blocks as defined below.
     id : str, default is Undefined, optional
         The subnet ID.
+    ipAddressPool : NetworkAzuremUpboundIoV1beta1SubnetStatusAtProviderIPAddressPool, default is Undefined, optional
+        ip address pool
     privateEndpointNetworkPolicies : str, default is Undefined, optional
         Enable or Disable network policies for the private endpoint on the subnet. Possible values are Disabled, Enabled, NetworkSecurityGroupEnabled and RouteTableEnabled. Defaults to Disabled.
     privateLinkServiceNetworkPoliciesEnabled : bool, default is Undefined, optional
@@ -530,6 +584,8 @@ schema NetworkAzuremUpboundIoV1beta1SubnetStatusAtProvider:
         The list of IDs of Service Endpoint Policies to associate with the subnet.
     serviceEndpoints : [str], default is Undefined, optional
         The list of Service endpoints to associate with the subnet. Possible values include: Microsoft.AzureActiveDirectory, Microsoft.AzureCosmosDB, Microsoft.ContainerRegistry, Microsoft.EventHub, Microsoft.KeyVault, Microsoft.ServiceBus, Microsoft.Sql, Microsoft.Storage, Microsoft.Storage.Global and Microsoft.Web.
+    sharingScope : str, default is Undefined, optional
+        The sharing scope of the subnet. Possible value is Tenant.
     virtualNetworkName : str, default is Undefined, optional
         The name of the virtual network to which to attach the subnet. Changing this forces a new resource to be created.
     """
@@ -543,6 +599,8 @@ schema NetworkAzuremUpboundIoV1beta1SubnetStatusAtProvider:
 
     id?: str
 
+    ipAddressPool?: NetworkAzuremUpboundIoV1beta1SubnetStatusAtProviderIPAddressPool
+
     privateEndpointNetworkPolicies?: str
 
     privateLinkServiceNetworkPoliciesEnabled?: bool
@@ -552,6 +610,8 @@ schema NetworkAzuremUpboundIoV1beta1SubnetStatusAtProvider:
     serviceEndpointPolicyIds?: [str]
 
     serviceEndpoints?: [str]
+
+    sharingScope?: str
 
     virtualNetworkName?: str
 
@@ -590,6 +650,28 @@ schema NetworkAzuremUpboundIoV1beta1SubnetStatusAtProviderDelegationItems0Servic
     actions?: [str]
 
     name?: str
+
+
+schema NetworkAzuremUpboundIoV1beta1SubnetStatusAtProviderIPAddressPool:
+    r"""
+    An ip_address_pool block as defined below.
+
+    Attributes
+    ----------
+    allocatedIpAddressPrefixes : [str], default is Undefined, optional
+        The list of IP address prefixes allocated to the subnet.
+    id : str, default is Undefined, optional
+        The ID of the Network Manager IP Address Management (IPAM) Pool.
+    numberOfIpAddresses : str, default is Undefined, optional
+        The number of IP addresses to allocated to the subnet. The value must be a string that represents a positive number, e.g., "100".
+    """
+
+
+    allocatedIpAddressPrefixes?: [str]
+
+    id?: str
+
+    numberOfIpAddresses?: str
 
 
 schema NetworkAzuremUpboundIoV1beta1SubnetStatusConditionsItems0:

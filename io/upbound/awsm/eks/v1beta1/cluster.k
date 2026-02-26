@@ -82,6 +82,8 @@ schema EksAwsmUpboundIoV1beta1ClusterSpecForProvider:
         Install default unmanaged add-ons, such as aws-cni, kube-proxy, and CoreDNS during cluster creation. If false, you must manually install desired add-ons. Changing this value will force a new cluster to be created. Defaults to true.
     computeConfig : EksAwsmUpboundIoV1beta1ClusterSpecForProviderComputeConfig, default is Undefined, optional
         compute config
+    deletionProtection : bool, default is Undefined, optional
+        Whether to enable deletion protection for the cluster. When enabled, the cluster cannot be deleted unless deletion protection is first disabled. Default: false.
     enabledClusterLogTypes : [str], default is Undefined, optional
         List of the desired control plane logging to enable. For more information, see Amazon EKS Control Plane Logging.
     encryptionConfig : EksAwsmUpboundIoV1beta1ClusterSpecForProviderEncryptionConfig, default is Undefined, optional
@@ -123,6 +125,8 @@ schema EksAwsmUpboundIoV1beta1ClusterSpecForProvider:
     bootstrapSelfManagedAddons?: bool
 
     computeConfig?: EksAwsmUpboundIoV1beta1ClusterSpecForProviderComputeConfig
+
+    deletionProtection?: bool
 
     enabledClusterLogTypes?: [str]
 
@@ -166,7 +170,7 @@ schema EksAwsmUpboundIoV1beta1ClusterSpecForProviderAccessConfig:
     authenticationMode : str, default is Undefined, optional
         The authentication mode for the cluster. Valid values are CONFIG_MAP, API or API_AND_CONFIG_MAP
     bootstrapClusterCreatorAdminPermissions : bool, default is Undefined, optional
-        Whether or not to bootstrap the access config values to the cluster. Default is false.
+        Whether or not to bootstrap the access config values to the cluster. Default is true.
     """
 
 
@@ -762,6 +766,8 @@ schema EksAwsmUpboundIoV1beta1ClusterSpecInitProvider:
         Install default unmanaged add-ons, such as aws-cni, kube-proxy, and CoreDNS during cluster creation. If false, you must manually install desired add-ons. Changing this value will force a new cluster to be created. Defaults to true.
     computeConfig : EksAwsmUpboundIoV1beta1ClusterSpecInitProviderComputeConfig, default is Undefined, optional
         compute config
+    deletionProtection : bool, default is Undefined, optional
+        Whether to enable deletion protection for the cluster. When enabled, the cluster cannot be deleted unless deletion protection is first disabled. Default: false.
     enabledClusterLogTypes : [str], default is Undefined, optional
         List of the desired control plane logging to enable. For more information, see Amazon EKS Control Plane Logging.
     encryptionConfig : EksAwsmUpboundIoV1beta1ClusterSpecInitProviderEncryptionConfig, default is Undefined, optional
@@ -800,6 +806,8 @@ schema EksAwsmUpboundIoV1beta1ClusterSpecInitProvider:
     bootstrapSelfManagedAddons?: bool
 
     computeConfig?: EksAwsmUpboundIoV1beta1ClusterSpecInitProviderComputeConfig
+
+    deletionProtection?: bool
 
     enabledClusterLogTypes?: [str]
 
@@ -841,7 +849,7 @@ schema EksAwsmUpboundIoV1beta1ClusterSpecInitProviderAccessConfig:
     authenticationMode : str, default is Undefined, optional
         The authentication mode for the cluster. Valid values are CONFIG_MAP, API or API_AND_CONFIG_MAP
     bootstrapClusterCreatorAdminPermissions : bool, default is Undefined, optional
-        Whether or not to bootstrap the access config values to the cluster. Default is false.
+        Whether or not to bootstrap the access config values to the cluster. Default is true.
     """
 
 
@@ -1497,6 +1505,8 @@ schema EksAwsmUpboundIoV1beta1ClusterStatusAtProvider:
         compute config
     createdAt : str, default is Undefined, optional
         Unix epoch timestamp in seconds for when the cluster was created.
+    deletionProtection : bool, default is Undefined, optional
+        Whether to enable deletion protection for the cluster. When enabled, the cluster cannot be deleted unless deletion protection is first disabled. Default: false.
     enabledClusterLogTypes : [str], default is Undefined, optional
         List of the desired control plane logging to enable. For more information, see Amazon EKS Control Plane Logging.
     encryptionConfig : EksAwsmUpboundIoV1beta1ClusterStatusAtProviderEncryptionConfig, default is Undefined, optional
@@ -1555,6 +1565,8 @@ schema EksAwsmUpboundIoV1beta1ClusterStatusAtProvider:
 
     createdAt?: str
 
+    deletionProtection?: bool
+
     enabledClusterLogTypes?: [str]
 
     encryptionConfig?: EksAwsmUpboundIoV1beta1ClusterStatusAtProviderEncryptionConfig
@@ -1605,7 +1617,7 @@ schema EksAwsmUpboundIoV1beta1ClusterStatusAtProviderAccessConfig:
     authenticationMode : str, default is Undefined, optional
         The authentication mode for the cluster. Valid values are CONFIG_MAP, API or API_AND_CONFIG_MAP
     bootstrapClusterCreatorAdminPermissions : bool, default is Undefined, optional
-        Whether or not to bootstrap the access config values to the cluster. Default is false.
+        Whether or not to bootstrap the access config values to the cluster. Default is true.
     """
 
 

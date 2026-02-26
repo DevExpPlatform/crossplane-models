@@ -884,6 +884,8 @@ schema Ec2AwsmUpboundIoV1beta1NetworkInterfaceStatusAtProviderAttachmentItems0:
         Integer to define the devices index.
     instance : str, default is Undefined, optional
         ID of the instance to attach to.
+    networkCardIndex : float, default is Undefined, optional
+        Index of the network card. Specify a value greater than 0 when using multiple network cards, which are supported by some instance types. The default is 0.
     """
 
 
@@ -892,6 +894,8 @@ schema Ec2AwsmUpboundIoV1beta1NetworkInterfaceStatusAtProviderAttachmentItems0:
     deviceIndex?: float
 
     instance?: str
+
+    networkCardIndex?: float
 
 
 schema Ec2AwsmUpboundIoV1beta1NetworkInterfaceStatusConditionsItems0:

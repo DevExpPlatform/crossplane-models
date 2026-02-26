@@ -66,8 +66,6 @@ schema EcrAwsUpboundIoV1beta2RepositorySpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : EcrAwsUpboundIoV1beta2RepositorySpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : EcrAwsUpboundIoV1beta2RepositorySpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : EcrAwsUpboundIoV1beta2RepositorySpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -82,8 +80,6 @@ schema EcrAwsUpboundIoV1beta2RepositorySpec:
     managementPolicies?: [str] = ["*"]
 
     providerConfigRef?: EcrAwsUpboundIoV1beta2RepositorySpecProviderConfigRef
-
-    publishConnectionDetailsTo?: EcrAwsUpboundIoV1beta2RepositorySpecPublishConnectionDetailsTo
 
     writeConnectionSecretToRef?: EcrAwsUpboundIoV1beta2RepositorySpecWriteConnectionSecretToRef
 
@@ -102,8 +98,11 @@ schema EcrAwsUpboundIoV1beta2RepositorySpecForProvider:
     imageScanningConfiguration : EcrAwsUpboundIoV1beta2RepositorySpecForProviderImageScanningConfiguration, default is Undefined, optional
         image scanning configuration
     imageTagMutability : str, default is Undefined, optional
-        The tag mutability setting for the repository. Must be one of: MUTABLE or IMMUTABLE. Defaults to MUTABLE.
+        The tag mutability setting for the repository. Must be one of: MUTABLE, IMMUTABLE, IMMUTABLE_WITH_EXCLUSION, or MUTABLE_WITH_EXCLUSION. Defaults to MUTABLE.
+    imageTagMutabilityExclusionFilter : [EcrAwsUpboundIoV1beta2RepositorySpecForProviderImageTagMutabilityExclusionFilterItems0], default is Undefined, optional
+        Configuration block that defines filters to specify which image tags can override the default tag mutability setting. Only applicable when image_tag_mutability is set to IMMUTABLE_WITH_EXCLUSION or MUTABLE_WITH_EXCLUSION. See below for schema.
     region : str, default is Undefined, required
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
     tags : {str:str}, default is Undefined, optional
         Key-value map of resource tags.
@@ -117,6 +116,8 @@ schema EcrAwsUpboundIoV1beta2RepositorySpecForProvider:
     imageScanningConfiguration?: EcrAwsUpboundIoV1beta2RepositorySpecForProviderImageScanningConfiguration
 
     imageTagMutability?: str
+
+    imageTagMutabilityExclusionFilter?: [EcrAwsUpboundIoV1beta2RepositorySpecForProviderImageTagMutabilityExclusionFilterItems0]
 
     region: str
 
@@ -252,6 +253,24 @@ schema EcrAwsUpboundIoV1beta2RepositorySpecForProviderImageScanningConfiguration
     scanOnPush?: bool
 
 
+schema EcrAwsUpboundIoV1beta2RepositorySpecForProviderImageTagMutabilityExclusionFilterItems0:
+    r"""
+    ecr aws upbound io v1beta2 repository spec for provider image tag mutability exclusion filter items0
+
+    Attributes
+    ----------
+    $filter : str, default is Undefined, optional
+        The filter pattern to use for excluding image tags from the mutability setting. Must contain only letters, numbers, and special characters (._-). Each filter can be up to 128 characters long and can contain a maximum of 2 wildcards ().
+    filterType : str, default is Undefined, optional
+        The type of filter to use. Must be WILDCARD.
+    """
+
+
+    $filter?: str
+
+    filterType?: str
+
+
 schema EcrAwsUpboundIoV1beta2RepositorySpecInitProvider:
     r"""
     THIS IS A BETA FIELD. It will be honored
@@ -275,7 +294,9 @@ schema EcrAwsUpboundIoV1beta2RepositorySpecInitProvider:
     imageScanningConfiguration : EcrAwsUpboundIoV1beta2RepositorySpecInitProviderImageScanningConfiguration, default is Undefined, optional
         image scanning configuration
     imageTagMutability : str, default is Undefined, optional
-        The tag mutability setting for the repository. Must be one of: MUTABLE or IMMUTABLE. Defaults to MUTABLE.
+        The tag mutability setting for the repository. Must be one of: MUTABLE, IMMUTABLE, IMMUTABLE_WITH_EXCLUSION, or MUTABLE_WITH_EXCLUSION. Defaults to MUTABLE.
+    imageTagMutabilityExclusionFilter : [EcrAwsUpboundIoV1beta2RepositorySpecInitProviderImageTagMutabilityExclusionFilterItems0], default is Undefined, optional
+        Configuration block that defines filters to specify which image tags can override the default tag mutability setting. Only applicable when image_tag_mutability is set to IMMUTABLE_WITH_EXCLUSION or MUTABLE_WITH_EXCLUSION. See below for schema.
     tags : {str:str}, default is Undefined, optional
         Key-value map of resource tags.
     """
@@ -288,6 +309,8 @@ schema EcrAwsUpboundIoV1beta2RepositorySpecInitProvider:
     imageScanningConfiguration?: EcrAwsUpboundIoV1beta2RepositorySpecInitProviderImageScanningConfiguration
 
     imageTagMutability?: str
+
+    imageTagMutabilityExclusionFilter?: [EcrAwsUpboundIoV1beta2RepositorySpecInitProviderImageTagMutabilityExclusionFilterItems0]
 
     tags?: {str:str}
 
@@ -421,6 +444,24 @@ schema EcrAwsUpboundIoV1beta2RepositorySpecInitProviderImageScanningConfiguratio
     scanOnPush?: bool
 
 
+schema EcrAwsUpboundIoV1beta2RepositorySpecInitProviderImageTagMutabilityExclusionFilterItems0:
+    r"""
+    ecr aws upbound io v1beta2 repository spec init provider image tag mutability exclusion filter items0
+
+    Attributes
+    ----------
+    $filter : str, default is Undefined, optional
+        The filter pattern to use for excluding image tags from the mutability setting. Must contain only letters, numbers, and special characters (._-). Each filter can be up to 128 characters long and can contain a maximum of 2 wildcards ().
+    filterType : str, default is Undefined, optional
+        The type of filter to use. Must be WILDCARD.
+    """
+
+
+    $filter?: str
+
+    filterType?: str
+
+
 schema EcrAwsUpboundIoV1beta2RepositorySpecProviderConfigRef:
     r"""
     ProviderConfigReference specifies how the provider that will be used to
@@ -465,112 +506,12 @@ schema EcrAwsUpboundIoV1beta2RepositorySpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
-schema EcrAwsUpboundIoV1beta2RepositorySpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : EcrAwsUpboundIoV1beta2RepositorySpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : EcrAwsUpboundIoV1beta2RepositorySpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: EcrAwsUpboundIoV1beta2RepositorySpecPublishConnectionDetailsToConfigRef
-
-    metadata?: EcrAwsUpboundIoV1beta2RepositorySpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema EcrAwsUpboundIoV1beta2RepositorySpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : EcrAwsUpboundIoV1beta2RepositorySpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: EcrAwsUpboundIoV1beta2RepositorySpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema EcrAwsUpboundIoV1beta2RepositorySpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema EcrAwsUpboundIoV1beta2RepositorySpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema EcrAwsUpboundIoV1beta2RepositorySpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------
@@ -628,7 +569,12 @@ schema EcrAwsUpboundIoV1beta2RepositoryStatusAtProvider:
     imageScanningConfiguration : EcrAwsUpboundIoV1beta2RepositoryStatusAtProviderImageScanningConfiguration, default is Undefined, optional
         image scanning configuration
     imageTagMutability : str, default is Undefined, optional
-        The tag mutability setting for the repository. Must be one of: MUTABLE or IMMUTABLE. Defaults to MUTABLE.
+        The tag mutability setting for the repository. Must be one of: MUTABLE, IMMUTABLE, IMMUTABLE_WITH_EXCLUSION, or MUTABLE_WITH_EXCLUSION. Defaults to MUTABLE.
+    imageTagMutabilityExclusionFilter : [EcrAwsUpboundIoV1beta2RepositoryStatusAtProviderImageTagMutabilityExclusionFilterItems0], default is Undefined, optional
+        Configuration block that defines filters to specify which image tags can override the default tag mutability setting. Only applicable when image_tag_mutability is set to IMMUTABLE_WITH_EXCLUSION or MUTABLE_WITH_EXCLUSION. See below for schema.
+    region : str, default is Undefined, optional
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
+        Region is the region you'd like your resource to be created in.
     registryId : str, default is Undefined, optional
         The registry ID where the repository was created.
     repositoryUrl : str, default is Undefined, optional
@@ -651,6 +597,10 @@ schema EcrAwsUpboundIoV1beta2RepositoryStatusAtProvider:
     imageScanningConfiguration?: EcrAwsUpboundIoV1beta2RepositoryStatusAtProviderImageScanningConfiguration
 
     imageTagMutability?: str
+
+    imageTagMutabilityExclusionFilter?: [EcrAwsUpboundIoV1beta2RepositoryStatusAtProviderImageTagMutabilityExclusionFilterItems0]
+
+    region?: str
 
     registryId?: str
 
@@ -691,6 +641,24 @@ schema EcrAwsUpboundIoV1beta2RepositoryStatusAtProviderImageScanningConfiguratio
 
 
     scanOnPush?: bool
+
+
+schema EcrAwsUpboundIoV1beta2RepositoryStatusAtProviderImageTagMutabilityExclusionFilterItems0:
+    r"""
+    ecr aws upbound io v1beta2 repository status at provider image tag mutability exclusion filter items0
+
+    Attributes
+    ----------
+    $filter : str, default is Undefined, optional
+        The filter pattern to use for excluding image tags from the mutability setting. Must contain only letters, numbers, and special characters (._-). Each filter can be up to 128 characters long and can contain a maximum of 2 wildcards ().
+    filterType : str, default is Undefined, optional
+        The type of filter to use. Must be WILDCARD.
+    """
+
+
+    $filter?: str
+
+    filterType?: str
 
 
 schema EcrAwsUpboundIoV1beta2RepositoryStatusConditionsItems0:

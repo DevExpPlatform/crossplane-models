@@ -85,7 +85,7 @@ schema NetworkAzuremUpboundIoV1beta1PublicIPSpecForProvider:
     domainNameLabel : str, default is Undefined, optional
         Label for the Domain Name. Will be used to make up the FQDN. If a domain name label is specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system.
     domainNameLabelScope : str, default is Undefined, optional
-        Scope for the domain name label. If a domain name label scope is specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system with a hashed value includes in FQDN. Possible values are NoReuse, ResourceGroupReuse, SubscriptionReuse and TenantReuse. Changing this forces a new Public IP to be created.
+        Scope for the domain name label. If a domain name label scope is specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system with a hashed value includes in FQDN. Possible values are NoReuse, ResourceGroupReuse, SubscriptionReuse and TenantReuse.
     edgeZone : str, default is Undefined, optional
         Specifies the Edge Zone within the Azure Region where this Public IP should exist. Changing this forces a new Public IP to be created.
     idleTimeoutInMinutes : float, default is Undefined, optional
@@ -277,7 +277,7 @@ schema NetworkAzuremUpboundIoV1beta1PublicIPSpecInitProvider:
     domainNameLabel : str, default is Undefined, optional
         Label for the Domain Name. Will be used to make up the FQDN. If a domain name label is specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system.
     domainNameLabelScope : str, default is Undefined, optional
-        Scope for the domain name label. If a domain name label scope is specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system with a hashed value includes in FQDN. Possible values are NoReuse, ResourceGroupReuse, SubscriptionReuse and TenantReuse. Changing this forces a new Public IP to be created.
+        Scope for the domain name label. If a domain name label scope is specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system with a hashed value includes in FQDN. Possible values are NoReuse, ResourceGroupReuse, SubscriptionReuse and TenantReuse.
     edgeZone : str, default is Undefined, optional
         Specifies the Edge Zone within the Azure Region where this Public IP should exist. Changing this forces a new Public IP to be created.
     idleTimeoutInMinutes : float, default is Undefined, optional
@@ -412,7 +412,7 @@ schema NetworkAzuremUpboundIoV1beta1PublicIPStatusAtProvider:
     domainNameLabel : str, default is Undefined, optional
         Label for the Domain Name. Will be used to make up the FQDN. If a domain name label is specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system.
     domainNameLabelScope : str, default is Undefined, optional
-        Scope for the domain name label. If a domain name label scope is specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system with a hashed value includes in FQDN. Possible values are NoReuse, ResourceGroupReuse, SubscriptionReuse and TenantReuse. Changing this forces a new Public IP to be created.
+        Scope for the domain name label. If a domain name label scope is specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system with a hashed value includes in FQDN. Possible values are NoReuse, ResourceGroupReuse, SubscriptionReuse and TenantReuse.
     edgeZone : str, default is Undefined, optional
         Specifies the Edge Zone within the Azure Region where this Public IP should exist. Changing this forces a new Public IP to be created.
     fqdn : str, default is Undefined, optional

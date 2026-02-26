@@ -66,8 +66,6 @@ schema Ec2AwsUpboundIoV1beta1NetworkInterfaceSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : Ec2AwsUpboundIoV1beta1NetworkInterfaceSpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : Ec2AwsUpboundIoV1beta1NetworkInterfaceSpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : Ec2AwsUpboundIoV1beta1NetworkInterfaceSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -82,8 +80,6 @@ schema Ec2AwsUpboundIoV1beta1NetworkInterfaceSpec:
     managementPolicies?: [str] = ["*"]
 
     providerConfigRef?: Ec2AwsUpboundIoV1beta1NetworkInterfaceSpecProviderConfigRef
-
-    publishConnectionDetailsTo?: Ec2AwsUpboundIoV1beta1NetworkInterfaceSpecPublishConnectionDetailsTo
 
     writeConnectionSecretToRef?: Ec2AwsUpboundIoV1beta1NetworkInterfaceSpecWriteConnectionSecretToRef
 
@@ -127,6 +123,7 @@ schema Ec2AwsUpboundIoV1beta1NetworkInterfaceSpecForProvider:
     privateIpsCount : float, default is Undefined, optional
         Number of secondary private IPs to assign to the ENI. The total number of private IPs will be 1 + private_ips_count, as a primary private IP will be assiged to an ENI by default.
     region : str, default is Undefined, required
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
     securityGroupRefs : [Ec2AwsUpboundIoV1beta1NetworkInterfaceSpecForProviderSecurityGroupRefsItems0], default is Undefined, optional
         References to SecurityGroup in ec2 to populate securityGroups.
@@ -713,112 +710,12 @@ schema Ec2AwsUpboundIoV1beta1NetworkInterfaceSpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
-schema Ec2AwsUpboundIoV1beta1NetworkInterfaceSpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : Ec2AwsUpboundIoV1beta1NetworkInterfaceSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : Ec2AwsUpboundIoV1beta1NetworkInterfaceSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: Ec2AwsUpboundIoV1beta1NetworkInterfaceSpecPublishConnectionDetailsToConfigRef
-
-    metadata?: Ec2AwsUpboundIoV1beta1NetworkInterfaceSpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema Ec2AwsUpboundIoV1beta1NetworkInterfaceSpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : Ec2AwsUpboundIoV1beta1NetworkInterfaceSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: Ec2AwsUpboundIoV1beta1NetworkInterfaceSpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema Ec2AwsUpboundIoV1beta1NetworkInterfaceSpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema Ec2AwsUpboundIoV1beta1NetworkInterfaceSpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema Ec2AwsUpboundIoV1beta1NetworkInterfaceSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------
@@ -910,6 +807,9 @@ schema Ec2AwsUpboundIoV1beta1NetworkInterfaceStatusAtProvider:
         List of private IPs to assign to the ENI without regard to order.
     privateIpsCount : float, default is Undefined, optional
         Number of secondary private IPs to assign to the ENI. The total number of private IPs will be 1 + private_ips_count, as a primary private IP will be assiged to an ENI by default.
+    region : str, default is Undefined, optional
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
+        Region is the region you'd like your resource to be created in.
     securityGroups : [str], default is Undefined, optional
         List of security group IDs to assign to the ENI.
     sourceDestCheck : bool, default is Undefined, optional
@@ -969,6 +869,8 @@ schema Ec2AwsUpboundIoV1beta1NetworkInterfaceStatusAtProvider:
 
     privateIpsCount?: float
 
+    region?: str
+
     securityGroups?: [str]
 
     sourceDestCheck?: bool
@@ -992,6 +894,8 @@ schema Ec2AwsUpboundIoV1beta1NetworkInterfaceStatusAtProviderAttachmentItems0:
         Integer to define the devices index.
     instance : str, default is Undefined, optional
         ID of the instance to attach to.
+    networkCardIndex : float, default is Undefined, optional
+        Index of the network card. Specify a value greater than 0 when using multiple network cards, which are supported by some instance types. The default is 0.
     """
 
 
@@ -1000,6 +904,8 @@ schema Ec2AwsUpboundIoV1beta1NetworkInterfaceStatusAtProviderAttachmentItems0:
     deviceIndex?: float
 
     instance?: str
+
+    networkCardIndex?: float
 
 
 schema Ec2AwsUpboundIoV1beta1NetworkInterfaceStatusConditionsItems0:

@@ -66,8 +66,6 @@ schema Ec2AwsUpboundIoV1beta1EIPAssociationSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : Ec2AwsUpboundIoV1beta1EIPAssociationSpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : Ec2AwsUpboundIoV1beta1EIPAssociationSpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : Ec2AwsUpboundIoV1beta1EIPAssociationSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -83,8 +81,6 @@ schema Ec2AwsUpboundIoV1beta1EIPAssociationSpec:
 
     providerConfigRef?: Ec2AwsUpboundIoV1beta1EIPAssociationSpecProviderConfigRef
 
-    publishConnectionDetailsTo?: Ec2AwsUpboundIoV1beta1EIPAssociationSpecPublishConnectionDetailsTo
-
     writeConnectionSecretToRef?: Ec2AwsUpboundIoV1beta1EIPAssociationSpecWriteConnectionSecretToRef
 
 
@@ -95,35 +91,34 @@ schema Ec2AwsUpboundIoV1beta1EIPAssociationSpecForProvider:
     Attributes
     ----------
     allocationId : str, default is Undefined, optional
-        The allocation ID. This is required for EC2-VPC.
+        ID of the associated Elastic IP.
+        This argument is required despite being optional at the resource level due to legacy support for EC2-Classic networking.
     allocationIdRef : Ec2AwsUpboundIoV1beta1EIPAssociationSpecForProviderAllocationIDRef, default is Undefined, optional
         allocation Id ref
     allocationIdSelector : Ec2AwsUpboundIoV1beta1EIPAssociationSpecForProviderAllocationIDSelector, default is Undefined, optional
         allocation Id selector
     allowReassociation : bool, default is Undefined, optional
-        Whether to allow an Elastic IP to
-        be re-associated. Defaults to true in VPC.
+        Whether to allow an Elastic IP address to be re-associated.
+        Defaults to true.
     instanceId : str, default is Undefined, optional
-        The ID of the instance. This is required for
-        EC2-Classic. For EC2-VPC, you can specify either the instance ID or the
-        network interface ID, but not both. The operation fails if you specify an
-        instance ID unless exactly one network interface is attached.
+        ID of the instance.
+        The instance must have exactly one attached network interface.
+        You can specify either the instance ID or the network interface ID, but not both.
     instanceIdRef : Ec2AwsUpboundIoV1beta1EIPAssociationSpecForProviderInstanceIDRef, default is Undefined, optional
         instance Id ref
     instanceIdSelector : Ec2AwsUpboundIoV1beta1EIPAssociationSpecForProviderInstanceIDSelector, default is Undefined, optional
         instance Id selector
     networkInterfaceId : str, default is Undefined, optional
-        The ID of the network interface. If the
-        instance has more than one network interface, you must specify a network
-        interface ID.
+        ID of the network interface.
+        If the instance has more than one network interface, you must specify a network interface ID.
+        You can specify either the instance ID or the network interface ID, but not both.
     privateIpAddress : str, default is Undefined, optional
-        The primary or secondary private IP address
-        to associate with the Elastic IP address. If no private IP address is
-        specified, the Elastic IP address is associated with the primary private IP
-        address.
+        Primary or secondary private IP address to associate with the Elastic IP address.
+        If no private IP address is specified, the Elastic IP address is associated with the primary private IP address.
     publicIp : str, default is Undefined, optional
-        The Elastic IP address. This is required for EC2-Classic.
+        Address of the associated Elastic IP.
     region : str, default is Undefined, required
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
     """
 
@@ -345,34 +340,32 @@ schema Ec2AwsUpboundIoV1beta1EIPAssociationSpecInitProvider:
     Attributes
     ----------
     allocationId : str, default is Undefined, optional
-        The allocation ID. This is required for EC2-VPC.
+        ID of the associated Elastic IP.
+        This argument is required despite being optional at the resource level due to legacy support for EC2-Classic networking.
     allocationIdRef : Ec2AwsUpboundIoV1beta1EIPAssociationSpecInitProviderAllocationIDRef, default is Undefined, optional
         allocation Id ref
     allocationIdSelector : Ec2AwsUpboundIoV1beta1EIPAssociationSpecInitProviderAllocationIDSelector, default is Undefined, optional
         allocation Id selector
     allowReassociation : bool, default is Undefined, optional
-        Whether to allow an Elastic IP to
-        be re-associated. Defaults to true in VPC.
+        Whether to allow an Elastic IP address to be re-associated.
+        Defaults to true.
     instanceId : str, default is Undefined, optional
-        The ID of the instance. This is required for
-        EC2-Classic. For EC2-VPC, you can specify either the instance ID or the
-        network interface ID, but not both. The operation fails if you specify an
-        instance ID unless exactly one network interface is attached.
+        ID of the instance.
+        The instance must have exactly one attached network interface.
+        You can specify either the instance ID or the network interface ID, but not both.
     instanceIdRef : Ec2AwsUpboundIoV1beta1EIPAssociationSpecInitProviderInstanceIDRef, default is Undefined, optional
         instance Id ref
     instanceIdSelector : Ec2AwsUpboundIoV1beta1EIPAssociationSpecInitProviderInstanceIDSelector, default is Undefined, optional
         instance Id selector
     networkInterfaceId : str, default is Undefined, optional
-        The ID of the network interface. If the
-        instance has more than one network interface, you must specify a network
-        interface ID.
+        ID of the network interface.
+        If the instance has more than one network interface, you must specify a network interface ID.
+        You can specify either the instance ID or the network interface ID, but not both.
     privateIpAddress : str, default is Undefined, optional
-        The primary or secondary private IP address
-        to associate with the Elastic IP address. If no private IP address is
-        specified, the Elastic IP address is associated with the primary private IP
-        address.
+        Primary or secondary private IP address to associate with the Elastic IP address.
+        If no private IP address is specified, the Elastic IP address is associated with the primary private IP address.
     publicIp : str, default is Undefined, optional
-        The Elastic IP address. This is required for EC2-Classic.
+        Address of the associated Elastic IP.
     """
 
 
@@ -619,112 +612,12 @@ schema Ec2AwsUpboundIoV1beta1EIPAssociationSpecProviderConfigRefPolicy:
     resolve?: "Always" | "IfNotPresent"
 
 
-schema Ec2AwsUpboundIoV1beta1EIPAssociationSpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : Ec2AwsUpboundIoV1beta1EIPAssociationSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : Ec2AwsUpboundIoV1beta1EIPAssociationSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: Ec2AwsUpboundIoV1beta1EIPAssociationSpecPublishConnectionDetailsToConfigRef
-
-    metadata?: Ec2AwsUpboundIoV1beta1EIPAssociationSpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema Ec2AwsUpboundIoV1beta1EIPAssociationSpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : Ec2AwsUpboundIoV1beta1EIPAssociationSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: Ec2AwsUpboundIoV1beta1EIPAssociationSpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema Ec2AwsUpboundIoV1beta1EIPAssociationSpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema Ec2AwsUpboundIoV1beta1EIPAssociationSpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema Ec2AwsUpboundIoV1beta1EIPAssociationSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------
@@ -771,28 +664,29 @@ schema Ec2AwsUpboundIoV1beta1EIPAssociationStatusAtProvider:
     Attributes
     ----------
     allocationId : str, default is Undefined, optional
-        The allocation ID. This is required for EC2-VPC.
+        ID of the associated Elastic IP.
+        This argument is required despite being optional at the resource level due to legacy support for EC2-Classic networking.
     allowReassociation : bool, default is Undefined, optional
-        Whether to allow an Elastic IP to
-        be re-associated. Defaults to true in VPC.
+        Whether to allow an Elastic IP address to be re-associated.
+        Defaults to true.
     id : str, default is Undefined, optional
-        id
+        ID that represents the association of the Elastic IP address with an instance.
     instanceId : str, default is Undefined, optional
-        The ID of the instance. This is required for
-        EC2-Classic. For EC2-VPC, you can specify either the instance ID or the
-        network interface ID, but not both. The operation fails if you specify an
-        instance ID unless exactly one network interface is attached.
+        ID of the instance.
+        The instance must have exactly one attached network interface.
+        You can specify either the instance ID or the network interface ID, but not both.
     networkInterfaceId : str, default is Undefined, optional
-        The ID of the network interface. If the
-        instance has more than one network interface, you must specify a network
-        interface ID.
+        ID of the network interface.
+        If the instance has more than one network interface, you must specify a network interface ID.
+        You can specify either the instance ID or the network interface ID, but not both.
     privateIpAddress : str, default is Undefined, optional
-        The primary or secondary private IP address
-        to associate with the Elastic IP address. If no private IP address is
-        specified, the Elastic IP address is associated with the primary private IP
-        address.
+        Primary or secondary private IP address to associate with the Elastic IP address.
+        If no private IP address is specified, the Elastic IP address is associated with the primary private IP address.
     publicIp : str, default is Undefined, optional
-        The Elastic IP address. This is required for EC2-Classic.
+        Address of the associated Elastic IP.
+    region : str, default is Undefined, optional
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
+        Region is the region you'd like your resource to be created in.
     """
 
 
@@ -809,6 +703,8 @@ schema Ec2AwsUpboundIoV1beta1EIPAssociationStatusAtProvider:
     privateIpAddress?: str
 
     publicIp?: str
+
+    region?: str
 
 
 schema Ec2AwsUpboundIoV1beta1EIPAssociationStatusConditionsItems0:

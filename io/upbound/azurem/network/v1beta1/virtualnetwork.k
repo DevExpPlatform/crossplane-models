@@ -82,8 +82,6 @@ schema NetworkAzuremUpboundIoV1beta1VirtualNetworkSpecForProvider:
         The BGP community attribute in format <as-number>:<community-value>.
     ddosProtectionPlan : NetworkAzuremUpboundIoV1beta1VirtualNetworkSpecForProviderDdosProtectionPlan, default is Undefined, optional
         ddos protection plan
-    dnsServers : [str], default is Undefined, optional
-        List of IP addresses of DNS servers
     edgeZone : str, default is Undefined, optional
         Specifies the Edge Zone within the Azure Region where this Virtual Network should exist. Changing this forces a new Virtual Network to be created.
     encryption : NetworkAzuremUpboundIoV1beta1VirtualNetworkSpecForProviderEncryption, default is Undefined, optional
@@ -91,7 +89,7 @@ schema NetworkAzuremUpboundIoV1beta1VirtualNetworkSpecForProvider:
     flowTimeoutInMinutes : float, default is Undefined, optional
         The flow timeout in minutes for the Virtual Network, which is used to enable connection tracking for intra-VM flows. Possible values are between 4 and 30 minutes.
     ipAddressPool : [NetworkAzuremUpboundIoV1beta1VirtualNetworkSpecForProviderIPAddressPoolItems0], default is Undefined, optional
-        One or two ip_address_pool blocks as defined below. Only one association of each IP type(IPv4 or IPv6) is allowed.
+        One or more ip_address_pool blocks as defined below. Only one association of each IP type(IPv4 or IPv6) is allowed.
     location : str, default is Undefined, optional
         The location/region where the virtual network is created. Changing this forces a new resource to be created.
     privateEndpointVnetPolicies : str, default is Undefined, optional
@@ -112,8 +110,6 @@ schema NetworkAzuremUpboundIoV1beta1VirtualNetworkSpecForProvider:
     bgpCommunity?: str
 
     ddosProtectionPlan?: NetworkAzuremUpboundIoV1beta1VirtualNetworkSpecForProviderDdosProtectionPlan
-
-    dnsServers?: [str]
 
     edgeZone?: str
 
@@ -304,8 +300,6 @@ schema NetworkAzuremUpboundIoV1beta1VirtualNetworkSpecInitProvider:
         The BGP community attribute in format <as-number>:<community-value>.
     ddosProtectionPlan : NetworkAzuremUpboundIoV1beta1VirtualNetworkSpecInitProviderDdosProtectionPlan, default is Undefined, optional
         ddos protection plan
-    dnsServers : [str], default is Undefined, optional
-        List of IP addresses of DNS servers
     edgeZone : str, default is Undefined, optional
         Specifies the Edge Zone within the Azure Region where this Virtual Network should exist. Changing this forces a new Virtual Network to be created.
     encryption : NetworkAzuremUpboundIoV1beta1VirtualNetworkSpecInitProviderEncryption, default is Undefined, optional
@@ -313,7 +307,7 @@ schema NetworkAzuremUpboundIoV1beta1VirtualNetworkSpecInitProvider:
     flowTimeoutInMinutes : float, default is Undefined, optional
         The flow timeout in minutes for the Virtual Network, which is used to enable connection tracking for intra-VM flows. Possible values are between 4 and 30 minutes.
     ipAddressPool : [NetworkAzuremUpboundIoV1beta1VirtualNetworkSpecInitProviderIPAddressPoolItems0], default is Undefined, optional
-        One or two ip_address_pool blocks as defined below. Only one association of each IP type(IPv4 or IPv6) is allowed.
+        One or more ip_address_pool blocks as defined below. Only one association of each IP type(IPv4 or IPv6) is allowed.
     location : str, default is Undefined, optional
         The location/region where the virtual network is created. Changing this forces a new resource to be created.
     privateEndpointVnetPolicies : str, default is Undefined, optional
@@ -328,8 +322,6 @@ schema NetworkAzuremUpboundIoV1beta1VirtualNetworkSpecInitProvider:
     bgpCommunity?: str
 
     ddosProtectionPlan?: NetworkAzuremUpboundIoV1beta1VirtualNetworkSpecInitProviderDdosProtectionPlan
-
-    dnsServers?: [str]
 
     edgeZone?: str
 
@@ -482,7 +474,7 @@ schema NetworkAzuremUpboundIoV1beta1VirtualNetworkStatusAtProvider:
     id : str, default is Undefined, optional
         The Virtual Network ID.
     ipAddressPool : [NetworkAzuremUpboundIoV1beta1VirtualNetworkStatusAtProviderIPAddressPoolItems0], default is Undefined, optional
-        One or two ip_address_pool blocks as defined below. Only one association of each IP type(IPv4 or IPv6) is allowed.
+        One or more ip_address_pool blocks as defined below. Only one association of each IP type(IPv4 or IPv6) is allowed.
     location : str, default is Undefined, optional
         The location/region where the virtual network is created. Changing this forces a new resource to be created.
     privateEndpointVnetPolicies : str, default is Undefined, optional

@@ -66,8 +66,6 @@ schema Ec2AwsUpboundIoV1beta1TransitGatewayVPCAttachmentSpec:
         and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
     providerConfigRef : Ec2AwsUpboundIoV1beta1TransitGatewayVPCAttachmentSpecProviderConfigRef, default is Undefined, optional
         provider config ref
-    publishConnectionDetailsTo : Ec2AwsUpboundIoV1beta1TransitGatewayVPCAttachmentSpecPublishConnectionDetailsTo, default is Undefined, optional
-        publish connection details to
     writeConnectionSecretToRef : Ec2AwsUpboundIoV1beta1TransitGatewayVPCAttachmentSpecWriteConnectionSecretToRef, default is Undefined, optional
         write connection secret to ref
     """
@@ -82,8 +80,6 @@ schema Ec2AwsUpboundIoV1beta1TransitGatewayVPCAttachmentSpec:
     managementPolicies?: [str] = ["*"]
 
     providerConfigRef?: Ec2AwsUpboundIoV1beta1TransitGatewayVPCAttachmentSpecProviderConfigRef
-
-    publishConnectionDetailsTo?: Ec2AwsUpboundIoV1beta1TransitGatewayVPCAttachmentSpecPublishConnectionDetailsTo
 
     writeConnectionSecretToRef?: Ec2AwsUpboundIoV1beta1TransitGatewayVPCAttachmentSpecWriteConnectionSecretToRef
 
@@ -101,6 +97,7 @@ schema Ec2AwsUpboundIoV1beta1TransitGatewayVPCAttachmentSpecForProvider:
     ipv6Support : str, default is Undefined, optional
         Whether IPv6 support is enabled. Valid values: disable, enable. Default value: disable.
     region : str, default is Undefined, required
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
         Region is the region you'd like your resource to be created in.
     securityGroupReferencingSupport : str, default is Undefined, optional
         Whether Security Group Referencing Support is enabled. Valid values: disable, enable.
@@ -827,112 +824,12 @@ schema Ec2AwsUpboundIoV1beta1TransitGatewayVPCAttachmentSpecProviderConfigRefPol
     resolve?: "Always" | "IfNotPresent"
 
 
-schema Ec2AwsUpboundIoV1beta1TransitGatewayVPCAttachmentSpecPublishConnectionDetailsTo:
-    r"""
-    PublishConnectionDetailsTo specifies the connection secret config which
-    contains a name, metadata and a reference to secret store config to
-    which any connection details for this managed resource should be written.
-    Connection details frequently include the endpoint, username,
-    and password required to connect to the managed resource.
-
-    Attributes
-    ----------
-    configRef : Ec2AwsUpboundIoV1beta1TransitGatewayVPCAttachmentSpecPublishConnectionDetailsToConfigRef, default is Undefined, optional
-        config ref
-    metadata : Ec2AwsUpboundIoV1beta1TransitGatewayVPCAttachmentSpecPublishConnectionDetailsToMetadata, default is Undefined, optional
-        metadata
-    name : str, default is Undefined, required
-        Name is the name of the connection secret.
-    """
-
-
-    configRef?: Ec2AwsUpboundIoV1beta1TransitGatewayVPCAttachmentSpecPublishConnectionDetailsToConfigRef
-
-    metadata?: Ec2AwsUpboundIoV1beta1TransitGatewayVPCAttachmentSpecPublishConnectionDetailsToMetadata
-
-    name: str
-
-
-schema Ec2AwsUpboundIoV1beta1TransitGatewayVPCAttachmentSpecPublishConnectionDetailsToConfigRef:
-    r"""
-    SecretStoreConfigRef specifies which secret store config should be used
-    for this ConnectionSecret.
-
-    Attributes
-    ----------
-    name : str, default is Undefined, required
-        Name of the referenced object.
-    policy : Ec2AwsUpboundIoV1beta1TransitGatewayVPCAttachmentSpecPublishConnectionDetailsToConfigRefPolicy, default is Undefined, optional
-        policy
-    """
-
-
-    name: str
-
-    policy?: Ec2AwsUpboundIoV1beta1TransitGatewayVPCAttachmentSpecPublishConnectionDetailsToConfigRefPolicy
-
-
-schema Ec2AwsUpboundIoV1beta1TransitGatewayVPCAttachmentSpecPublishConnectionDetailsToConfigRefPolicy:
-    r"""
-    Policies for referencing.
-
-    Attributes
-    ----------
-    resolution : str, default is "Required", optional
-        Resolution specifies whether resolution of this reference is required.
-        The default is 'Required', which means the reconcile will fail if the
-        reference cannot be resolved. 'Optional' means this reference will be
-        a no-op if it cannot be resolved.
-    resolve : str, default is Undefined, optional
-        Resolve specifies when this reference should be resolved. The default
-        is 'IfNotPresent', which will attempt to resolve the reference only when
-        the corresponding field is not present. Use 'Always' to resolve the
-        reference on every reconcile.
-    """
-
-
-    resolution?: "Required" | "Optional" = "Required"
-
-    resolve?: "Always" | "IfNotPresent"
-
-
-schema Ec2AwsUpboundIoV1beta1TransitGatewayVPCAttachmentSpecPublishConnectionDetailsToMetadata:
-    r"""
-    Metadata is the metadata for connection secret.
-
-    Attributes
-    ----------
-    annotations : {str:str}, default is Undefined, optional
-        Annotations are the annotations to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.annotations".
-        - It is up to Secret Store implementation for others store types.
-    labels : {str:str}, default is Undefined, optional
-        Labels are the labels/tags to be added to connection secret.
-        - For Kubernetes secrets, this will be used as "metadata.labels".
-        - It is up to Secret Store implementation for others store types.
-    $type : str, default is Undefined, optional
-        Type is the SecretType for the connection secret.
-        - Only valid for Kubernetes Secret Stores.
-    """
-
-
-    annotations?: {str:str}
-
-    labels?: {str:str}
-
-    $type?: str
-
-
 schema Ec2AwsUpboundIoV1beta1TransitGatewayVPCAttachmentSpecWriteConnectionSecretToRef:
     r"""
     WriteConnectionSecretToReference specifies the namespace and name of a
     Secret to which any connection details for this managed resource should
     be written. Connection details frequently include the endpoint, username,
     and password required to connect to the managed resource.
-    This field is planned to be replaced in a future release in favor of
-    PublishConnectionDetailsTo. Currently, both could be set independently
-    and connection details would be published to both without affecting
-    each other.
 
     Attributes
     ----------
@@ -980,12 +877,17 @@ schema Ec2AwsUpboundIoV1beta1TransitGatewayVPCAttachmentStatusAtProvider:
     ----------
     applianceModeSupport : str, default is Undefined, optional
         Whether Appliance Mode support is enabled. If enabled, a traffic flow between a source and destination uses the same Availability Zone for the VPC attachment for the lifetime of that flow. Valid values: disable, enable. Default value: disable.
+    arn : str, default is Undefined, optional
+        ARN of the attachment.
     dnsSupport : str, default is Undefined, optional
         Whether DNS support is enabled. Valid values: disable, enable. Default value: enable.
     id : str, default is Undefined, optional
-        EC2 Transit Gateway Attachment identifier
+        EC2 Transit Gateway Attachment identifier.
     ipv6Support : str, default is Undefined, optional
         Whether IPv6 support is enabled. Valid values: disable, enable. Default value: disable.
+    region : str, default is Undefined, optional
+        Region where this resource will be managed. Defaults to the Region set in the provider configuration.
+        Region is the region you'd like your resource to be created in.
     securityGroupReferencingSupport : str, default is Undefined, optional
         Whether Security Group Referencing Support is enabled. Valid values: disable, enable.
     subnetIds : [str], default is Undefined, optional
@@ -1009,11 +911,15 @@ schema Ec2AwsUpboundIoV1beta1TransitGatewayVPCAttachmentStatusAtProvider:
 
     applianceModeSupport?: str
 
+    arn?: str
+
     dnsSupport?: str
 
     id?: str
 
     ipv6Support?: str
+
+    region?: str
 
     securityGroupReferencingSupport?: str
 
