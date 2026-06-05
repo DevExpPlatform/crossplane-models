@@ -81,6 +81,7 @@ The project currently includes the following providers:
 - AWS Secrets Manager (`xpkg.upbound.io/upbound/provider-aws-secretsmanager`)
 - Azure Network (`xpkg.upbound.io/upbound/provider-azure-network`)
 - Azure Container Service (`xpkg.upbound.io/upbound/provider-azure-containerservice`)
+- Azure Storage (`xpkg.upbound.io/upbound/provider-azure-storage`)
 - Helm (`xpkg.upbound.io/upbound/provider-helm`)
 - Kubernetes (`xpkg.upbound.io/upbound/provider-kubernetes`)
 - HTTP (`xpkg.upbound.io/crossplane-contrib/provider-http`)
