@@ -83,7 +83,7 @@ spec:
   - apiVersion: pkg.crossplane.io/v1
     kind: Provider
     package: xpkg.upbound.io/upbound/provider-azure-storage
-    version: '>=v1'
+    version: =v2
   description: Proprietary Crossplane models and utilities for Engineering Ingegneria
     Informatica S.p.A. infrastructure management.
   license: Proprietary
