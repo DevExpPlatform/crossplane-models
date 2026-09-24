@@ -11,7 +11,7 @@ spec:
   - apiVersion: pkg.crossplane.io/v1
     kind: Function
     package: xpkg.upbound.io/crossplane-contrib/function-kcl
-    version: '>=v0.11.4'
+    version: '>=v0.12.3'
   - apiVersion: pkg.crossplane.io/v1
     kind: Provider
     package: xpkg.upbound.io/upbound/provider-aws-dynamodb
